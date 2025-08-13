@@ -1,4 +1,6 @@
 using E_Commerce.DataAccess.Data;
+using E_Commerce.DataAccess.Repositories.Implementation;
+using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.Web
@@ -14,6 +16,9 @@ namespace E_Commerce.Web
 
             builder.Services.AddDbContext<AppDbContext>(op =>
                 op.UseSqlServer(builder.Configuration.GetConnectionString("HostingConnection")));
+
+            // Register UnitOfWork
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 
