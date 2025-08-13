@@ -1,7 +1,10 @@
+using E_Commerce.Business.Services.Implementation;
+using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.DataAccess.Data;
 using E_Commerce.DataAccess.Repositories.Implementation;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace E_Commerce.Web
 {
@@ -19,6 +22,10 @@ namespace E_Commerce.Web
 
             // Register UnitOfWork
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+
+            // Register AutoMapper
+             builder.Services.AddAutoMapper(typeof(Program));
 
             var app = builder.Build();
 
