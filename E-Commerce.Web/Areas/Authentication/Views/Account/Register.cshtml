@@ -1,0 +1,161 @@
+﻿@model RegisterViewModel
+@{
+
+    bool isAdmin = User.IsInRole(AppRoles.Admin);
+    ViewData["Title"] = isAdmin ? "Add Account" : "Register";
+}
+
+<link href="~/css/register.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="aura-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="aura-card">
+                    <div class="aura-header">
+                        <div class="aura-logo">AuraStore</div>
+                        <p class="aura-subtitle">@ViewData["Title"] to your premium account</p>
+                    </div>
+
+                    <div class="aura-form">
+                        <form asp-action="Register" asp-controller="Account" asp-area="Authentication" method="post" novalidate>
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                            <!-- Email Field -->
+                            <div class="aura-input-group">
+                                <label asp-for="Email" class="form-label">Email Address</label>
+                                <div class="position-relative">
+                                    <span class="aura-input-icon icon-email"></span>
+                                    <input asp-for="Email" class="form-control aura-form-control" type="email"
+                                           placeholder="Enter your email address" required autocomplete="email" aria-label="Email" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="aura-input-group">
+                                <label asp-for="Password" class="form-label">Password</label>
+                                <div class="position-relative">
+                                    <span class="aura-input-icon icon-lock"></span>
+                                    <input asp-for="Password" class="form-control aura-form-control" type="password"
+                                           placeholder="Create a secure password" required minlength="6"
+                                           autocomplete="new-password" aria-label="Password" id="passwordInput" />
+                                    <button type="button" class="aura-toggle-password"
+                                            onclick="togglePasswordVisibility('passwordInput','togglePasswordIcon')"
+                                            aria-label="Toggle password visibility">
+                                        <span class="icon-eye" id="togglePasswordIcon"></span>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            <!-- Confirm Password Field -->
+                            <div class="aura-input-group">
+                                <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                                <div class="position-relative">
+                                    <span class="aura-input-icon icon-shield"></span>
+                                    <input asp-for="ConfirmPassword" class="form-control aura-form-control" type="password"
+                                           placeholder="Confirm your password" required autocomplete="new-password"
+                                           aria-label="Confirm Password" id="confirmPasswordInput" />
+                                    <button type="button" class="aura-toggle-password"
+                                            onclick="togglePasswordVisibility('confirmPasswordInput', 'toggleConfirmIcon')"
+                                            aria-label="Toggle password visibility">
+                                        <span class="icon-eye" id="toggleConfirmIcon"></span>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                            @if (isAdmin)
+                            {
+                                <!-- Role Selection for Admin -->
+                                <div class="aura-input-group">
+                                    <label asp-for="Role" class="form-label">Assign Role</label>
+                                    <div class="position-relative">
+                                        <span class="aura-input-icon icon-user"></span>
+                                        <select asp-for="Role" asp-items="@Model.RolesList" class="form-select role-select" required>
+                                            <option disabled selected>-- Select Role --</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="Role" class="text-danger"></span>
+                                </div>
+                            }
+
+                            <!-- Submit Button -->
+                            <div class="text-center mb-4">
+                                <button type="submit" class="btn aura-btn-primary w-100">
+                                    @ViewData["Title"]
+                                </button>
+                            </div>
+
+                            @if (!isAdmin)
+                            {
+                                <!-- Social Login Section -->
+                                <div class="aura-social-section">
+                                    <div class="aura-social-divider">
+                                        Or continue with
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <a asp-action="ExternalLogin" asp-controller="Account" asp-route-provider="Google"
+                                               class="btn aura-social-btn google w-100 d-flex align-items-center justify-content-center gap-2"
+                                               title="Sign in with Google">
+                                                <svg width="20" height="20" viewBox="0 0 24 24">
+                                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                                                </svg>
+                                                <span>Google</span>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a
+                                               class="btn aura-social-btn facebook w-100 d-flex align-items-center justify-content-center gap-2"
+                                               title="Sign in with Facebook">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
+                                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                                </svg>
+                                                <span>Facebook</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Login Link -->
+                                <div class="text-center mt-4">
+                                    <span class="text-muted">Already have an account?</span>
+                                    <a asp-action="Login" asp-controller="Account" asp-area="Authentication"
+                                       class="login-link ms-1">Login here</a>
+                                </div>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function togglePasswordVisibility(inputId, iconId) {
+                const passwordInput = document.getElementById(inputId);
+                const toggleIcon = document.getElementById(iconId);
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleIcon.classList.remove('icon-eye');
+                    toggleIcon.classList.add('icon-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    toggleIcon.classList.remove('icon-eye-slash');
+                    toggleIcon.classList.add('icon-eye');
+                }
+        }
+    </script>
+
+    ﻿
+}

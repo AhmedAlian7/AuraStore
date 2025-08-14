@@ -14,10 +14,14 @@
         :root {
             --primary-black: #000000;
             --secondary-black: #1a1a1a;
-            --accent-gray: #333333;
+            --accent-color: #2563eb; /* Deep blue accent */
+            --accent-hover: #1d4ed8;
             --light-gray: #f8f9fa;
-            --border-gray: #e9ecef;
+            --border-gray: #e5e7eb;
+            --text-gray: #6b7280;
             --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -50,7 +54,8 @@
         }
 
             .navbar-brand:hover {
-                color: var(--accent-gray) !important;
+                color: var(--accent-color) !important;
+                transform: scale(1.05);
             }
 
         .navbar-nav {
@@ -68,40 +73,59 @@
             letter-spacing: 0.5px;
         }
 
-            .nav-link-custom:hover {
-                color: var(--accent-gray) !important;
-                transform: translateY(-1px);
+            .nav-link-custom:hover,
+            .nav-link-custom.active {
+                color: var(--accent-color) !important;
+                position: relative;
             }
 
+                .nav-link-custom:hover::after,
+                .nav-link-custom.active::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -5px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 20px;
+                    height: 2px;
+                    background-color: var(--accent-color);
+                    border-radius: 1px;
+                }
+
         .auth-btn {
-            background-color: var(--primary-black);
+            background-color: var(--accent-color);
             color: var(--white) !important;
-            border: 2px solid var(--primary-black);
-            padding: 0.5rem 1rem;
+            border: 2px solid var(--accent-color);
+            padding: 0.625rem 1.5rem;
             margin: 0 0.25rem;
-            border-radius: 25px;
+            border-radius: 8px;
             transition: all 0.3s ease;
-            font-weight: 500;
-            font-size: 0.9rem;
-            min-width: 100px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
         }
 
             .auth-btn:hover {
-                background-color: var(--white);
-                color: var(--primary-black) !important;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                background-color: var(--accent-hover);
+                border-color: var(--accent-hover);
+                transform: translateY(-1px);
+                box-shadow: var(--shadow-lg);
+                text-decoration: none;
             }
 
         .auth-btn-outline {
             background-color: transparent;
-            color: var(--primary-black) !important;
-            border: 2px solid var(--primary-black);
+            color: var(--accent-color) !important;
+            border: 2px solid var(--accent-color);
         }
 
             .auth-btn-outline:hover {
-                background-color: var(--primary-black);
+                background-color: var(--accent-color);
                 color: var(--white) !important;
+                transform: translateY(-1px);
+                box-shadow: var(--shadow-lg);
             }
 
         .icon-btn {
@@ -117,23 +141,28 @@
         }
 
             .icon-btn:hover {
-                background-color: var(--light-gray);
+                background-color: var(--accent-color);
+                color: var(--white);
                 transform: scale(1.1);
+                box-shadow: var(--shadow);
             }
 
         .cart-badge {
             position: absolute;
-            top: 0;
-            right: 0;
-            background-color: var(--primary-black);
+            top: -2px;
+            right: -2px;
+            background-color: #ef4444;
             color: var(--white);
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7rem;
+            width: 20px;
+            height: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 2px solid var(--white);
+            animation: pulse 2s infinite;
         }
 
         /* Mobile Menu */
@@ -182,21 +211,83 @@
         }
 
             .footer-link:hover {
-                color: var(--white);
+                color: var(--accent-color);
                 transform: translateX(5px);
             }
 
-        .social-icon {
+        /* Newsletter Styles */
+        .newsletter-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: var(--white);
-            font-size: 1.5rem;
-            margin: 0 1rem;
+            border-radius: 8px 0 0 8px;
+        }
+
+            .newsletter-input::placeholder {
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            .newsletter-input:focus {
+                background-color: rgba(255, 255, 255, 0.15);
+                border-color: var(--accent-color);
+                color: var(--white);
+                box-shadow: none;
+            }
+
+        .newsletter-btn {
+            background-color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            border-radius: 0 8px 8px 0;
+            color: var(--white);
+            padding: 0.75rem 1rem;
+        }
+
+            .newsletter-btn:hover {
+                background-color: var(--accent-hover);
+                border-color: var(--accent-hover);
+                color: var(--white);
+            }
+
+        /* Social Icons */
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-radius: 50%;
+            margin: 0 0.5rem;
             transition: all 0.3s ease;
+            text-decoration: none;
         }
 
             .social-icon:hover {
-                color: rgba(255, 255, 255, 0.7);
+                background-color: var(--accent-color);
+                color: var(--white);
                 transform: translateY(-3px);
+                box-shadow: var(--shadow);
             }
+
+        /* Payment Icons */
+        .payment-icon {
+            width: 40px;
+            height: 24px;
+            margin: 0 0.25rem;
+            border-radius: 4px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+            .payment-icon:hover {
+                opacity: 1;
+            }
+
+        .secure-badge {
+            color: var(--text-gray);
+            font-size: 0.875rem;
+        }
 
         .footer-bottom {
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -211,7 +302,7 @@
             animation: fadeIn 0.5s ease-in;
         }
 
-        @@keyframes fadeIn {
+        @@eyframes fadeIn {
             from
 
         {
@@ -222,6 +313,19 @@
         to {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        }
+
+        @@keyframes pulse {
+            0%, 100%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
         }
 
         }
@@ -245,14 +349,6 @@
         }
 
         }
-
-        main {
-            margin: 0 auto; 
-            padding: 20px; 
-            max-width: 1200px;
-        }
-
-
     </style>
 </head>
 
@@ -275,25 +371,25 @@
                 <!-- Center Navigation -->
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="@Url.Action("Index", "Home")">Home</a>
+                        <a asp-action="Index" asp-controller="Home" class="nav-link nav-link-custom">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="@Url.Action("Index", "Product")">Products</a>
+                        <a asp-action="Index" asp-asp-controller="Product" class="nav-link nav-link-custom">Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="@Url.Action("Categories", "Category")">Categories</a>
+                        <a asp-action="Index" asp-asp-controller="Category" class="nav-link nav-link-custom">Categories</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="@Url.Action("About", "Home")">About</a>
+                        <a asp-action="About" asp-controller="Home" class="nav-link nav-link-custom">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="@Url.Action("Contact", "Home")">Contact</a>
+                        <a asp-action="About" asp-controller="Home" class="nav-link nav-link-custom">Contact</a>
                     </li>
                 </ul>
 
                 <!-- Auth Section -->
                 <div class="d-flex align-items-center">
-                    @if (ViewBag.IsLogged == true)
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <!-- Logged In User Icons -->
                         <div class="d-flex align-items-center">
@@ -312,7 +408,7 @@
                             </button>
 
                             <!-- Admin Panel (if admin) -->
-                            @if (ViewBag.IsAdmin == true)
+                            @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                             {
                                 <button class="icon-btn" onclick="location.href='@Url.Action("Dashboard", "Admin")'" title="Admin Dashboard">
                                     <i class="fas fa-cog"></i>
@@ -334,7 +430,7 @@
                             </button>
 
                             <!-- Logout -->
-                            <button class="auth-btn ms-2" onclick="location.href='@Url.Action("Logout", "Account")'" title="Logout">
+                            <button class="auth-btn ms-2" onclick="location.href='@Url.Action("Logout", "Account", new { area = "Authentication"})'" title="Logout">
                                 <i class="fas fa-sign-out-alt me-1"></i> Logout
                             </button>
                         </div>
@@ -343,12 +439,12 @@
                     {
                         <!-- Not Logged In -->
                         <div class="auth-buttons-mobile">
-                            <button class="auth-btn-outline auth-btn" onclick="location.href='@Url.Action("Login", "Account")'">
+                            <a class="auth-btn-outline auth-btn" asp-action="Login" asp-controller="Account" asp-area="Authentication">
                                 <i class="fas fa-sign-in-alt me-1"></i> Login
-                            </button>
-                            <button class="auth-btn" onclick="location.href='@Url.Action("Register", "Account")'">
+                            </a>
+                            <a class="auth-btn" asp-action="Register" asp-controller="Account" asp-area="Authentication">
                                 <i class="fas fa-user-plus me-1"></i> Register
-                            </button>
+                            </a>
                         </div>
                     }
                 </div>
@@ -357,7 +453,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="fade-in">
+    <main class="fade-in" style="margin: 0 auto; padding: 20px;">
         @RenderBody()
     </main>
 
@@ -365,16 +461,30 @@
     <footer class="footer-custom">
         <div class="container">
             <div class="row">
-                <!-- About Section -->
+                <!-- Brand Info -->
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="footer-section">
-                        <h5><i class="fas fa-gem me-2"></i>AuraStore</h5>
-                        <p class="mb-3">Discover premium products with exceptional quality. Your trusted destination for luxury and style.</p>
-                        <div>
-                            <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-                            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                        <h5><i class="fas fa-gem me-2" style="color: var(--accent-color);"></i>AuraStore</h5>
+                        <p class="mb-4">Experience premium quality and exceptional style. Your trusted destination for luxury products that define elegance and sophistication.</p>
+
+                        <!-- Newsletter Signup -->
+                        <div class="newsletter-section mb-4">
+                            <h6 class="mb-3">Get 10% Off Your First Order</h6>
+                            <div class="input-group">
+                                <input type="email" class="form-control newsletter-input" placeholder="Enter your email" aria-label="Email">
+                                <button class="btn newsletter-btn" type="button">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="social-links">
+                            <h6 class="mb-3">Follow Us</h6>
+                            <a href="#" class="social-icon" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-icon" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-icon" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-icon" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
                         </div>
                     </div>
                 </div>
@@ -382,9 +492,9 @@
                 <!-- Quick Links -->
                 <div class="col-lg-2 col-md-6 mb-4">
                     <div class="footer-section">
-                        <h5>Quick Links</h5>
+                        <h5>Shop</h5>
                         <a href="@Url.Action("Index", "Home")" class="footer-link">Home</a>
-                        <a href="@Url.Action("Products", "Product")" class="footer-link">Products</a>
+                        <a href="@Url.Action("Products", "Product")" class="footer-link">Shop</a>
                         <a href="@Url.Action("Categories", "Category")" class="footer-link">Categories</a>
                         <a href="@Url.Action("About", "Home")" class="footer-link">About Us</a>
                         <a href="@Url.Action("Contact", "Home")" class="footer-link">Contact</a>
@@ -395,23 +505,36 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="footer-section">
                         <h5>Customer Service</h5>
-                        <a href="#" class="footer-link">Help Center</a>
-                        <a href="#" class="footer-link">Shipping Info</a>
-                        <a href="#" class="footer-link">Returns & Exchanges</a>
+                        <a href="#" class="footer-link">FAQ</a>
+                        <a href="#" class="footer-link">Shipping & Returns</a>
                         <a href="#" class="footer-link">Size Guide</a>
+                        <a href="#" class="footer-link">Track Your Order</a>
+                        <a href="#" class="footer-link">Terms & Conditions</a>
                         <a href="#" class="footer-link">Privacy Policy</a>
-                        <a href="#" class="footer-link">Terms of Service</a>
                     </div>
                 </div>
 
-                <!-- Contact Info -->
+                <!-- Company Info -->
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="footer-section">
-                        <h5>Contact Info</h5>
-                        <p><i class="fas fa-map-marker-alt me-2"></i>123 Fashion Street, Style City, SC 12345</p>
-                        <p><i class="fas fa-phone me-2"></i>+1 (555) 123-4567</p>
-                        <p><i class="fas fa-envelope me-2"></i>info@aurastore.com</p>
-                        <p><i class="fas fa-clock me-2"></i>Mon - Fri: 9AM - 6PM</p>
+                        <h5>Get In Touch</h5>
+                        <div class="contact-info">
+                            <p><i class="fas fa-map-marker-alt me-2" style="color: var(--accent-color);"></i>123 Fashion Avenue<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Style District, NY 10001</p>
+                            <p><i class="fas fa-phone me-2" style="color: var(--accent-color);"></i>+1 (555) 123-AURA</p>
+                            <p><i class="fas fa-envelope me-2" style="color: var(--accent-color);"></i>hello@aurastore.com</p>
+                            <p><i class="fas fa-clock me-2" style="color: var(--accent-color);"></i>24/7 Customer Support</p>
+                        </div>
+
+                        <!-- Payment Methods -->
+                        <div class="payment-methods mt-4">
+                            <h6 class="mb-3">We Accept</h6>
+                            <div class="payment-icons">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA0MCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzAwNTFBNSIvPgo8dGV4dCB4PSI1IiB5PSIxNSIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iOSIgZm9udC1mYW1pbHk9IkFyaWFsIj5WSVNBPC90ZXh0Pgo8L3N2Zz4K" alt="Visa" class="payment-icon">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA0MCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iI0VCMDAxQiIvPgo8Y2lyY2xlIGN4PSIxNSIgY3k9IjEyIiByPSI2IiBmaWxsPSIjRkY1RjAwIi8+CjxjaXJjbGUgY3g9IjI1IiBjeT0iMTIiIHI9IjYiIGZpbGw9IiNGRjVGMDAiLz4KPC9zdmc+" alt="Mastercard" class="payment-icon">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA0MCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzAwNjFBRiIvPgo8dGV4dCB4PSI4IiB5PSIxNSIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iNyIgZm9udC1mYW1pbHk9IkFyaWFsIj5QTUFZPC90ZXh0Pgo8L3N2Zz4K" alt="PayPal" class="payment-icon">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA0MCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzAwNzlDMSIvPgo8dGV4dCB4PSI4IiB5PSIxNSIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iNiIgZm9udC1mYW1pbHk9IkFyaWFsIj5BTUVYPC90ZXh0Pgo8L3N2Zz4K" alt="American Express" class="payment-icon">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -419,18 +542,17 @@
             <!-- Footer Bottom -->
             <div class="footer-bottom">
                 <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <p>&copy; @DateTime.Now.Year AuraStore. All rights reserved.</p>
+                    <div class="col-md-8">
+                        <p>&copy; @DateTime.Now.Year AuraStore. All rights reserved. | Crafted with excellence for luxury shopping.</p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="d-flex justify-content-md-end justify-content-center">
-                            <img src="https://placehold.co/40x25/000000/FFFFFF?text=VISA" alt="Visa" class="me-2">
-                            <img src="https://placehold.co/40x25/000000/FFFFFF?text=MC" alt="Mastercard" class="me-2">
-                            <img src="https://placehold.co/40x25/000000/FFFFFF?text=AMEX" alt="American Express" class="me-2">
-                            <img src="https://placehold.co/40x25/000000/FFFFFF?text=PP" alt="PayPal">
+                            <span class="secure-badge">
+                                <i class="fas fa-shield-alt me-1" style="color: var(--accent-color);"></i>
+                                <small>Secure Shopping</small>
+                            </span>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

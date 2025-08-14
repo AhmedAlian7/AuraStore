@@ -2,8 +2,9 @@
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace E_Commerce.Web.Controllers
+namespace E_Commerce.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
