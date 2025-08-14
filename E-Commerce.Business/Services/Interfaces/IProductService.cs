@@ -16,11 +16,11 @@ namespace E_Commerce.Business.Services.Interfaces
 
         //Task DeleteProductAsync(int? id);
 
-        //Task<IEnumerable<ProductViewModel>> GetBestSalesProductsAsync(int count = 8);
+        Task<IEnumerable<ProductViewModel>> GetBestSalesProductsAsync(int count = 8);
 
-        //Task<IEnumerable<ProductViewModel>> GetRecentProductsAsync(int count = 8);
+        Task<IEnumerable<ProductViewModel>> GetRecentProductsAsync(int count = 8);
 
-        //Task<IEnumerable<ProductViewModel>> GetProductsByCategoryIdAsync(int typeId);
+        Task<IEnumerable<ProductViewModel>> GetProductsByCategoryIdAsync(int typeId);
 
         //Task<IEnumerable<ProductViewModel>> SearchProductsAsync(string query);
     }
