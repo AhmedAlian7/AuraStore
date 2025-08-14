@@ -27,5 +27,43 @@ namespace E_Commerce.Business.Services.Implementation
             return PaginatedList<ProductViewModel>.Create(productsVM, page, 10);
 
         }
+
+        public async Task<IEnumerable<ProductViewModel>> GetRecentProductsAsync(int count = 8)
+        {
+
+            var products = await _unitOfWork.Products.GetLatestProductsAsync(count);
+
+            var ProductsVM = _mapper.Map<IEnumerable<ProductViewModel>>(products);
+
+          
+            return ProductsVM;
+
+        }
+
+        public async Task<IEnumerable<ProductViewModel>> GetBestSalesProductsAsync(int count = 8)
+        {
+
+            var products = await _unitOfWork.Products.GetTopSellingProductsAsync(count);
+
+            var ProductsVM = _mapper.Map<IEnumerable<ProductViewModel>>(products);
+
+          
+            return ProductsVM;
+
+        }
+
+        public async Task<IEnumerable<ProductViewModel>> GetProductsByCategoryIdAsync(int CategoryId)
+        {
+
+            var products = await _unitOfWork.Products.GetProductsByCategoryAsync(CategoryId);
+
+            var ProductsVM = _mapper.Map<IEnumerable<ProductViewModel>>(products);
+
+            return ProductsVM;
+
+
+        }
+
+
     }
 }

@@ -23,5 +23,45 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
 
             return topSellingProducts;
         }
+
+        public async Task<IEnumerable<Product>> GetProductsByPriceRangeAsync(decimal minPrice, decimal maxPrice)
+        {
+
+            var ProductsInRange = await _context.Products
+                .Where(p => p.EffectivePrice >= minPrice && p.EffectivePrice <= maxPrice)
+                .OrderByDescending(p => p.EffectivePrice)
+                .ToListAsync(); 
+            
+            return ProductsInRange;
+
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsByRatingAsync(double minRating)
+        {
+           
+            var productsByRating = await _context.Products
+                .Where(p => p.AverageRating >= minRating)
+                .OrderByDescending(p => p.AverageRating)
+                .ToListAsync();
+
+            return productsByRating; 
+
+        }
+
+        public async Task<IEnumerable<Product>> GetLatestProductsAsync(int count)
+        {
+
+            var LatestProducts = await _context.Products
+                .OrderByDescending (p => p.CreatedAt)
+                .Take (count)
+                .ToListAsync();
+
+            return LatestProducts;
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId)
+        {
+             return await _context.Products.Where(p => p.CategoryId == categoryId).ToListAsync();
+        }
     }
 }
