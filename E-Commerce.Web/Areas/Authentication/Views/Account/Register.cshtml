@@ -20,7 +20,15 @@
                     <div class="aura-form">
                         <form asp-action="Register" asp-controller="Account" asp-area="Authentication" method="post" novalidate>
                             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                            @if (TempData["SuccessMessage"] != null)
+                            {
+                                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                            }
 
+                            @if (TempData["ErrorMessage"] != null)
+                            {
+                                <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+                            }
                             <!-- Email Field -->
                             <div class="aura-input-group">
                                 <label asp-for="Email" class="form-label">Email Address</label>

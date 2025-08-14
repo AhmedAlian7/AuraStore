@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 
@@ -46,7 +47,7 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Please make sure all fields are valid.";
+                TempData["ErrorMessage"] = "Please make sure all fields are valid.";
                 return View(nameof(Register), register);
             }
 
@@ -62,13 +63,13 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
                 if (isAdmin)
                 {
                     await _userManager.AddToRoleAsync(user, register.Role);
-                    TempData["success1"] = "Account Created successfully!";
+                    TempData["SuccessMessage"] = "Account Created successfully!";
                     return RedirectToAction("Index", "User", new { area = "Admin" });
                 }
 
                 await _userManager.AddToRoleAsync(user, AppRoles.Customer);
                 await _signInManager.SignInAsync(user, isPersistent: true);
-                TempData["success1"] = "Account Created successfully!";
+                TempData["SuccessMessage"] = "Account Created successfully!";
                 return RedirectToAction("Index", "Home", new { area = "Customer"});
             }
             else
@@ -76,7 +77,7 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
                 foreach (var error in result.Errors)
                     ModelState.AddModelError("", error.Description);
 
-                TempData["error"] = "Failed to create account.";
+                TempData["ErrorMessage"] = "Failed to create account.";
                 return View(nameof(Register), register);
             }
         }
@@ -244,6 +245,19 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
                 i++;
             }
             return finalName;
+        }
+
+        public async Task<IActionResult> IsEmailInUse(string Email)
+        {
+
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user != null)
+            {
+                return Json($"Email '{Email}' is already in use.");
+            }
+            return Json(true);
+
+
         }
     }
 }
