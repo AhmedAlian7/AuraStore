@@ -1,5 +1,4 @@
-﻿
-using E_Commerce.Business.ViewModels;
+﻿using E_Commerce.Business.ViewModels.Product;
 using E_Commerce.DataAccess.Entities;
 
 namespace E_Commerce.Business.Services.Interfaces
@@ -10,7 +9,7 @@ namespace E_Commerce.Business.Services.Interfaces
 
         //Task<ProductViewModel?> GetProductByIdAsync(int? id);
 
-        //Task AddProductAsync(ProductViewModel productVm);
+        Task AddProductAsync(ProductAddViewModel product);
 
         //Task UpdateProductAsync(UpdateProductViewModel updateProductVM);
 

@@ -1,4 +1,5 @@
-﻿@model PaginatedList<ProductViewModel>
+﻿@using E_Commerce.Business.ViewModels.Product
+@model PaginatedList<ProductViewModel>
 
 @{
     Layout = "_MyLayout";
@@ -261,12 +262,6 @@
                     </li>
                 }
             </ul>
-
-            <div class="text-center mt-2">
-                <small class="text-muted">
-                    Showing Model.FirstItemOnPage to Model.LastItemOnPage of Model.TotalItemCount products
-                </small>
-            </div>
         </nav>
     }
     else

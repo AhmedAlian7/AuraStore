@@ -1,5 +1,4 @@
-﻿
-namespace E_Commerce.Business.ViewModels
+﻿namespace E_Commerce.Business.ViewModels.Product
 {
     public class UpdateProductViewModel
     {

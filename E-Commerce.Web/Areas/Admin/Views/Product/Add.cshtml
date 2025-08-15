@@ -1,0 +1,179 @@
+﻿@model ProductAddViewModel
+@{
+	ViewData["Title"] = "Add New Product";
+
+}
+
+<div class="page-header">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="page-title">
+                    <i class="fas fa-plus-circle me-2"></i>
+                    Add New Product
+                </h1>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <button type="submit" form="productForm" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Add Product
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+    <form id="productForm" asp-area="Admin" asp-controller="Product" asp-action="Add" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- General Information -->
+                <div class="form-card">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-info-circle"></i>
+                        General Information
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label">Product Name *</label>
+                                <input asp-for="Name" class="form-control" placeholder="Enter product name">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label">Description</label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter product description (optional)"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pricing and Stock -->
+                <div class="form-card">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-dollar-sign"></i>
+                        Pricing & Stock
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="Price" class="form-label">Price *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="Price" class="form-control" placeholder="0.00" step="0.01">
+                                </div>
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="DiscountPrice" class="form-label">Discount Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="DiscountPrice" class="form-control" placeholder="0.00" step="0.01">
+                                </div>
+                                <span asp-validation-for="DiscountPrice" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="StockCount" class="form-label">Stock Count *</label>
+                                <input asp-for="StockCount" class="form-control" placeholder="0" type="number" min="0">
+                                <span asp-validation-for="StockCount" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- Category Selection -->
+                <div class="form-card">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-tags"></i>
+                        Category
+                    </h3>
+
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label">Product Category *</label>
+                        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
+                            <option value="">Select a category...</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="form-card">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-images"></i>
+                        Product Images
+                    </h3>
+
+                    <!-- Main Image Upload -->
+                    <div class="mb-4">
+                        <label asp-for="MainImageFile" class="form-label">Main Image *</label>
+                        <div class="image-upload-area" onclick="document.getElementById('mainImageInput').click()">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <p class="mb-2"><strong>Click to upload main image</strong></p>
+                            <p class="text-muted small">PNG, JPG, GIF up to 10MB</p>
+                            <img id="mainImagePreview" class="image-preview" style="display: none;" />
+                        </div>
+                        <input asp-for="MainImageFile" type="file" id="mainImageInput" class="d-none" accept="image/*" />
+                        <span asp-validation-for="MainImageFile" class="text-danger"></span>
+                    </div>
+
+                    <!-- Additional Images Upload -->
+                    <div class="mb-3">
+                        <label asp-for="AdditionalImages" class="form-label">Additional Images</label>
+                        <div class="image-upload-area" onclick="document.getElementById('additionalImagesInput').click()">
+                            <i class="fas fa-plus upload-icon"></i>
+                            <p class="mb-2"><strong>Click to add more images</strong></p>
+                            <p class="text-muted small">Multiple files allowed</p>
+                        </div>
+                        <input asp-for="AdditionalImages" type="file" id="additionalImagesInput" class="d-none" accept="image/*" multiple />
+                        <div id="additionalImagesPreview" class="additional-images-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions (Mobile) -->
+        <div class="d-md-none">
+            <div class="form-card">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Add Product
+                    </button>
+                    <a href="@Url.Action("Index", "Product", new { area = "Admin" })" class="btn btn-outline-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+    <link href="~/css/add-product.css" rel="stylesheet" asp-append-version="true" />
+	<script src="~/js/add-product.js" asp-append-version="true"></script>
+}

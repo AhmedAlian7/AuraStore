@@ -7,5 +7,7 @@ namespace E_Commerce.DataAccess.Repositories.Interfaces
     {
         Task<bool> IsUniqueAsync(string categoryName, int? excludeId = null);
         Task<int> GetProductCountByCategoryAsync(int categoryId);
+
+        IEnumerable<Category> GetAll();
     }
 }

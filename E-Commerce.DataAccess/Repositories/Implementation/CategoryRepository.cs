@@ -25,5 +25,10 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
             }
             return !await query.AnyAsync();
         }
+
+        public IEnumerable<Category> GetAll()
+        {
+            return _dbSet.AsNoTracking().ToList();
+        }
     }
 }

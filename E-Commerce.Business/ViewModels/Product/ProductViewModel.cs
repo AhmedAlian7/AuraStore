@@ -1,8 +1,6 @@
-﻿
-using E_Commerce.DataAccess.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using E_Commerce.DataAccess.Entities;
 
-namespace E_Commerce.Business.ViewModels
+namespace E_Commerce.Business.ViewModels.Product
 {
     public class ProductViewModel
     {

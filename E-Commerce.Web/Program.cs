@@ -1,3 +1,5 @@
+using AutoMapper;
+using E_Commerce.Business.AutoMapper;
 using E_Commerce.Business.Services.Implementation;
 using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.DataAccess.Data;
@@ -7,7 +9,7 @@ using E_Commerce.DataAccess.Repositories.Interfaces;
 using E_Commerce.DataAccess.Seeding;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using mvcFirstApp.Services;
 
 namespace E_Commerce.Web
 {
@@ -41,7 +43,7 @@ namespace E_Commerce.Web
             // Register UnitOfWork
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
-
+            builder.Services.AddScoped<FileUploadService>();
 
             // Register Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -69,6 +71,12 @@ namespace E_Commerce.Web
 
             // Register AutoMapper
             builder.Services.AddAutoMapper(typeof(Program));
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<ProductMappingProfile>();
+            });
+
+            config.AssertConfigurationIsValid();
 
             var app = builder.Build();
 
