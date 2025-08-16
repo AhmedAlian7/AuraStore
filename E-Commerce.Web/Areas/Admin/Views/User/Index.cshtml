@@ -1,5 +1,5 @@
 ﻿@using E_Commerce.Business.ViewModels.Customer
-@model IEnumerable<CustomerViewModel>
+@model PaginatedList<CustomerViewModel>
 
 @{
     ViewData["Title"] = "Customers";
@@ -96,6 +96,42 @@
         </div>
     </div>
 </div>
+
+<nav aria-label="Product pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-all-route-data="@ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page").ToDictionary(q => q.Key, q => q.Value.ToString())" asp-route-page="@(Model.PageIndex - 1)">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+        }
+
+        @{
+            var startPage = Math.Max(1, Model.PageIndex - 2);
+            var endPage = Math.Min(Model.TotalPages, Model.PageIndex + 2);
+        }
+
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-all-route-data="@ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page").ToDictionary(q => q.Key, q => q.Value.ToString())" asp-route-page="@i">
+                    @i
+                </a>
+            </li>
+        }
+
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-all-route-data="@ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page").ToDictionary(q => q.Key, q => q.Value.ToString())" asp-route-page="@(Model.PageIndex + 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
 
 <!-- Bootstrap Delete Confirmation Modal (Top Aligned) -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">

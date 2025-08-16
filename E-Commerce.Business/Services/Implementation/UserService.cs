@@ -27,7 +27,7 @@ namespace E_Commerce.Business.Services.Implementation
 
 
 
-        public async Task<IEnumerable<CustomerViewModel>> GetAllAsync(int page)
+        public async Task<PaginatedList<CustomerViewModel>> GetAllAsync(int page)
         {
             var users = _userManager.Users.ToList();
             var models = new List<CustomerViewModel>();
