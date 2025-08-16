@@ -10,9 +10,20 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
     {
         public CartRepository(AppDbContext context) : base(context) { }
 
-        public async Task<Cart?> GetByUserIdAsync(string userId)
+        public async Task<Cart?> GetByUserIdAsync(string userId, string includeProperties)
         {
-            return await _dbSet.FirstOrDefaultAsync(c => c.UserId == userId);
+
+            var query = _dbSet.AsQueryable();
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            { 
+                foreach (var include in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(include.Trim());
+                }
+            }
+
+            return  await query.FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
         public async Task<Cart?> GetCartWithItemsAsync(string userId)

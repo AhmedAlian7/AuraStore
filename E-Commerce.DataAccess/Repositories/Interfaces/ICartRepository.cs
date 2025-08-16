@@ -5,7 +5,7 @@ namespace E_Commerce.DataAccess.Repositories.Interfaces
 {
     public interface ICartRepository : IRepository<Cart>
     {
-        Task<Cart?> GetByUserIdAsync(string userId);
+        Task<Cart?> GetByUserIdAsync(string userId, string includeProperties);
         Task<Cart?> GetCartWithItemsAsync(string userId);
         Task<Cart?> GetCartWithItemsAndProductsAsync(string userId);
         Task ClearCartAsync(string userId);

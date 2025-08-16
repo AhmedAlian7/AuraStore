@@ -13,15 +13,11 @@ namespace E_Commerce.Business.Services.Interfaces
 
         //Task UpdateProductAsync(UpdateProductViewModel updateProductVM);
 
-        //Task DeleteProductAsync(int? id);
-
         Task<IEnumerable<ProductViewModel>> GetBestSalesProductsAsync(int count = 8);
 
         Task<IEnumerable<ProductViewModel>> GetRecentProductsAsync(int count = 8);
 
         Task<IEnumerable<ProductViewModel>> GetProductsByCategoryIdAsync(int typeId);
-
-        //Task<IEnumerable<ProductViewModel>> SearchProductsAsync(string query);
 
 
         Task HandleMainImageUpdate(Product product, ProductUpdateViewModel model);
@@ -30,5 +26,8 @@ namespace E_Commerce.Business.Services.Interfaces
         Task<ProductDetailsViewModel> GetProductDetailsAsync(int id);
         Task<bool> DeleteProductAsync(int id);
 
+        //Task<bool> AddToCart(int productId, int quantity = 1);
+
     }
+
 }

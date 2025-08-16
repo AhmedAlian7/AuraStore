@@ -84,10 +84,14 @@
             <div class="action-buttons">
                 @if (Model.InStock)
                 {
-                    <button class="add-to-cart-btn" onclick="addToCart(@Model.Id)">Add to Cart</button>
+                    <form asp-action="AddToCart" asp-controller="Product" method="post">
+                        <input type="hidden" name="productId" value="@Model.Id" />
+                        <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                    @* <button class="add-to-cart-btn" asp-action="AddToCard" asp-route-productId="@Model.Id">Add to Cart</button> *@
                 }
                 else
-                {
+                {   
                     <button class="notify-btn" onclick="notifyWhenAvailable(@Model.Id)">Notify Me When Available</button>
                 }
                 <button class="wishlist-btn" onclick="addToWishlist(@Model.Id)">♡ Wishlist</button>

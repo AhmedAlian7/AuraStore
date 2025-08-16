@@ -46,6 +46,7 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService >();
             builder.Services.AddScoped<FileUploadService>();
+            builder.Services.AddScoped<ICartService, CartService>();
 
             // Register Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
