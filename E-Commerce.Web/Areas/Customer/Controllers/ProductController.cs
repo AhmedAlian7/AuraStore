@@ -1,5 +1,7 @@
 ﻿using E_Commerce.Business.Services.Interfaces;
+using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.Web.Areas.Customer.Controllers
@@ -9,10 +11,16 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
     {
         private readonly IProductService _productService;
         private readonly IUnitOfWork _unitIfWork;
-        public ProductController(IProductService productService, IUnitOfWork unitOfWork)
+        private readonly ICartService _cartService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public ProductController(IProductService productService, IUnitOfWork unitOfWork
+            , ICartService cartService
+            , UserManager<ApplicationUser> userManager)
         {
             _productService = productService;
             _unitIfWork = unitOfWork;
+            _cartService = cartService;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -33,6 +41,19 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                 return NotFound();
             }
             return View("Details", productDetailsModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            await _cartService.AddToCartAsync(user.Id, productId, quantity);
+
+            TempData["SuccessMessage"] = "Product added to cart successfully!";
+            return RedirectToAction("Details", "Product", new { id = productId });
         }
     }
 }

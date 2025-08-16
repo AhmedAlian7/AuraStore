@@ -2,12 +2,10 @@
 using E_Commerce.Business.ViewModels.Product;
 using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Entities;
-using E_Commerce.DataAccess.Repositories.Implementation;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Threading.Tasks;
 
 namespace E_Commerce.Web.Areas.Admin.Controllers
 {
