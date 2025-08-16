@@ -139,19 +139,23 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var product = await _unitIfWork.Products.GetByIdAsync(id);
-            if (product == null)
+            var result = await _productService.DeleteProductAsync(id);
+
+            if (!result)
             {
                 TempData["ErrorMessage"] = "Product not found.";
-                return RedirectToAction("Index");
             }
-            await _unitIfWork.Products.DeleteAsync(product.Id);
-            await _unitIfWork.SaveAsync();
-            TempData["SuccessMessage"] = "Product deleted successfully.";
-            return RedirectToAction("Index");
+            else
+            {
+                TempData["SuccessMessage"] = "Product deleted successfully.";
+            }
+
+            return RedirectToAction(nameof(Index));
         }
+
     }
 }

@@ -23,5 +23,16 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             ViewBag.Categories = await _unitIfWork.Categories.GetAllAsync("");
             return View("Index", products);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var productDetailsModel = await _productService.GetProductDetailsAsync(id);
+            if (productDetailsModel == null)
+            {
+                return NotFound();
+            }
+            return View("Details", productDetailsModel);
+        }
     }
 }

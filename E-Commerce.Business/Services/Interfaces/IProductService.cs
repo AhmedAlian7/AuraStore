@@ -27,5 +27,8 @@ namespace E_Commerce.Business.Services.Interfaces
         Task HandleMainImageUpdate(Product product, ProductUpdateViewModel model);
         Task HandleAdditionalImagesUpdate(Product product, ProductUpdateViewModel model);
 
+        Task<ProductDetailsViewModel> GetProductDetailsAsync(int id);
+        Task<bool> DeleteProductAsync(int id);
+
     }
 }
