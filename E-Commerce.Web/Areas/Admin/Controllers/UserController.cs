@@ -22,5 +22,22 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
 
             return View("Index", users);
         }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userService.DeleteUserAsync(id);
+
+            if (!user)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "User deleted successfully.";
+            }
+
+            return RedirectToAction(nameof(Index),nameof(User), new { area = "Admin" });
+        }
+
     }
 }

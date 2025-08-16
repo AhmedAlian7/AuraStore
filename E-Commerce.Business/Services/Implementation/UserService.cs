@@ -30,19 +30,40 @@ namespace E_Commerce.Business.Services.Implementation
         public async Task<IEnumerable<CustomerViewModel>> GetAllAsync(int page)
         {
             var users = _userManager.Users.ToList();
+            var models = new List<CustomerViewModel>();
 
-            var tasks = users.Select(async x => new CustomerViewModel
+            foreach (var x in users)
             {
-                Id = x.Id.Substring(0,5),
-                Email = x.Email,
-                IsActive = x.IsActive,
-                CreateAt = x.CreatedAt,
-                //OrdersCount = await _unitOfWork.Orders.GetOrderCountByUserIdAsync(x.Id)
-            });
+                var role = (await _userManager.GetRolesAsync(x)).FirstOrDefault();
 
-            var models = await Task.WhenAll(tasks);
+                
+                models.Add(new CustomerViewModel
+                {
+                    Id = x.Id,
+                    Email = x.Email,
+                    IsActive = x.IsActive,
+                    CreateAt = x.CreatedAt,
+                    Role = role
+                });
+            }
 
-            return PaginatedList<CustomerViewModel>.Create(models, page, Numbers.DefaultPageSize);
+            var orderdModels = models.OrderByDescending(o => o.Role == "Admin");
+
+            return PaginatedList<CustomerViewModel>.Create(orderdModels, page, Numbers.DefaultPageSize);
+        }
+
+        public async Task<bool> DeleteUserAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+
+            return result.Succeeded;
         }
 
     }
