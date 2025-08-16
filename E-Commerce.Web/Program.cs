@@ -43,8 +43,9 @@ namespace E_Commerce.Web
             // Register UnitOfWork
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
-            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<FileUploadService>();
+            builder.Services.AddScoped<ICartService, CartService>();
 
             // Register Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

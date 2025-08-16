@@ -33,6 +33,12 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
             return await _dbSet.CountAsync(o => o.OrderStatus == status);
         }
 
+        public async Task<int> GetOrderCountByUserIdAsync(string id)
+        {
+            return await _dbSet.CountAsync(o => o.UserId == id);
+        }
+
+
         public async Task<decimal> GetTotalSalesByUserAsync(string userId)
         {
             return await _dbSet

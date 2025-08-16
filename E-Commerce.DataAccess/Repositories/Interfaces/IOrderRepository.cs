@@ -11,5 +11,6 @@ namespace E_Commerce.DataAccess.Repositories.Interfaces
         Task<decimal> GetTotalSalesByUserAsync(string userId);
         Task<int> GetOrderCountByStatusAsync(OrderStatus status);
         Task UpdateOrderStatusAsync(int orderId, OrderStatus status);
+        Task<int> GetOrderCountByUserIdAsync(string id);
     }
 }
