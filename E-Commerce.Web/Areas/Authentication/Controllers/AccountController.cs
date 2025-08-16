@@ -126,6 +126,7 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
                 if (await _userManager.IsInRoleAsync(user, AppRoles.Admin))
                     return RedirectToAction("Index", "Product", new { area = "Admin" });
 
+                TempData["SuccessMessage"] = "Login Successfully, Wellcome Back!";
                 return RedirectToAction("Index", "Home", new { area = "Customer" });
             }
 

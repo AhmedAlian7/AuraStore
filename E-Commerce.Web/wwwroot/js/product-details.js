@@ -1,0 +1,93 @@
+﻿function swapMainImage(imageUrl) {
+    const mainImage = document.getElementById('mainProductImage');
+    mainImage.src = imageUrl;
+
+    // Update active thumbnail
+    document.querySelectorAll('.thumbnail').forEach(thumb => {
+        thumb.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+function toggleDescription() {
+    const content = document.getElementById('descriptionContent');
+    const button = document.getElementById('toggleDescription');
+
+    if (content.classList.contains('collapsed')) {
+        content.classList.remove('collapsed');
+        button.textContent = 'Show Less';
+    } else {
+        content.classList.add('collapsed');
+        button.textContent = 'Show More';
+    }
+}
+
+function showTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    // Remove active class from all headers
+    document.querySelectorAll('.tab-header').forEach(header => {
+        header.classList.remove('active');
+    });
+
+    // Show selected tab
+    document.getElementById(tabName).classList.add('active');
+
+    // Add active class to clicked header
+    event.target.classList.add('active');
+}
+
+function addToCart(productId) {
+    // Implement add to cart functionality
+    console.log('Adding product to cart:', productId);
+    alert('Product added to cart!');
+}
+
+function addToWishlist(productId) {
+    // Implement wishlist functionality
+    console.log('Adding product to wishlist:', productId);
+    alert('Product added to wishlist!');
+}
+
+function notifyWhenAvailable(productId) {
+    // Implement notification functionality
+    console.log('Setting notification for product:', productId);
+    alert('You will be notified when this product becomes available!');
+}
+
+function shareProduct() {
+    // Implement share functionality
+    if (navigator.share) {
+        navigator.share({
+            title: document.title,
+            url: window.location.href
+        });
+    } else {
+        // Fallback - copy to clipboard
+        navigator.clipboard.writeText(window.location.href);
+        alert('Product link copied to clipboard!');
+    }
+}
+
+function likeReview(reviewId) {
+    console.log('Liking review:', reviewId);
+    alert('Thank you for your feedback!');
+}
+
+function replyToReview(reviewId) {
+    console.log('Replying to review:', reviewId);
+    alert('Reply functionality coming soon!');
+}
+
+// Initialize collapsed description if content is long
+document.addEventListener('DOMContentLoaded', function () {
+    const descriptionContent = document.getElementById('descriptionContent');
+    const toggleButton = document.getElementById('toggleDescription');
+
+    if (toggleButton && descriptionContent) {
+        descriptionContent.classList.add('collapsed');
+    }
+});

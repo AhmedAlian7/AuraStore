@@ -103,7 +103,64 @@
         </header>
 
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="fade-in" style="margin: 0 auto; padding: 20px;">
+            <div class="container loading" data-aos="fade-up" data-aos-delay="100">
+                <!-- Breadcrumb Navigation -->
+                @if (ViewContext.RouteData.Values["controller"].ToString() != "Home" || ViewContext.RouteData.Values["action"].ToString() != "Index")
+                {
+                    <nav aria-label="breadcrumb" class="mb-4">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a asp-area="" asp-controller="Home" asp-action="Index">
+                                    <i class="bi bi-house-door"></i> Home
+                                </a>
+                            </li>
+                            @if (ViewContext.RouteData.Values["controller"].ToString() != "Home")
+                            {
+                                <li class="breadcrumb-item">
+                                    <a asp-area="" asp-controller="@ViewContext.RouteData.Values["controller"]" asp-action="Index">
+                                        @ViewContext.RouteData.Values["controller"]
+                                    </a>
+                                </li>
+                            }
+                            @if (ViewContext.RouteData.Values["action"].ToString() != "Index")
+                            {
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    @ViewContext.RouteData.Values["action"]
+                                </li>
+                            }
+                        </ol>
+                    </nav>
+                }
+
+                <!-- Alert Messages -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (TempData["InfoMessage"] != null)
+                {
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <i class="bi bi-info-circle"></i> @TempData["InfoMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                <main class="content">
+                    @RenderSection("Content", required: false)
+                </main>
+            </div>
             @RenderBody()
         </main>
     </div>

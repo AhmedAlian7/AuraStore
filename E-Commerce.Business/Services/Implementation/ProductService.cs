@@ -29,7 +29,7 @@ namespace E_Commerce.Business.Services.Implementation
         {
             var products = await _unitOfWork.Products.GetAllAsync(page, "Category");
 
-            var productsVM = products.Select( p => new ProductViewModel
+            var productsVM = products.Select(p => new ProductViewModel
             {
                 Id = p.Id,
                 Name = p.Name,
@@ -228,6 +228,80 @@ namespace E_Commerce.Business.Services.Implementation
 
             // Update the product's additional images collection
             product.ProductImages = currentAdditionalImages;
+        }
+
+        public async Task<ProductDetailsViewModel> GetProductDetailsAsync(int id)
+        {
+            var product = await _unitOfWork.Products.GetByIdAsync(id, "Category, Reviews.User, ProductImages");
+            if (product == null)
+            {
+                throw new KeyNotFoundException($"Product with ID {id} not found.");
+            }
+            var productDetailsVM = new ProductDetailsViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                DiscountPrice = product.DiscountPrice,
+                EffectivePrice = product.EffectivePrice,
+                StockCount = product.StockCount,
+                InStock = product.InStock,
+                CategoryName = product.Category?.Name ?? string.Empty,
+                MainImageUrl = product.MainImageUrl,
+                AdditionalImages = product.ProductImages.Select(img => new ProductImageViewModel
+                {
+                    Id = img.Id,
+                    ImageUrl = img.ImageUrl,
+                    AltText = $"{product.Name} - Image {img.Id}"
+                }).ToList(),
+                AverageRating = product.AverageRating,
+                ReviewCount = product.ReviewCount,
+                Reviews = product.Reviews.OrderByDescending(r => r.CreatedAt).Select(r => new ReviewViewModel
+                {
+                    Id = r.Id,
+                    UserName = r.User?.Email?.Split('@')[0] ?? "Anonymous",
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedAt = r.CreatedAt,
+                    IsVerifiedPurchase = r.IsVerifiedPurchase
+                }).ToList(),
+                RatingBreakdown = new RatingBredownViewModel
+                {
+                    OneStarCount = product.Reviews.Count(r => r.Rating == 1),
+                    TwoStarCount = product.Reviews.Count(r => r.Rating == 2),
+                    ThreeStarCount = product.Reviews.Count(r => r.Rating == 3),
+                    FourStarCount = product.Reviews.Count(r => r.Rating == 4),
+                    FiveStarCount = product.Reviews.Count(r => r.Rating == 5)
+                }
+            };
+            return productDetailsVM;
+        }
+
+        public async Task<bool> DeleteProductAsync(int id)
+        {
+            var product = await _unitOfWork.Products.GetByIdAsync(id);
+            if (product == null)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(product.MainImageUrl))
+            {
+                _uploadService.DeleteFile(product.MainImageUrl);
+            }
+            if (product.ProductImages != null && product.ProductImages.Any())
+            {
+                foreach (var img in product.ProductImages)
+                {
+                    _uploadService.DeleteFile(img.ImageUrl);
+                }
+            }
+
+            await _unitOfWork.Products.DeleteAsync(id);
+
+            await _unitOfWork.SaveAsync();
+            return true;
         }
     }
 }
