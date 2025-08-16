@@ -43,6 +43,7 @@ namespace E_Commerce.Web
             // Register UnitOfWork
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<FileUploadService>();
 
             // Register Identity

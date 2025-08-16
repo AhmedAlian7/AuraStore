@@ -56,6 +56,7 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
             {
                 Email = register.Email,
                 UserName = await GenerateUniqueUserNameAsync(register.Email.Split('@')[0]),
+                CreatedAt = DateTime.Now,
             };
             var result = await _userManager.CreateAsync(user, register.Password);
             if (result.Succeeded)
@@ -190,6 +191,7 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
                 {
                     UserName = userName,
                     Email = email,
+                    CreatedAt = DateTime.Now
                 };
 
                 var createResult = await _userManager.CreateAsync(user);
