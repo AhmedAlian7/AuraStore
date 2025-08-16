@@ -1,0 +1,48 @@
+﻿using E_Commerce.DataAccess.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+
+namespace E_Commerce.Business.ViewModels.Product
+{
+    public class ProductUpdateViewModel
+    {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Product name is required")]
+        [StringLength(100, ErrorMessage = "Product name must not exceed 100 characters")] 
+        public string Name { get; set; } = string.Empty;
+
+        [StringLength(2000, ErrorMessage = "Description must not exceed 2000 characters")]
+        public string? Description { get; set; }
+
+        [Required]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]
+        public decimal Price { get; set; }
+
+        [Range(0.01, double.MaxValue)]
+        public decimal? DiscountPrice { get; set; }
+
+        [Required]
+        [Range(0, int.MaxValue, ErrorMessage = "Stock count cannot be negative.")]
+        public int StockCount { get; set; }
+
+
+        [Required(ErrorMessage = "Category is required.")]
+        public int CategoryId { get; set; }
+        public IEnumerable<SelectListItem> CategoriesList { get; set; } = new List<SelectListItem>();
+
+        [Required(ErrorMessage = "Main Image is required.")]
+        public string MainImageUrl { get; set; } = string.Empty;
+        public IFormFile? MainImage { get; set; }
+        public IEnumerable<IFormFile> AdditionalImages { get; set; } = new List<IFormFile>();
+
+
+        public List<string> CurrentAdditionalImages { get; set; } = new();
+        public bool RemoveMainImage { get; set; }
+        public List<bool> RemoveAdditionalImages { get; set; } = new();
+
+
+    }
+
+}

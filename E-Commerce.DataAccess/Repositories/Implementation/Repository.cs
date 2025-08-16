@@ -78,9 +78,10 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
 
             var query = _dbSet.AsQueryable();
 
-            if (entity != null && typeof(T).GetProperty("IsDeleted") != null)
+            var isDeletedProp = typeof(T).GetProperty("IsDeleted");
+            if (entity != null && isDeletedProp != null)
             {
-                if (EF.Property<bool>(entity, "IsDeleted"))
+                if ((bool)(isDeletedProp.GetValue(entity) ?? false))
                 {
                     return null; // Entity is marked as deleted
                 }
@@ -99,7 +100,7 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
             return entity;
         }
 
-        public void UpdateAsync(T entity)
+        public void Update(T entity)
         {
             _dbSet.Update(entity);
         }

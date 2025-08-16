@@ -71,12 +71,12 @@ namespace E_Commerce.Web
 
             // Register AutoMapper
             builder.Services.AddAutoMapper(typeof(Program));
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<ProductMappingProfile>();
-            });
+            //var config = new MapperConfiguration(cfg =>
+            //{
+            //    cfg.AddProfile<ProductMappingProfile>();
+            //});
 
-            config.AssertConfigurationIsValid();
+            //config.AssertConfigurationIsValid();
 
             var app = builder.Build();
 

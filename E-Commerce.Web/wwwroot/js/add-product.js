@@ -76,3 +76,42 @@ function removeAdditionalImage(index) {
         imageItems[index].remove();
     }
 }
+
+
+/* Uodate functions */
+
+// Handle main image upload preview
+document.getElementById('mainImageInput').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('mainImagePreview').src = e.target.result;
+            document.getElementById('newMainImagePreview').style.display = 'block';
+            document.getElementById('mainImageUploadArea').classList.add('d-none');
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Cancel new main image upload
+function cancelMainImageUpload() {
+    document.getElementById('mainImageInput').value = '';
+    document.getElementById('newMainImagePreview').style.display = 'none';
+    document.getElementById('mainImageUploadArea').classList.remove('d-none');
+}
+
+// Remove current main image
+function removeCurrentMainImage() {
+    document.getElementById('removeMainImage').value = 'true';
+    document.querySelector('.current-image-container').style.display = 'none';
+    document.getElementById('mainImageUploadArea').classList.remove('d-none');
+}
+
+// Remove additional image
+function removeAdditionalImage(index) {
+    const imageItem = document.querySelector(`[data-index="${index}"]`);
+    const removeInput = imageItem.querySelector('.remove-additional-image');
+    removeInput.value = 'true';
+    imageItem.style.display = 'none';
+}

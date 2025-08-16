@@ -1,0 +1,243 @@
+﻿@model ProductUpdateViewModel
+@{
+    ViewData["Title"] = "Update Product";
+}
+
+
+<div class="page-header">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="page-title">
+                    <i class="fas fa-plus-circle me-2"></i>
+					@ViewData["Title"]
+                </h1>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <button type="submit" form="productForm" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+					Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+    <form id="productForm" asp-area="Admin" asp-controller="Product" asp-action="Update" method="post" enctype="multipart/form-data">
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="MainImageUrl" type="hidden" />
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- General Information -->
+                <div class="form-card">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-info-circle"></i>
+                        General Information
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label">Product Name *</label>
+                                <input asp-for="Name" class="form-control" placeholder="Enter product name">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label">Description</label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter product description (optional)"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pricing and Stock -->
+                <div class="form-card">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-dollar-sign"></i>
+                        Pricing & Stock
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="Price" class="form-label">Price *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="Price" class="form-control" placeholder="0.00" step="0.01">
+                                </div>
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="DiscountPrice" class="form-label">Discount Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="DiscountPrice" class="form-control" placeholder="0.00" step="0.01">
+                                </div>
+                                <span asp-validation-for="DiscountPrice" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="StockCount" class="form-label">Stock Count *</label>
+                                <input asp-for="StockCount" class="form-control" placeholder="0" type="number" min="0">
+                                <span asp-validation-for="StockCount" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- Category Selection -->
+                <div class="form-card">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-tags"></i>
+                        Category
+                    </h3>
+
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label">Product Category *</label>
+                        <select asp-for="CategoryId" asp-items="Model.CategoriesList" class="form-select">
+                            <option value="">Select a category...</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="form-card">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-images"></i>
+                        Product Images
+                    </h3>
+
+                    <!-- Main Image Upload -->
+                    <div class="mb-4">
+                        <label asp-for="MainImage" class="form-label">Main Image *</label>
+
+                        <!-- Current Main Image Display -->
+                        @if (!string.IsNullOrEmpty(Model.MainImageUrl))
+                        {
+                            <div class="current-image-container mb-3">
+                                <div class="current-image-wrapper">
+                                    <img src="@Model.MainImageUrl" alt="Current main image" class="current-main-image" />
+                                    <div class="image-overlay">
+                                        <button type="button" class="btn btn-sm btn-outline-light" onclick="document.getElementById('mainImageInput').click()">
+                                            <i class="fas fa-edit"></i> Change
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="removeCurrentMainImage()">
+                                            <i class="fas fa-trash"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-muted small mt-1">Current main image</p>
+                            </div>
+                        }
+
+                        <!-- New Image Upload Area -->
+                        <div class="image-upload-area @(string.IsNullOrEmpty(Model.MainImageUrl) ? "" : "d-none")" id="mainImageUploadArea" onclick="document.getElementById('mainImageInput').click()">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <p class="mb-2"><strong>@(string.IsNullOrEmpty(Model.MainImageUrl) ? "Click to upload main image" : "Click to upload new main image")</strong></p>
+                            <p class="text-muted small">PNG, JPG, GIF up to 5MB</p>
+                        </div>
+
+                        <!-- New Image Preview -->
+                        <div id="newMainImagePreview" class="new-image-preview" style="display: none;">
+                            <img id="mainImagePreview" class="image-preview" />
+                            <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="cancelMainImageUpload()">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+
+                        <input asp-for="MainImage" type="file" id="mainImageInput" class="d-none" accept="image/*" />
+                        <input type="hidden" id="removeMainImage" name="RemoveMainImage" value="false" />
+                        <span asp-validation-for="MainImage" class="text-danger"></span>
+                    </div>
+
+                    <!-- Additional Images Upload -->
+                    <div class="mb-3">
+                        <label asp-for="AdditionalImages" class="form-label">Additional Images</label>
+
+                        <!-- Current Additional Images -->
+                        @if (Model.CurrentAdditionalImages != null && Model.CurrentAdditionalImages.Any())
+                        {
+                            <div class="current-additional-images mb-3">
+                                <p class="text-muted small mb-2">Current additional images:</p>
+                                <div class="current-images-grid">
+                                    @for (int i = 0; i < Model.CurrentAdditionalImages.Count; i++)
+                                    {
+                                        <div class="current-additional-image-item" data-index="@i">
+                                            <img src="@Model.CurrentAdditionalImages[i]"
+                                                 alt="Additional image @(i + 1)"
+                                                 class="current-additional-image" />
+                                            <div class="image-overlay">
+                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeAdditionalImage(@i)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+
+                                            <!-- Hidden inputs to keep/remove -->
+                                            <input type="hidden" name="CurrentAdditionalImages[@i]"
+                                                   value="@Model.CurrentAdditionalImages[i]" />
+                                            <input type="hidden" name="RemoveAdditionalImages[@i]"
+                                                   value="false" class="remove-additional-image" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <!-- New Additional Images Upload -->
+                        <div class="image-upload-area" onclick="document.getElementById('additionalImagesInput').click()">
+                            <i class="fas fa-plus upload-icon"></i>
+                            <p class="mb-2"><strong>Click to add more images</strong></p>
+                            <p class="text-muted small">Multiple files allowed</p>
+                        </div>
+                        <input asp-for="AdditionalImages" type="file" id="additionalImagesInput" class="d-none" accept="image/*" multiple />
+                        <div id="additionalImagesPreview" class="additional-images-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions (Mobile) -->
+        <div class="d-md-none">
+            <div class="form-card">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Add Product
+                    </button>
+                    <a href="@Url.Action("Index", "Product", new { area = "Admin" })" class="btn btn-outline-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+    <link href="~/css/add-product.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/js/add-product.js" asp-append-version="true"></script>
+
+}

@@ -1,9 +1,7 @@
-﻿@using E_Commerce.Business.ViewModels.Product
-@model PaginatedList<ProductViewModel>
+﻿@model PaginatedList<ProductViewModel>
 
 @{
     ViewData["Title"] = "Products";
-    var isAdmin = User.IsInRole("Admin");
     var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
 }
 
@@ -13,14 +11,6 @@
         <div class="col-md-8">
             <h2 class="fw-bold text-dark mb-2">Our Products</h2>
             <p class="text-muted">Discover our amazing collection of products</p>
-        </div>
-        <div class="col-md-4 text-end">
-            @if (isAdmin)
-            {
-                <a asp-action="Add" class="btn btn-success">
-                    <i class="fas fa-plus me-2"></i>Add New Product
-                </a>
-            }
         </div>
     </div>
 
@@ -91,20 +81,6 @@
                                     <span class="badge bg-secondary fs-6">Out of Stock</span>
                                 </div>
                             }
-
-                            @if (isAdmin)
-                            {
-                                <div class="admin-actions position-absolute top-0 end-0 m-2">
-                                    <div class="btn-group-vertical">
-                                        <a asp-action="Update" asp-route-id="@product.Id" class="btn btn-sm btn-warning">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@product.Id">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            }
                         </div>
 
                         <!-- Product Details -->
@@ -166,7 +142,7 @@
 
                             <!-- Actions -->
                             <div class="mt-auto">
-                                @if (isAuthenticated && !isAdmin)
+                                @if (isAuthenticated)
                                 {
                                     <div class="d-grid gap-2">
                                         @if (product.InStock)
@@ -199,30 +175,6 @@
                         </div>
                     </div>
                 </div>
-
-                @if (isAdmin)
-                {
-                    <!-- Delete Confirmation Modal -->
-                    <div class="modal fade" id="deleteModal-@product.Id" tabindex="-1">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Confirm Delete</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Are you sure you want to delete "@product.Name"?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <form asp-action="Delete" asp-route-id="@product.Id" style="display:inline;">
-                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
             }
         </div>
 

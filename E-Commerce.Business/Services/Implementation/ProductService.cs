@@ -3,11 +3,12 @@ using AutoMapper;
 using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.Business.ViewModels;
 using E_Commerce.Business.ViewModels.Product;
+using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Entities;
+using E_Commerce.DataAccess.Repositories.Implementation;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.VisualBasic;
 using mvcFirstApp.Services;
-using E_Commerce.DataAccess.Constants;
 
 namespace E_Commerce.Business.Services.Implementation
 {
@@ -112,7 +113,7 @@ namespace E_Commerce.Business.Services.Implementation
                 }
 
             }
-            productEntity.ProductImages ??= new List<ProductImage>();
+            productEntity.ProductImages ??= [];
 
             if (model.AdditionalImages != null && model.AdditionalImages.Any())
             {
@@ -152,6 +153,81 @@ namespace E_Commerce.Business.Services.Implementation
             {
                 throw new InvalidOperationException("Error saving product to database: " + ex.Message);
             }
+        }
+
+
+        public async Task HandleMainImageUpdate(Product product, ProductUpdateViewModel model)
+        {
+            // If user wants to remove the current main image
+            if (model.RemoveMainImage && !string.IsNullOrEmpty(product.MainImageUrl))
+            {
+                // Delete the physical file
+                _uploadService.DeleteFile(product.MainImageUrl);
+                product.MainImageUrl = null;
+            }
+
+            // If user uploaded a new main image
+            if (model.MainImage != null && model.MainImage.Length > 0)
+            {
+                // Delete the old main image if it exists
+                if (!string.IsNullOrEmpty(product.MainImageUrl))
+                {
+                    _uploadService.DeleteFile(product.MainImageUrl);
+                }
+
+                // Upload the new main image
+                var newMainImageUrl = await _uploadService.UploadAsync(model.MainImage, "products");
+                product.MainImageUrl = newMainImageUrl;
+            }
+        }
+
+        public async Task HandleAdditionalImagesUpdate(Product product, ProductUpdateViewModel model)
+        {
+            // Get current additional images
+            var currentAdditionalImages = product.ProductImages?.ToList() ?? [];
+
+            // Handle removal of existing additional images
+            if (model.RemoveAdditionalImages != null && model.CurrentAdditionalImages != null)
+            {
+                for (int i = 0; i < model.RemoveAdditionalImages.Count && i < model.CurrentAdditionalImages.Count; i++)
+                {
+                    if (model.RemoveAdditionalImages[i]) // If marked for removal
+                    {
+                        var imageUrlToRemove = model.CurrentAdditionalImages[i];
+
+                        // Find and remove from database
+                        var imageToRemove = currentAdditionalImages.FirstOrDefault(img => img.ImageUrl == imageUrlToRemove);
+                        if (imageToRemove != null)
+                        {
+                            currentAdditionalImages.Remove(imageToRemove);
+                            await _unitOfWork.ProductImages.DeleteAsync(imageToRemove.Id);
+
+                            // Delete the physical file
+                            _uploadService.DeleteFile(imageUrlToRemove);
+                        }
+                    }
+                }
+            }
+
+            // Handle new additional images upload
+            if (model.AdditionalImages != null && model.AdditionalImages.Any())
+            {
+                foreach (var newImage in model.AdditionalImages)
+                {
+                    if (newImage != null && newImage.Length > 0)
+                    {
+                        var newImageUrl = await _uploadService.UploadAsync(newImage, "products");
+                        currentAdditionalImages.Add(new ProductImage
+                        {
+                            ProductId = product.Id,
+                            ImageUrl = newImageUrl
+                        });
+                    }
+                }
+            }
+
+            // Update the product's additional images collection
+            product.ProductImages = currentAdditionalImages;
         }
     }
 }

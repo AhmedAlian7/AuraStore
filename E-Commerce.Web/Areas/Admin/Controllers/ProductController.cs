@@ -1,15 +1,18 @@
 ﻿using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.Business.ViewModels.Product;
 using E_Commerce.DataAccess.Constants;
+using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Repositories.Implementation;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace E_Commerce.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = AppRoles.Admin)]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
@@ -30,10 +33,9 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = AppRoles.Admin)]
         public IActionResult Add()
         {
-            var addProduct= new ProductAddViewModel
+            var addProduct = new ProductAddViewModel
             {
                 Categories = _unitIfWork.Categories.GetAll().Select(x => new SelectListItem
                 {
@@ -64,6 +66,92 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Update(int Id)
+        {
+            var product = await _unitIfWork.Products.GetByIdAsync(Id, "Category,ProductImages");
+            if (product is null)
+            {
+                TempData["ErrorMessage"] = "Product not found.";
+                return RedirectToAction("Index");
+            }
+            var updateModel = new ProductUpdateViewModel
+            {
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                DiscountPrice = product.DiscountPrice,
+                StockCount = product.StockCount,
+                CategoryId = product.CategoryId,
+                MainImageUrl = product.MainImageUrl,
+                CategoriesList = _unitIfWork.Categories.GetAll().Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name
+                }),
+                CurrentAdditionalImages = product.ProductImages?.Select(img => img.ImageUrl).ToList() ?? []
 
+            };
+            return View(updateModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(ProductUpdateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var existingProduct = await _unitIfWork.Products.GetByIdAsync(model.Id);
+                if (existingProduct != null)
+                {
+                    model.MainImageUrl = existingProduct.MainImageUrl;
+                    model.CurrentAdditionalImages = existingProduct.ProductImages?.Select(img => img.ImageUrl).ToList() ?? new List<string>();
+                }
+
+                model.CategoriesList = _unitIfWork.Categories.GetAll().Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name
+                });
+                TempData["ErrorMessage"] = "Please correct the errors in the form.";
+                return View(model);
+            }
+
+            var product = new Product
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                Price = model.Price,
+                DiscountPrice = model.DiscountPrice,
+                StockCount = model.StockCount,
+                CategoryId = model.CategoryId,
+                MainImageUrl = model.MainImageUrl
+            };
+
+            // Handle Main Image Updates
+            await _productService.HandleMainImageUpdate(product, model);
+
+            // Handle Additional Images Updates
+            await _productService.HandleAdditionalImagesUpdate(product, model);
+
+            _unitIfWork.Products.Update(product);
+            await _unitIfWork.SaveAsync();
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var product = await _unitIfWork.Products.GetByIdAsync(id);
+            if (product == null)
+            {
+                TempData["ErrorMessage"] = "Product not found.";
+                return RedirectToAction("Index");
+            }
+            await _unitIfWork.Products.DeleteAsync(product.Id);
+            await _unitIfWork.SaveAsync();
+            TempData["SuccessMessage"] = "Product deleted successfully.";
+            return RedirectToAction("Index");
+        }
     }
 }

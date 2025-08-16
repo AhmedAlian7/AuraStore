@@ -374,16 +374,16 @@
                         <a asp-action="Index" asp-controller="Home" class="nav-link nav-link-custom">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a asp-action="Index" asp-controller="Product" asp-area="Admin" asp-asp-controller="Product" class="nav-link nav-link-custom">Products</a>
+                        <a asp-action="Index" asp-controller="Product" asp-area="Customer" class="nav-link nav-link-custom">Products</a>
                     </li>
                     <li class="nav-item">
-                        <a asp-action="Index" asp-asp-controller="Category" class="nav-link nav-link-custom">Categories</a>
+                        <a asp-action="Index" asp-controller="Category" asp-area="Customer" class="nav-link nav-link-custom">Categories</a>
                     </li>
                     <li class="nav-item">
-                        <a asp-action="About" asp-controller="Home" class="nav-link nav-link-custom">About</a>
+                        <a asp-action="About" asp-controller="Home" asp-area ="Customer" class="nav-link nav-link-custom">About</a>
                     </li>
                     <li class="nav-item">
-                        <a asp-action="About" asp-controller="Home" class="nav-link nav-link-custom">Contact</a>
+                        <a asp-action="About" asp-controller="Home" asp-area="Customer" class="nav-link nav-link-custom">Contact</a>
                     </li>
                 </ul>
 
@@ -403,7 +403,7 @@
                             </button>
 
                             <!-- Wishlist -->
-                            <button class="icon-btn" onclick="location.href='@Url.Action("Index", "Wishlist")'" title="Wishlist">
+                            <button class="icon-btn" title="Wishlist">
                                 <i class="fas fa-heart"></i>
                             </button>
 
@@ -493,11 +493,11 @@
                 <div class="col-lg-2 col-md-6 mb-4">
                     <div class="footer-section">
                         <h5>Shop</h5>
-                        <a href="@Url.Action("Index", "Home")" class="footer-link">Home</a>
-                        <a href="@Url.Action("Products", "Product")" class="footer-link">Shop</a>
-                        <a href="@Url.Action("Categories", "Category")" class="footer-link">Categories</a>
-                        <a href="@Url.Action("About", "Home")" class="footer-link">About Us</a>
-                        <a href="@Url.Action("Contact", "Home")" class="footer-link">Contact</a>
+                        <a href="@Url.Action("Index", "Home", new {area = "Customer"})" class="footer-link">Home</a>
+                        <a href="@Url.Action("Index", "Product", new { area = "Customer" })" class="footer-link">Shop</a>
+                        <a href="@Url.Action("Index", "Category", new { area = "Customer" })" class="footer-link">Categories</a>
+                        <a href="@Url.Action("About", "Home", new { area = "Customer" })" class="footer-link">About Us</a>
+                        <a href="@Url.Action("Contact", "Home", new { area = "Customer" })" class="footer-link">Contact</a>
                     </div>
                 </div>
 

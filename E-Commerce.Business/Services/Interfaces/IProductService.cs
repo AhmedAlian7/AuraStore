@@ -22,5 +22,10 @@ namespace E_Commerce.Business.Services.Interfaces
         Task<IEnumerable<ProductViewModel>> GetProductsByCategoryIdAsync(int typeId);
 
         //Task<IEnumerable<ProductViewModel>> SearchProductsAsync(string query);
+
+
+        Task HandleMainImageUpdate(Product product, ProductUpdateViewModel model);
+        Task HandleAdditionalImagesUpdate(Product product, ProductUpdateViewModel model);
+
     }
 }

@@ -64,7 +64,7 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, register.Role);
                     TempData["SuccessMessage"] = "Account Created successfully!";
-                    return RedirectToAction("Index", "User", new { area = "Admin" });
+                    return RedirectToAction("Index", "Product", new { area = "Admin" });
                 }
 
                 await _userManager.AddToRoleAsync(user, AppRoles.Customer);
@@ -124,7 +124,7 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
                     return LocalRedirect(returnUrl);
 
                 if (await _userManager.IsInRoleAsync(user, AppRoles.Admin))
-                    return RedirectToAction("Dashboard", "User", new { area = "Admin" });
+                    return RedirectToAction("Index", "Product", new { area = "Admin" });
 
                 return RedirectToAction("Index", "Home", new { area = "Customer" });
             }
