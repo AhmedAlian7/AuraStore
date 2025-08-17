@@ -1,0 +1,517 @@
+﻿@using E_Commerce.DataAccess.Enums
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .card-stats {
+            transition: transform 0.2s;
+        }
+
+            .card-stats:hover {
+                transform: translateY(-5px);
+            }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+        }
+
+        .status-approved {
+            background-color: #28a745;
+        }
+
+        .status-pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .status-rejected {
+            background-color: #dc3545;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .small-chart {
+            height: 100px;
+        }
+
+        .support-chat {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .avatar-group {
+            display: flex;
+            margin-left: -10px;
+        }
+
+            .avatar-group .avatar {
+                border: 2px solid white;
+                margin-left: -10px;
+            }
+
+        .text-success-custom {
+            color: #28a745 !important;
+        }
+
+        .text-danger-custom {
+            color: #dc3545 !important;
+        }
+
+        .bg-light-success {
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+
+        .bg-light-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        .bg-light-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+
+        .bg-light-info {
+            background-color: rgba(13, 202, 240, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <h2 class="fw-bold">Admin Dashboard</h2>
+                <p class="text-muted">Welcome back! Here's what's happening with your business today.</p>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <!-- Total Page Views -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card card-stats h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <p class="text-muted mb-1">Total Page Views</p>
+                                <h3 class="fw-bold mb-0">@Model.TotalPageViews.ToString("N0")</h3>
+                                <small class="@(Model.PageViewsChangePercent >= 0 ? "text-success-custom" : "text-danger-custom")">
+                                    <i class="fas fa-arrow-@(Model.PageViewsChangePercent >= 0 ? "up" : "down")"></i>
+                                    @Model.PageViewsChangePercent.ToString("F1")%
+                                </small>
+                                <small class="text-muted ms-2">+@Model.ExtraPageViewsThisYear.ToString("N0") this year</small>
+                            </div>
+                            <div class="bg-light-info rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-eye text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Users -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card card-stats h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <p class="text-muted mb-1">Total Users</p>
+                                <h3 class="fw-bold mb-0">@Model.TotalUsers.ToString("N0")</h3>
+                                <small class="@(Model.UsersChangePercent >= 0 ? "text-success-custom" : "text-danger-custom")">
+                                    <i class="fas fa-arrow-@(Model.UsersChangePercent >= 0 ? "up" : "down")"></i>
+                                    @Model.UsersChangePercent.ToString("F1")%
+                                </small>
+                                <small class="text-muted ms-2">+@Model.ExtraUsersThisYear.ToString("N0") this year</small>
+                            </div>
+                            <div class="bg-light-success rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-users text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Orders -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card card-stats h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <p class="text-muted mb-1">Total Orders</p>
+                                <h3 class="fw-bold mb-0">@Model.TotalOrders.ToString("N0")</h3>
+                                <small class="@(Model.OrdersChangePercent >= 0 ? "text-success-custom" : "text-danger-custom")">
+                                    <i class="fas fa-arrow-@(Model.OrdersChangePercent >= 0 ? "up" : "down")"></i>
+                                    @Model.OrdersChangePercent.ToString("F1")%
+                                </small>
+                                <small class="text-muted ms-2">+@Model.ExtraOrdersThisYear.ToString("N0") this year</small>
+                            </div>
+                            <div class="bg-light-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-shopping-cart text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Sales -->
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card card-stats h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <p class="text-muted mb-1">Total Sales</p>
+                                <h3 class="fw-bold mb-0">$@Model.TotalSales.ToString("N0")</h3>
+                                <small class="@(Model.SalesChangePercent >= 0 ? "text-success-custom" : "text-danger-custom")">
+                                    <i class="fas fa-arrow-@(Model.SalesChangePercent >= 0 ? "up" : "down")"></i>
+                                    @Model.SalesChangePercent.ToString("F1")%
+                                </small>
+                                <small class="text-muted ms-2">+$@Model.ExtraSalesThisYear.ToString("N0") this year</small>
+                            </div>
+                            <div class="bg-light-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-dollar-sign text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <!-- Unique Visitors Chart -->
+            <div class="col-lg-8 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0">Unique Visitors</h5>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="visitorView" id="weekView" checked>
+                                <label class="btn btn-outline-primary btn-sm" for="weekView">Week</label>
+                                <input type="radio" class="btn-check" name="visitorView" id="monthView">
+                                <label class="btn btn-outline-primary btn-sm" for="monthView">Month</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="visitorsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Income Overview -->
+            <div class="col-lg-4 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="fw-bold mb-0">Income Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <h2 class="fw-bold text-primary">$@Model.ThisWeekIncome.ToString("N0")</h2>
+                            <p class="text-muted mb-0">This Week's Income</p>
+                        </div>
+                        <div class="chart-container small-chart">
+                            <canvas id="incomeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <!-- Recent Orders -->
+            <div class="col-lg-8 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="fw-bold mb-0">Recent Orders</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="border-0">Tracking No</th>
+                                        <th class="border-0">Product Name</th>
+                                        <th class="border-0">Total Order</th>
+                                        <th class="border-0">Status</th>
+                                        <th class="border-0">Total Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.RecentOrders != null)
+                                    {
+                                        @foreach (var order in Model.RecentOrders)
+                                        {
+                                            <tr>
+                                                <td>@order.TrackingNumber</td>
+                                                <td>@order.ProductName</td>
+                                                <td>@order.TotalOrder</td>
+                                                <td>
+                                                    @{
+                                                        var statusClass = order.Status switch
+                                                        {
+                                                            OrderStatus.Delivered => "status-Delivered",
+                                                            OrderStatus.Pending => "status-Pending",
+                                                            OrderStatus.Cancelled => "status-Cancelled",
+                                                            _ => "status-pending"
+                                                        };
+                                                    }
+                                                    <span class="badge @statusClass status-badge">@order.Status</span>
+                                                </td>
+                                                <td class="fw-bold">$@order.TotalAmount.ToString("N2")</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Report -->
+            <div class="col-lg-4 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="fw-bold mb-0">Analytics Report</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted">Company Finance Growth</span>
+                                <span class="fw-bold text-success">+@Model.CompanyFinanceGrowth.ToString("F1")%</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: @Model.CompanyFinanceGrowth%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted">Company Expenses Ratio</span>
+                                <span class="fw-bold text-warning">@Model.CompanyExpensesRatio.ToString("F1")%</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: @Model.CompanyExpensesRatio%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted">Business Risk Cases</span>
+                                <span class="fw-bold text-success">@Model.BusinessRiskCases</span>
+                            </div>
+                        </div>
+                        <div class="chart-container small-chart">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <!-- Sales Report -->
+            <div class="col-lg-8 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0">Sales Report</h5>
+                            <span class="text-success fw-bold">Net Profit: $@Model.NetProfit.ToString("N0")</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction History -->
+            <div class="col-lg-4 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="fw-bold mb-0">Transaction History</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Transactions != null)
+                        {
+                            @foreach (var transaction in Model.Transactions)
+                            {
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                    <div>
+                                        <h6 class="mb-1">@transaction.OrderId</h6>
+                                        <small class="text-muted">@transaction.DateTime.ToString("MMM dd, yyyy HH:mm")</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold">$@transaction.Amount.ToString("N2")</div>
+                                        <small class="text-success">@transaction.Percentage%</small>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Chat -->
+        <div class="support-chat">
+            <div class="card border-0 shadow-lg" style="width: 300px;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+
+                        <div class="ms-3">
+                            <h6 class="mb-1">Need Help?</h6>
+                            <small class="text-muted">We're here to help</small>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-100">
+                        <i class="fas fa-comments me-2"></i>Contact Us
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Unique Visitors Chart
+        const visitorsCtx = document.getElementById('visitorsChart').getContext('2d');
+        const visitorsChart = new Chart(visitorsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Unique Visitors',
+                    data: @Html.Raw(Json.Serialize(Model.UniqueVisitorsData ?? new List<int> { 120, 190, 300, 500, 200, 300, 450 })),
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { display: false } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Income Chart
+        const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+        const incomeChart = new Chart(incomeCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.WeeklyIncomeStats ?? new List<decimal> { 1200, 1900, 3000, 5000, 2000, 3000, 4500 })),
+                    backgroundColor: '#0d6efd',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { display: false },
+                    x: { display: false }
+                }
+            }
+        });
+
+        // Trend Chart
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        const trendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.MonthlyFinanceTrend ?? new List<decimal> { 10, 20, 15, 25, 30, 35 })),
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { display: false },
+                    x: { display: false }
+                }
+            }
+        });
+
+        // Sales Report Chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const salesData = @Html.Raw(Json.Serialize(@Model.SalesReport));
+        const salesChart = new Chart(salesCtx, {
+            type: 'bar',
+            data: {
+                labels: salesData.map(item => item.Month || 'Jan'),
+                datasets: [{
+                    label: 'Income',
+                    data: salesData.map(item => item.Income || 0),
+                    backgroundColor: '#0d6efd'
+                }, {
+                    label: 'Cost of Sales',
+                    data: salesData.map(item => item.CostOfSales || 0),
+                    backgroundColor: '#6c757d'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // View Toggle Functionality
+        document.querySelectorAll('input[name="visitorView"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.id === 'monthView') {
+                    visitorsChart.data.labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                    visitorsChart.data.datasets[0].data = [2500, 3200, 2800, 3500];
+                } else {
+                    visitorsChart.data.labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    visitorsChart.data.datasets[0].data = @Html.Raw(Json.Serialize(Model.UniqueVisitorsData ?? new List<int> { 120, 190, 300, 500, 200, 300, 450 }));
+                }
+                visitorsChart.update();
+            });
+        });
+    </script>
+</body>
+</html>

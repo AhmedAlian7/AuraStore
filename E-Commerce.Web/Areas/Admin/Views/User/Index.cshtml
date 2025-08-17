@@ -1,5 +1,5 @@
 ﻿@using E_Commerce.Business.ViewModels.Customer
-@model IEnumerable<CustomerViewModel>
+@model PaginatedList<CustomerViewModel>
 
 @{
     ViewData["Title"] = "Customers";
@@ -11,12 +11,10 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Customers</h3>
-                    <a href="@Url.Action("Register", "Account", new { area = "Authentication" })"
-                       class="btn btn-primary">
+                    <a href="@Url.Action("Register", "Account", new { area = "Authentication" })" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Add New User
                     </a>
                 </div>
-
                 <div class="card-body">
                     @if (Model != null && Model.Any())
                     {
@@ -54,14 +52,20 @@
                                                 }
                                             </td>
                                             <td class="text-center">
-                                                @if (customer.IsActive)
-                                                {
-                                                    <span class="badge bg-success">Active</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-danger">Inactive</span>
-                                                }
+                                                <select class="form-select form-select-sm status-dropdown @(customer.IsActive ? "status-active" : "status-inactive")" 
+                                                        data-user-id="@customer.Id" 
+                                                        style="width: auto; display: inline-block;">
+                                                   
+                                                        <option value="Active" selected="@(customer.IsActive ? "selected" : null)">
+                                                            Active
+                                                        </option>
+                                                        <option value="Inactive" selected="@(customer.IsActive ? null : "selected")">
+                                                            Inactive
+                                                        </option>
+                                                        Active
+
+                                                   
+                                                </select>
                                             </td>
                                             <td>
                                                 @customer.CreateAt.ToString("MMM dd, yyyy")
@@ -73,8 +77,7 @@
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-outline-primary">View</button>
-                                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                                        onclick="showDeleteConfirm('@customer.Id', '@customer.Email')">
+                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="showDeleteConfirm('@customer.Id', '@customer.Email')">
                                                     Delete
                                                 </button>
                                             </td>
@@ -97,10 +100,45 @@
     </div>
 </div>
 
+<nav aria-label="Product pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-all-route-data="@ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page").ToDictionary(q => q.Key, q => q.Value.ToString())" asp-route-page="@(Model.PageIndex - 1)">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+        }
+
+        @{
+            var startPage = Math.Max(1, Model.PageIndex - 2);
+            var endPage = Math.Min(Model.TotalPages, Model.PageIndex + 2);
+        }
+
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-all-route-data="@ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page").ToDictionary(q => q.Key, q => q.Value.ToString())" asp-route-page="@i">
+                    @i
+                </a>
+            </li>
+        }
+
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-all-route-data="@ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page").ToDictionary(q => q.Key, q => q.Value.ToString())" asp-route-page="@(Model.PageIndex + 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
 <!-- Bootstrap Delete Confirmation Modal (Top Aligned) -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable mt-5">
-        <!-- Push modal to top -->
         <div class="modal-content p-2 shadow" style="border-radius: 10px;">
             <div class="modal-header border-0">
                 <h5 class="modal-title fw-bold" id="deleteConfirmModalLabel">Confirm Delete</h5>
@@ -121,14 +159,121 @@
 </div>
 
 @section Scripts {
+    <style>
+        /* Status dropdown colors */
+        .status-dropdown.status-active {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .status-dropdown.status-inactive {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        
+        .status-dropdown.status-active:focus {
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+            border-color: #28a745;
+        }
+        
+        .status-dropdown.status-inactive:focus {
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+            border-color: #dc3545;
+        }
+    </style>
+    
     <script>
         function showDeleteConfirm(userId, userEmail) {
-            document.getElementById('deleteMessage').textContent =
-                `Are you sure you want to delete "${userEmail}"?`;
+            document.getElementById('deleteMessage').textContent = `Are you sure you want to delete "${userEmail}"?`;
             document.getElementById('deleteUserId').value = userId;
-
             const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
             modal.show();
+        }
+
+        // Handle status dropdown change
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusDropdowns = document.querySelectorAll('.status-dropdown');
+            
+            statusDropdowns.forEach(dropdown => {
+                dropdown.addEventListener('change', function() {
+                    const userId = this.getAttribute('data-user-id');
+                    const newStatus = this.value;
+                    const originalValue = this.querySelector('option[selected]')?.value || 
+                                       (this.value === 'Active' ? 'Inactive' : 'Active');
+                    
+                    // Update dropdown color immediately for better UX
+                    this.classList.remove('status-active', 'status-inactive');
+                    this.classList.add(newStatus === 'Active' ? 'status-active' : 'status-inactive');
+                    
+                    // Disable dropdown during request
+                    this.disabled = true;
+                    
+                    // Send AJAX request to change status
+                    fetch('@Url.Action("ChangeStatus", "User", new { area = "Admin" })', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                        },
+                        body: `id=${encodeURIComponent(userId)}&status=${encodeURIComponent(newStatus)}`
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Update the selected attribute
+                            this.querySelectorAll('option').forEach(option => {
+                                option.removeAttribute('selected');
+                            });
+                            this.querySelector(`option[value="${newStatus}"]`).setAttribute('selected', 'selected');
+                            
+                            // Show success message (you can customize this)
+                            showNotification('Status updated successfully!', 'success');
+                        } else {
+                            // Revert dropdown to original value and color
+                            this.value = originalValue;
+                            this.classList.remove('status-active', 'status-inactive');
+                            this.classList.add(originalValue === 'Active' ? 'status-active' : 'status-inactive');
+                            showNotification('Failed to update status. Please try again.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Revert dropdown to original value and color
+                        this.value = originalValue;
+                        this.classList.remove('status-active', 'status-inactive');
+                        this.classList.add(originalValue === 'Active' ? 'status-active' : 'status-inactive');
+                        showNotification('An error occurred. Please try again.', 'error');
+                    })
+                    .finally(() => {
+                        // Re-enable dropdown
+                        this.disabled = false;
+                    });
+                });
+            });
+        });
+
+        // Simple notification function (you can replace with your preferred notification system)
+        function showNotification(message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+                     style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', alertHtml);
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                const alert = document.querySelector('.alert:last-child');
+                if (alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, 3000);
         }
     </script>
 }

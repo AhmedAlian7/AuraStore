@@ -32,18 +32,19 @@ namespace E_Commerce.Web
                     var googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
                     options.ClientId = googleAuthNSection["ClientId"];
                     options.ClientSecret = googleAuthNSection["ClientSecret"];
+                })
+                .AddFacebook(options =>
+                {
+                    var facebookAuthNSection = builder.Configuration.GetSection("Authentication:Facebook");
+                    options.ClientId = facebookAuthNSection["AppId"];
+                    options.ClientSecret = facebookAuthNSection["AppSecret"];
                 });
-                //.AddFacebook(options =>
-                //{
-                //    var facebookAuthNSection = builder.Configuration.GetSection("Authentication:Facebook");
-                //    options.ClientId = facebookAuthNSection["AppId"];
-                //    options.ClientSecret = facebookAuthNSection["AppSecret"];
-                //});
 
-            // Register UnitOfWork
+            //Register UnitOfWork
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService >();
             builder.Services.AddScoped<FileUploadService>();
             builder.Services.AddScoped<ICartService, CartService>();
 

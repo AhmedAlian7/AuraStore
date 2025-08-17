@@ -27,7 +27,7 @@ namespace E_Commerce.Business.Services.Implementation
 
 
 
-        public async Task<IEnumerable<CustomerViewModel>> GetAllAsync(int page)
+        public async Task<PaginatedList<CustomerViewModel>> GetAllAsync(int page)
         {
             var users = _userManager.Users.ToList();
             var models = new List<CustomerViewModel>();
@@ -63,6 +63,27 @@ namespace E_Commerce.Business.Services.Implementation
 
             var result = await _userManager.DeleteAsync(user);
 
+            return result.Succeeded;
+        }
+
+        public async Task<bool> ChangeStatus(string id, string status)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return false;
+            }
+            if (status == "Active")
+            {
+                user.IsActive = true;
+            }
+            else
+            {
+                user.IsActive = false;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
             return result.Succeeded;
         }
 

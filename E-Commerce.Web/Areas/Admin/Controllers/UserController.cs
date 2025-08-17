@@ -1,11 +1,16 @@
 ﻿using E_Commerce.Business.Services.Interfaces;
+using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Entities;
+using E_Commerce.DataAccess.Enums;
 using E_Commerce.DataAccess.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace E_Commerce.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = AppRoles.Admin)]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -39,5 +44,21 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index),nameof(User), new { area = "Admin" });
         }
 
+        public async Task<IActionResult> ChangeStatus(string id, string status)
+        {
+            var user = await _userService.ChangeStatus(id, status);
+
+            if (!user)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "User deleted successfully.";
+            }
+
+            return RedirectToAction(nameof(Index), nameof(User), new { area = "Admin" });
+
+        }
     }
 }
