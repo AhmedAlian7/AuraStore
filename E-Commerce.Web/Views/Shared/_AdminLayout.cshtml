@@ -103,35 +103,34 @@
         </header>
 
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="fade-in main-content">
             <div class="container loading" data-aos="fade-up" data-aos-delay="100">
                 <!-- Breadcrumb Navigation -->
-                @if (ViewContext.RouteData.Values["controller"].ToString() != "Home" || ViewContext.RouteData.Values["action"].ToString() != "Index")
-                {
-                    <nav aria-label="breadcrumb" class="mb-4">
-                        <ol class="breadcrumb">
+
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door"></i> Home
+                            </a>
+                        </li>
+                        @if (ViewContext.RouteData.Values["controller"].ToString() != "Home")
+                        {
                             <li class="breadcrumb-item">
-                                <a asp-area="" asp-controller="Home" asp-action="Index">
-                                    <i class="bi bi-house-door"></i> Home
+                                <a asp-area="" asp-controller="@ViewContext.RouteData.Values["controller"]" asp-action="Index">
+                                    @ViewContext.RouteData.Values["controller"]
                                 </a>
                             </li>
-                            @if (ViewContext.RouteData.Values["controller"].ToString() != "Home")
-                            {
-                                <li class="breadcrumb-item">
-                                    <a asp-area="" asp-controller="@ViewContext.RouteData.Values["controller"]" asp-action="Index">
-                                        @ViewContext.RouteData.Values["controller"]
-                                    </a>
-                                </li>
-                            }
-                            @if (ViewContext.RouteData.Values["action"].ToString() != "Index")
-                            {
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    @ViewContext.RouteData.Values["action"]
-                                </li>
-                            }
-                        </ol>
-                    </nav>
-                }
+                        }
+                        @if (ViewContext.RouteData.Values["action"].ToString() != "Index")
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">
+                                @ViewContext.RouteData.Values["action"]
+                            </li>
+                        }
+                    </ol>
+                </nav>
+                
 
                 <!-- Alert Messages -->
                 @if (TempData["SuccessMessage"] != null)

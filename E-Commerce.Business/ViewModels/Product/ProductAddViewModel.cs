@@ -8,7 +8,7 @@ namespace E_Commerce.Business.ViewModels.Product
     public class ProductAddViewModel
     {
         [Required(ErrorMessage = "Product name is required")]
-        [StringLength(100, ErrorMessage = "Product name must not exceed 100 characters")]
+        [StringLength(50, ErrorMessage = "Product name must not exceed 100 characters")]
         public string Name { get; set; } = string.Empty;
 
         [StringLength(2000, ErrorMessage = "Description must not exceed 2000 characters")]

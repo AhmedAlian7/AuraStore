@@ -61,6 +61,7 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
                 return View("Add", productResponse);
             }
             await _productService.AddProductAsync(productResponse);
+            TempData["SuccessMessage"] = "Product added successfully.";
             return RedirectToAction("Index");
         }
 
@@ -134,6 +135,7 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
 
             _unitIfWork.Products.Update(product);
             await _unitIfWork.SaveAsync();
+            TempData["SuccessMessage"] = "Product updated successfully.";
             return RedirectToAction("Index");
         }
 

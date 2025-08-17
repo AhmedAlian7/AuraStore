@@ -21,6 +21,7 @@ namespace E_Commerce.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSession();
 
             builder.Services.AddDbContext<AppDbContext>(op =>
                 op.UseSqlServer(builder.Configuration.GetConnectionString("HostingConnection")));
@@ -38,6 +39,12 @@ namespace E_Commerce.Web
                     var facebookAuthNSection = builder.Configuration.GetSection("Authentication:Facebook");
                     options.ClientId = facebookAuthNSection["AppId"];
                     options.ClientSecret = facebookAuthNSection["AppSecret"];
+
+                    options.SaveTokens = true;
+                    options.CorrelationCookie.SameSite = SameSiteMode.None;
+                    options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.CallbackPath = "/signin-facebook"; // default
+
                 });
 
             //Register UnitOfWork
@@ -69,8 +76,15 @@ namespace E_Commerce.Web
             {
                 options.LoginPath = "/Authentication/Account/Login";
                 options.AccessDeniedPath = "/Authentication/Account/AccessDenied";
-            });
+                options.Cookie.SameSite = SameSiteMode.Lax; // App auth cookie
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
+            });
+            builder.Services.ConfigureExternalCookie(options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None; // Must be None for OAuth redirects
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
 
             // Register AutoMapper
             builder.Services.AddAutoMapper(typeof(Program));
@@ -91,6 +105,7 @@ namespace E_Commerce.Web
                 app.UseHsts();
             }
 
+            app.UseSession();
             app.UseHttpsRedirection();
             app.UseRouting();
             seedData();

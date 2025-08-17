@@ -20,6 +20,11 @@ body {
     color: var(--text-dark);
 }
 
+.main-content {
+    margin: 0 auto;
+    padding: 80px 20px 20px;
+}
+
 /* Sidebar Styles */
 .sidebar {
     position: fixed;

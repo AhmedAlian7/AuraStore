@@ -6,6 +6,7 @@ namespace E_Commerce.DataAccess.Repositories.Interfaces
     public interface ICartItemRepository : IRepository<CartItem>
     {
         Task<IEnumerable<CartItem>> GetByCartIdAsync(int cartId);
+        Task<IEnumerable<CartItem>> GetByUserIdWithProductAsync(string userId);
         Task<CartItem?> GetByCartAndProductAsync(int cartId, int productId);
         Task UpdateQuantityAsync(int cartItemId, int quantity);
     }

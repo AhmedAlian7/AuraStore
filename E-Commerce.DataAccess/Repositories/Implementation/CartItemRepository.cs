@@ -31,5 +31,13 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
                 //await _context.SaveChangesAsync();
             }
         }
+        public async Task<IEnumerable<CartItem>> GetByUserIdWithProductAsync(string userId)
+        {
+            return await _dbSet
+                .Include(ci => ci.Product)
+                .Where(ci => ci.Cart.UserId == userId)
+                .ToListAsync();
+        }
+
     }
 }
