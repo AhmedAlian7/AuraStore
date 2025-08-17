@@ -110,7 +110,7 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
             // lockout check
             if (_userManager.SupportsUserLockout &&
                 user.LockoutEnd.HasValue &&
-                user.LockoutEnd.Value > DateTimeOffset.UtcNow &&
+                user.LockoutEnd.Value > DateTimeOffset.UtcNow ||
                 !user.IsActive)
             {
                 ModelState.AddModelError(string.Empty, "This account is locked. Try again later.");

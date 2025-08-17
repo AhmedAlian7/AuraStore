@@ -66,5 +66,26 @@ namespace E_Commerce.Business.Services.Implementation
             return result.Succeeded;
         }
 
+        public async Task<bool> ChangeStatus(string id, string status)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return false;
+            }
+            if (status == "Active")
+            {
+                user.IsActive = true;
+            }
+            else
+            {
+                user.IsActive = false;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded;
+        }
+
     }
 }

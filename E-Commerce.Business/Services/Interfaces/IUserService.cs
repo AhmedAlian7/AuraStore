@@ -10,7 +10,7 @@ namespace E_Commerce.Business.Services.Interfaces
 
         Task<bool> DeleteUserAsync(string id);
 
-
+        Task<bool> ChangeStatus(string id, string status);
 
 
     }

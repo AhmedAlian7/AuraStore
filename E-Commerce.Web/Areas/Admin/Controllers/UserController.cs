@@ -44,6 +44,21 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index),nameof(User), new { area = "Admin" });
         }
 
+        public async Task<IActionResult> ChangeStatus(string id, string status)
+        {
+            var user = await _userService.ChangeStatus(id, status);
 
+            if (!user)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "User deleted successfully.";
+            }
+
+            return RedirectToAction(nameof(Index), nameof(User), new { area = "Admin" });
+
+        }
     }
 }
