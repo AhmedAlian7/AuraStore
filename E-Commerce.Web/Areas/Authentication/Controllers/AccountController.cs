@@ -263,5 +263,14 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
 
 
         }
+        public IActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+
+        public IActionResult DataDeletion()
+        {
+            return View();
+        }
     }
 }
