@@ -1,4 +1,5 @@
 ﻿@using E_Commerce.Business.ViewModels.Admin
+@using E_Commerce.DataAccess.Enums
 @model PaginatedList<OrderViewModel>
 
 @{
@@ -7,14 +8,9 @@
 
 <div class="container-fluid">
     <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <h2 class="mb-0">Orders Management</h2>
             <p class="text-muted">Manage and track all customer orders</p>
-        </div>
-        <div class="col-md-6 text-end">
-            <a href="@Url.Action("Create", "Orders")" class="btn btn-success">
-                <i class="fas fa-plus"></i> Add New Order
-            </a>
         </div>
     </div>
 
@@ -41,54 +37,31 @@
                                     {
                                         <tr class="@(Model.IndexOf(order) % 2 == 0 ? "table-light" : "")">
                                             <td class="py-3 px-4 fw-bold">#@order.Id</td>
-                                            <td class="py-3 px-4">@order.UserId.Substring(0,5)</td>
+                                            <td class="py-3 px-4">@order.UserId.Substring(0, 5)</td>
                                             <td class="py-3 px-4">
                                                 <span class="badge bg-light text-dark">@order.TotalItems items</span>
                                             </td>
                                             <td class="py-3 px-4 fw-bold">$@order.TotalAmount.ToString("N2")</td>
                                             <td class="py-3 px-4">
-                                                @{
-                                                    var statusClass = "";
-                                                    var statusTextClass = "";
-                                                    switch (order.OrderStatus.ToString())
-                                                    {
-                                                        case "Pending":
-                                                            statusClass = "bg-warning";
-                                                            statusTextClass = "text-dark";
-                                                            break;
-                                                        case "Shipped":
-                                                            statusClass = "bg-primary";
-                                                            statusTextClass = "text-white";
-                                                            break;
-                                                        case "Delivered":
-                                                            statusClass = "bg-success";
-                                                            statusTextClass = "text-white";
-                                                            break;
-                                                        case "Cancelled":
-                                                            statusClass = "bg-danger";
-                                                            statusTextClass = "text-white";
-                                                            break;
-                                                        case "Returned":
-                                                            statusClass = "bg-warning";
-                                                            statusTextClass = "text-dark";
-                                                            break;
-                                                        case "PendingPayment":
-                                                            statusClass = "bg-secondary";
-                                                            statusTextClass = "text-white";
-                                                            break;
-                                                        default:
-                                                            statusClass = "bg-light";
-                                                            statusTextClass = "text-dark";
-                                                            break;
-                                                    }
-                                                }
-                                                <span class="badge @statusClass @statusTextClass px-3 py-2">
-                                                    @order.OrderStatus.ToString()
-                                                </span>
+                                                <form method="post" action="@Url.Action("ChangeStatus", "Order")" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="orderid" value="@order.Id" />
+                                                    <select name="status"
+                                                            class="form-select form-select-sm status-select"
+                                                            data-current-status="@order.OrderStatus.ToString()"
+                                                            onchange="updateStatus(this)">
+                                                        <option value="Pending" selected="@(order.OrderStatus.ToString() == "Pending" ? "selected" : null)">Pending</option>
+                                                        <option value="PendingPayment" selected="@(order.OrderStatus.ToString() == "PendingPayment" ? "selected" : null)">Pending Payment</option>
+                                                        <option value="Shipped" selected="@(order.OrderStatus.ToString() == "Shipped" ? "selected" : null)">Shipped</option>
+                                                        <option value="Delivered" selected="@(order.OrderStatus.ToString() == "Delivered" ? "selected" : null)">Delivered</option>
+                                                        <option value="Cancelled" selected="@(order.OrderStatus.ToString() == "Cancelled" ? "selected" : null)">Cancelled</option>
+                                                        <option value="Returned" selected="@(order.OrderStatus.ToString() == "Returned" ? "selected" : null)">Returned</option>
+                                                    </select>
+                                                </form>
                                             </td>
                                             <td class="py-3 px-4 text-center">
                                                 <div class="btn-group" role="group">
-                                                    <a href="@Url.Action("Details", "Orders", new { id = order.Id })"
+                                                    <a href="@Url.Action("Details", "Order", new { id = order.Id })"
                                                        class="btn btn-outline-primary btn-sm"
                                                        title="View Details">
                                                         <i class="fas fa-eye"></i> View
@@ -96,7 +69,7 @@
                                                     <button type="button"
                                                             class="btn btn-outline-danger btn-sm"
                                                             title="Delete Order"
-                                                            onclick="confirmDelete(@order.Id)">
+                                                            onclick="confirmDelete('@order.Id','@order.UserId')">
                                                         <i class="fas fa-trash"></i> Delete
                                                     </button>
                                                 </div>
@@ -201,9 +174,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form id="deleteForm" method="post" style="display: inline;">
                     @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Delete Order
-                    </button>
+                    <!-- Hidden inputs will be injected dynamically -->
                 </form>
             </div>
         </div>
@@ -255,12 +226,91 @@
     .fas {
         font-size: 0.875rem;
     }
+
+    .status-select {
+        min-width: 140px;
+        font-size: 0.875rem;
+    }
+
+        .status-select option[value="Pending"] {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+
+        .status-select option[value="PendingPayment"] {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+
+        .status-select option[value="Shipped"] {
+            background-color: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-select option[value="Delivered"] {
+            background-color: #d1e7dd;
+            color: #0a3622;
+        }
+
+        .status-select option[value="Cancelled"] {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-select option[value="Returned"] {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
 </style>
 
-<script>
-    function confirmDelete(orderId) {
-        document.getElementById('deleteForm').action = '@Url.Action("Delete", "Orders")/' + orderId;
-        var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        deleteModal.show();
-    }
-</script>
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function confirmDelete(orderId, userId) {
+            const form = document.getElementById('deleteForm');
+            form.action = '@Url.Action("Delete", "Order")';
+            form.innerHTML = `
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="orderid" value="${orderId}" />
+                <input type="hidden" name="userid" value="${userId}" />
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Order
+                </button>
+            `;
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        }
+
+        async function updateStatus(selectElement) {
+            const form = selectElement.closest('form');
+            const currentStatus = selectElement.dataset.currentStatus;
+            const newStatus = selectElement.value;
+
+            if (currentStatus !== newStatus) {
+                const result = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Are you sure you want to change the order status to ${newStatus}?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, change it!',
+                    cancelButtonText: 'No, cancel!',
+                    customClass: {
+                        confirmButton: 'btn btn-primary mx-2',
+                        cancelButton: 'btn btn-secondary mx-2'
+                    },
+                    buttonsStyling: false,
+                    reverseButtons: true
+                });
+
+                if (result.isConfirmed) {
+                    form.submit();
+                } else {
+                    // Reset to original value if cancelled
+                    selectElement.value = currentStatus;
+                }
+            }
+        }
+    </script>
+}

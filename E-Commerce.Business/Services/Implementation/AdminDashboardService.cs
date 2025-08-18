@@ -22,10 +22,9 @@ namespace E_Commerce.Business.Services.Implementation
 
         public async Task<AdminDashboardViewModel> GetDashboardDataAsync()
         {
-            // Example data retrieval
             var users = _userManager.Users.ToList();
-            var orders = await _unitOfWork.Orders.GetAllAsync("OrderItems");
-           //var visits = await _unitOfWork.Visits.GetAllAsync(); // page views
+            var orders = await _unitOfWork.Orders.GetAllAsync("OrderItems,OrderItems.Product");
+            //var visits = await _unitOfWork.Visits.GetAllAsync(); // page views
 
             var thisYear = DateTime.Now.Year;
             var lastYear = thisYear - 1;
@@ -46,6 +45,35 @@ namespace E_Commerce.Business.Services.Implementation
             var salesLastYear = orders
                 .Where(o => o.CreatedAt.Year == lastYear)
                 .Sum(o => o.TotalAmount);
+
+            // Weekly income stats (last 7 days)
+            var weeklyIncomeStats = new List<decimal>();
+            for (int i = 6; i >= 0; i--)
+            {
+                var day = DateTime.Today.AddDays(-i);
+                var dayTotal = orders.Where(o => o.CreatedAt.Date == day).Sum(o => o.TotalAmount);
+                weeklyIncomeStats.Add(dayTotal);
+            }
+
+            // Monthly finance trend (last 12 months)
+            var monthlyFinanceTrend = new List<decimal>();
+            for (int i = 11; i >= 0; i--)
+            {
+                var month = DateTime.Today.AddMonths(-i);
+                var monthTotal = orders.Where(o => o.CreatedAt.Year == month.Year && o.CreatedAt.Month == month.Month).Sum(o => o.TotalAmount);
+                monthlyFinanceTrend.Add(monthTotal);
+            }
+
+            // Sales report (last 6 months)
+            var salesReport = new List<SalesReportEntry>();
+            for (int i = 5; i >= 0; i--)
+            {
+                var month = DateTime.Today.AddMonths(-i);
+                var income = orders.Where(o => o.CreatedAt.Year == month.Year && o.CreatedAt.Month == month.Month).Sum(o => o.TotalAmount);
+                // For cost of sales, you might want to sum up product costs or similar. Here, just use 60% as a placeholder.
+                var costOfSales = income * 0.6m;
+                salesReport.Add(new SalesReportEntry { Month = month.ToString("MMM"), Income = income, CostOfSales = costOfSales });
+            }
 
             var model = new AdminDashboardViewModel
             {
@@ -70,8 +98,8 @@ namespace E_Commerce.Business.Services.Implementation
                     .Take(10)
                     .Select(o => new RecentOrderViewModel
                     {
-                        TrackingNumber = "",
-                        ProductName = o.OrderItems.OrderBy(o => o.CreatedAt).Select(o => o.Product.Name).FirstOrDefault(),
+                        TrackingNumber = o.Id.ToString(),
+                        //ProductName = o.OrderItems.OrderBy(oi => oi.CreatedAt).Select(oi => oi.Product.Name).FirstOrDefault(),
                         TotalOrder = o.OrderItems.Count(),
                         Status = o.OrderStatus,
                         TotalAmount = o.TotalAmount
@@ -85,29 +113,21 @@ namespace E_Commerce.Business.Services.Implementation
                         OrderId = o.Id.ToString(),
                         DateTime = o.CreatedAt,
                         Amount = o.TotalAmount,
-                        Percentage = new Random().Next(5, 80) // placeholder
+                        Percentage = 0 // You can calculate a real percentage if you have the data
                     }).ToList(),
 
                 ThisWeekIncome = orders
                     .Where(o => o.CreatedAt >= DateTime.Now.AddDays(-7))
                     .Sum(o => o.TotalAmount),
 
-                WeeklyIncomeStats = GetMockBarData(7),
-                MonthlyFinanceTrend = GetMockLineData(12),
+                WeeklyIncomeStats = weeklyIncomeStats,
+                MonthlyFinanceTrend = monthlyFinanceTrend,
 
-                CompanyFinanceGrowth = 45.14,
-                CompanyExpensesRatio = 0.58,
-                BusinessRiskCases = "Low",
+                CompanyFinanceGrowth = 0, // You can calculate this if you have the data
+                CompanyExpensesRatio = 0, // You can calculate this if you have the data
+                BusinessRiskCases = "N/A", // You can calculate this if you have the data
 
-                SalesReport = new List<SalesReportEntry>
-            {
-                new() { Month = "Jan", Income = 180, CostOfSales = 120 },
-                new() { Month = "Feb", Income = 90, CostOfSales = 50 },
-                new() { Month = "Mar", Income = 140, CostOfSales = 80 },
-                new() { Month = "Apr", Income = 110, CostOfSales = 140 },
-                new() { Month = "May", Income = 120, CostOfSales = 160 },
-                new() { Month = "Jun", Income = 150, CostOfSales = 100 },
-            }
+                SalesReport = salesReport
             };
 
             return model;
@@ -117,18 +137,6 @@ namespace E_Commerce.Business.Services.Implementation
         {
             if (last == 0) return 100;
             return Math.Round(((current - last) / last) * 100, 2);
-        }
-
-        private List<decimal> GetMockBarData(int count)
-        {
-            var random = new Random();
-            return Enumerable.Range(1, count).Select(_ => (decimal)random.Next(1000, 20000)).ToList();
-        }
-
-        private List<decimal> GetMockLineData(int count)
-        {
-            var random = new Random();
-            return Enumerable.Range(1, count).Select(_ => (decimal)random.Next(10000, 50000)).ToList();
         }
     }
 }

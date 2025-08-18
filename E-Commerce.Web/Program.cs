@@ -59,6 +59,7 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<FileUploadService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IOrderManagementService, OrderManagementService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IOrderManagementService, OrderManagementService>();
 
