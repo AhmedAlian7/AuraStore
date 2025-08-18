@@ -1,5 +1,4 @@
-using AutoMapper;
-using E_Commerce.Business.AutoMapper;
+using E_Commerce.Business.Configuration;
 using E_Commerce.Business.Services.Implementation;
 using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.DataAccess.Data;
@@ -25,6 +24,9 @@ namespace E_Commerce.Web
 
             builder.Services.AddDbContext<AppDbContext>(op =>
                 op.UseSqlServer(builder.Configuration.GetConnectionString("HostingConnection")));
+
+            // stripe
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
             // Register External Login
             builder.Services.AddAuthentication()
@@ -54,6 +56,8 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService >();
             builder.Services.AddScoped<FileUploadService>();
             builder.Services.AddScoped<ICartService, CartService>();
+            //builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             // Register Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

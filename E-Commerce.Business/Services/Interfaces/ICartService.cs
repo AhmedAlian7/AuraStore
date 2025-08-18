@@ -1,7 +1,5 @@
 ﻿using E_Commerce.Business.ViewModels.Cart;
-using E_Commerce.DataAccess.Entities;
-using Microsoft.AspNetCore.Mvc;
-
+using Stripe.Checkout;
 namespace E_Commerce.Business.Services.Interfaces
 {
     public interface ICartService
@@ -13,5 +11,4 @@ namespace E_Commerce.Business.Services.Interfaces
         Task<UpdateQuantityResult> UpdateQuantityAsync(int cartItemId, int quantity);
         Task DeleteItemAsync(int cartItemId);
     }
-
 }
