@@ -50,6 +50,20 @@ namespace E_Commerce.Business.Services.Implementation
             await _orderRepository.AddAsync(order);
             await _unitOfWork.SaveAsync();
 
+            // Update product stock quantities
+            foreach (var orderItem in order.OrderItems)
+            {
+                var product = orderItem.Product;
+                if (product != null)
+                {
+                    product.StockCount -= orderItem.Quantity;
+                    if (product.StockCount < 0)
+                        product.StockCount = 0;
+                    _unitOfWork.Products.Update(product);
+                }
+            }
+            await _unitOfWork.SaveAsync();
+
             // Clear cart items
             await _cartRepository.ClearCartAsync(userId);
             await _unitOfWork.SaveAsync();

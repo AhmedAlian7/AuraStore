@@ -1,6 +1,7 @@
 ﻿using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.Business.ViewModels.Cart;
 using E_Commerce.DataAccess.Entities;
+using E_Commerce.DataAccess.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -48,28 +49,47 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         public async Task<IActionResult> Recipt()
         {
             var model = await _cartService.GetCartSummaryAsync();
+            // Do not overwrite tax or subtotal, just pass delivery tax as ViewBag
+            decimal deliveryTax = 12.00m; // Only for pay on delivery
+            ViewBag.DeliveryTax = deliveryTax;
+            ViewBag.GrandTotal = model.Subtotal + model.Tax + deliveryTax;
             return View(model);
         }
 
         // POST: Process the receipt form submission
         [HttpPost]
-        public async Task<IActionResult> Recipt(CartSummaryDto model)
+        public async Task<IActionResult> Recipt(CartSummaryDto model, decimal DeliveryTax)
         {
             if (!ModelState.IsValid)
             {
-                // Reload cart data if validation fails
                 var cartData = await _cartService.GetCartSummaryAsync();
                 model.TotalItems = cartData.TotalItems;
                 model.Subtotal = cartData.Subtotal;
                 model.Tax = cartData.Tax;
-                model.Total = cartData.Total;
+                ViewBag.DeliveryTax = DeliveryTax;
+                ViewBag.GrandTotal = model.Subtotal + model.Tax + DeliveryTax;
                 return View(model);
             }
 
-            // Process the order here
-            // Save shipping info, create order, etc.
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
 
-            return RedirectToAction("OrderConfirmation", new { id = "some-order-id" });
+            // Create order from cart (with payment upon receipt)
+            var order = await _orderService.CreateOrderFromCartAsync(user.Id);
+            // Set order status to Pending (for cash on delivery)
+            await _orderService.UpdateOrderStatusAsync(order.Id.ToString(), E_Commerce.DataAccess.Enums.OrderStatus.Pending);
+
+            // Optionally send confirmation email here
+            if (order.User != null)
+            {
+                var emailBody = $@"<h2>Thank you for your order!</h2><p>Order ID: {order.Id}</p><ul>" +
+                    string.Join("", order.OrderItems.Select(item => $"<li>{item.Product.Name} x {item.Quantity} - ${item.UnitPrice * item.Quantity:F2}</li>")) +
+                    $"</ul><p><strong>Total: ${(order.TotalAmount + DeliveryTax):F2} (includes delivery tax)</strong></p>";
+                await _emailService.SendEmailAsync(order.User.Email, "Your Order Confirmation", emailBody);
+            }
+
+            // Redirect to success page
+            return RedirectToAction("Success", new { orderId = order.Id });
         }
 
 
@@ -119,27 +139,55 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
 
         public async Task<IActionResult> Success(int orderId, string session_id)
         {
-            // Update order status to Paid
-            await _orderService.UpdateOrderStatusAsync(orderId.ToString(), E_Commerce.DataAccess.Enums.OrderStatus.Paid);
-            var order = await _orderService.GetOrderAsync(orderId.ToString());
-            if (order != null && order.User != null)    
+            bool isPaid = !string.IsNullOrEmpty(session_id);
+            if (isPaid)
             {
-                var emailBody = $@"<h2>Thank you for your order!</h2><p>Order ID: {order.Id}</p><ul>" +
-                    string.Join("", order.OrderItems.Select(item => $"<li>{item.Product.Name} x {item.Quantity} - ${item.UnitPrice * item.Quantity:F2}</li>")) +
-                    $"</ul><p><strong>Total: ${order.TotalAmount:F2}</strong></p>";
+                await _orderService.UpdateOrderStatusAsync(orderId.ToString(), OrderStatus.Paid);
+            }
+            var order = await _orderService.GetOrderAsync(orderId.ToString());
+            if (order != null && order.User != null)
+            {
+                var paymentStatusText = isPaid
+                    ? "<strong>Status:</strong> Paid online via Credit Card."
+                    : "<strong>Status:</strong> Payment due upon delivery.";
+
+                var emailBody = $@"
+                    <div style='font-family: Arial, sans-serif; color: #333;'>
+                        <h2 style='color:#4CAF50;'>Order Confirmation</h2>
+                        <p>Dear {order.User.Email.Split('@')[0]},</p>
+                        <p>Thank you for shopping with us! We are pleased to confirm that we have received your order.</p>
+        
+                        <p><strong>Order ID:</strong> {order.Id}</p>
+        
+                        <h3>Order Details:</h3>
+                        <ul style='list-style-type:none; padding:0;'>
+                            {string.Join("", order.OrderItems.Select(item =>
+                                                $"<li>{item.Product.Name} &times; {item.Quantity} - ${item.UnitPrice * item.Quantity:F2}</li>"))}
+                        </ul>
+        
+                        <p><strong>Total Amount:</strong> ${order.TotalAmount:F2}</p>
+                        <p>{paymentStatusText}</p>
+
+                        <p>We will notify you once your order has been shipped.</p>
+                        <p style='margin-top:20px;'>Best regards,<br/>The Aura Store Team</p>
+                    </div>";
                 await _emailService.SendEmailAsync(order.User.Email, "Your Order Confirmation", emailBody);
             }
-            ViewBag.PaymentStatus = "Payment successful!";
+            ViewData["SuccessMessage"] = isPaid ? "Payment successful!" : "Order placed! Please pay upon delivery.";
             return View();
         }
 
         public async Task<IActionResult> Cancel()
         {
-            ViewBag.PaymentStatus = "Payment canceled.";
-            
+            ViewData["ErrorMessage"] = "Payment canceled.";
+
             return View();
         }
 
-
+        public IActionResult OrderConfirmation(int orderId)
+        {
+            // Redirect to Success for now (or render a confirmation view)
+            return RedirectToAction("Success", new { orderId });
+        }
     }
 }
