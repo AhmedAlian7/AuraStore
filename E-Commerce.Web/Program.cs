@@ -25,8 +25,10 @@ namespace E_Commerce.Web
             builder.Services.AddDbContext<AppDbContext>(op =>
                 op.UseSqlServer(builder.Configuration.GetConnectionString("HostingConnection")));
 
-            // stripe
+
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Smtp"));
+
 
             // Register External Login
             builder.Services.AddAuthentication()
@@ -57,8 +59,8 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<FileUploadService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
-            builder.Services.AddScoped<IOrderManagementService, OrderManagementService>();
-            builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+            //builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             // Register Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
