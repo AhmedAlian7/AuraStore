@@ -130,11 +130,11 @@
                         <small class="text-muted">Enter your promo code to save more</small>
                     </div>
 
-                    <!-- Checkout Button -->
                     <div class="checkout-section">
-                        <button class="btn btn-warning w-100 py-3 fw-bold checkout-btn" onclick="location.href='/Checkout/Index'">
+                        <a asp-area="Customer" asp-controller="Checkout" asp-action="Index"
+                           class="btn btn-warning w-100 py-3 fw-bold checkout-btn">
                             <i class="fas fa-lock me-2"></i>Proceed to Checkout
-                        </button>
+                        </a>
                         <div class="text-center mt-3">
                             <small class="text-muted">
                                 <i class="fas fa-shield-alt me-1"></i>Secure checkout

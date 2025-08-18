@@ -1,0 +1,158 @@
+﻿@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Left side - Payment Method -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4">
+                    <h4 class="mb-4 fw-bold">Select Payment Method</h4>
+
+                    <!-- Payment Options -->
+                    <div class="payment-options">
+
+                        <!-- Payment Upon Receipt -->
+                        <div class="payment-button" data-payment="receipt" onclick="selectPayment('receipt', this)">
+                            <div class="payment-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="payment-text">
+                                <h5>Payment Upon Receipt</h5>
+                                <p class="text-muted mb-0">Pay with cash when your order arrives</p>
+                            </div>
+                            <div class="payment-check">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+
+                        <!-- Credit Card -->
+                        <div class="payment-button" data-payment="creditcard" onclick="selectPayment('creditcard', this)">
+                            <div class="payment-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="payment-text">
+                                <h5>Pay with Credit Card</h5>
+                                <p class="text-muted mb-0">Secure online payment with Visa/MasterCard</p>
+                            </div>
+                            <div class="payment-check">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side - Order Summary -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4">
+                    <h4 class="mb-4 fw-bold">Order Summary</h4>
+
+                    <!-- Example Cart Item -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 cart-item">
+                        <div>
+                            <i class="fas fa-shopping-cart me-2"></i> 2 × Product Name
+                        </div>
+                        <span>$40</span>
+                    </div>
+
+                    <hr />
+
+                    <!-- Total -->
+                    <div class="d-flex justify-content-between align-items-center mb-4 fw-bold">
+                        <span>Total</span>
+                        <span>$40</span>
+                    </div>
+
+                    <!-- Checkout Form -->
+                    <div class="checkout-section">
+                        <form asp-area="Customer" asp-controller="Checkout" asp-action="PaymentMethod" method="post">
+                            <input type="hidden" name="option" id="selectedOption" />
+                            <button type="submit" class="btn btn-warning w-100 py-3 fw-bold checkout-btn" id="proceedBtn" disabled>
+                                <i class="fas fa-lock me-2"></i>Proceed to Checkout
+                            </button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>Secure checkout
+                            </small>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let selectedMethod = "";
+
+        function selectPayment(method, element) {
+            selectedMethod = method;
+
+            // remove active from all
+            document.querySelectorAll('.payment-button').forEach(el => el.classList.remove('active'));
+            // set active
+            element.classList.add('active');
+
+            // enable proceed
+            document.getElementById("proceedBtn").disabled = false;
+
+            // set hidden input
+            document.getElementById("selectedOption").value = method === "creditcard" ? "CreditCard" : "Receipt";
+        }
+    </script>
+
+    <style>
+        /* smaller + lower icons */
+        .cart-item i,
+        .checkout-btn i,
+        .payment-icon i {
+            font-size: 1rem;
+            vertical-align: middle;
+            margin-top: 2px;
+        }
+
+        .fa-shopping-cart {
+            font-size: 1.5rem !important;
+            margin-top: 6px;
+        }
+
+        .payment-button {
+            display: flex;
+            align-items: center;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+            .payment-button.active {
+                border-color: #ff9800;
+                background-color: #fff8e1;
+            }
+
+        .payment-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .payment-check {
+            margin-left: auto;
+            display: none;
+            color: #ff9800;
+        }
+
+        .payment-button.active .payment-check {
+            display: block;
+        }
+    </style>
+}
