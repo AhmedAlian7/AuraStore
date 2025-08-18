@@ -106,8 +106,8 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                     Quantity = item.Quantity,
                 }).ToList(),
                 Mode = "payment",
-                SuccessUrl = $"{_domain}/Checkout/Success?orderId={order.Id}&session_id={{CHECKOUT_SESSION_ID}}",
-                CancelUrl = $"{_domain}/Checkout/Cancel",
+                SuccessUrl = $"{_domain}/Customer/Checkout/Success?orderId={order.Id}&session_id={{CHECKOUT_SESSION_ID}}",
+                CancelUrl = $"{_domain}/Customer/Checkout/Cancel",
             };
 
             var client = new Stripe.StripeClient(_stripeSecretKey);
@@ -122,7 +122,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             // Update order status to Paid
             await _orderService.UpdateOrderStatusAsync(orderId.ToString(), E_Commerce.DataAccess.Enums.OrderStatus.Paid);
             var order = await _orderService.GetOrderAsync(orderId.ToString());
-            if (order != null && order.User != null)
+            if (order != null && order.User != null)    
             {
                 var emailBody = $@"<h2>Thank you for your order!</h2><p>Order ID: {order.Id}</p><ul>" +
                     string.Join("", order.OrderItems.Select(item => $"<li>{item.Product.Name} x {item.Quantity} - ${item.UnitPrice * item.Quantity:F2}</li>")) +

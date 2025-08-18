@@ -74,7 +74,7 @@ namespace E_Commerce.Business.Services.Implementation
         {
             if (!int.TryParse(orderId, out var id))
                 throw new ArgumentException("Invalid order id");
-            var order = await _orderRepository.GetByIdAsync(id, "OrderItems,OrderItems.Product");
+            var order = await _orderRepository.GetByIdAsync(id, "OrderItems,OrderItems.Product,User");
             if (order == null)
                 return null;
             if (userId != null && order.UserId != userId)

@@ -27,6 +27,7 @@ namespace E_Commerce.Web
 
 
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Smtp"));
 
 
             // Register External Login
@@ -58,6 +59,7 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<FileUploadService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
             //builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             // Register Identity
