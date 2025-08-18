@@ -1,0 +1,31 @@
+﻿@model IEnumerable<E_Commerce.Business.ViewModels.Product.ReviewViewModel>
+@if (Model != null && Model.Any())
+{
+    foreach (var review in Model)
+    {
+        <div class="review-item">
+            <div class="review-header">
+                <span class="reviewer-name">@review.UserName</span>
+                @if (review.IsVerifiedPurchase)
+                {
+                    <span class="verified-badge">✓ Verified Purchase</span>
+                }
+                <span class="review-date">@review.FormattedDate</span>
+            </div>
+            <div class="review-rating">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <i class="fa@(i <= review.Rating ? "s" : "r") fa-star text-warning"></i>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(review.Comment))
+            {
+                <p class="review-comment">@review.Comment</p>
+            }
+        </div>
+    }
+}
+else
+{
+    <p class="no-reviews">No reviews yet. Be the first to review this product!</p>
+}
