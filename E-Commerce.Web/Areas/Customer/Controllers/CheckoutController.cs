@@ -141,12 +141,18 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         public async Task<IActionResult> Success(int orderId, string session_id)
         {
             bool isPaid = !string.IsNullOrEmpty(session_id);
+            var order = await _orderService.GetOrderAsync(orderId.ToString());
             if (isPaid)
             {
                 await _orderService.UpdateOrderStatusAsync(orderId.ToString(), OrderStatus.Paid);
+                // Clear cart after payment success
+                if (order != null)
+                {
+                    await _cartService.ClearCartAsync(order.UserId);
+                }
             }
-            var order = await _orderService.GetOrderAsync(orderId.ToString());
-            if (order != null && order.User != null)
+            var orderDetails = order;
+            if (orderDetails != null && orderDetails.User != null)
             {
                 var paymentStatusText = isPaid
                     ? "<strong>Status:</strong> Paid online via Credit Card."
@@ -155,24 +161,24 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                 var emailBody = $@"
                     <div style='font-family: Arial, sans-serif; color: #333;'>
                         <h2 style='color:#4CAF50;'>Order Confirmation</h2>
-                        <p>Dear {order.User.Email.Split('@')[0]},</p>
+                        <p>Dear {orderDetails.User.Email.Split('@')[0]},</p>
                         <p>Thank you for shopping with us! We are pleased to confirm that we have received your order.</p>
         
-                        <p><strong>Order ID:</strong> {order.Id}</p>
+                        <p><strong>Order ID:</strong> {orderDetails.Id}</p>
         
                         <h3>Order Details:</h3>
                         <ul style='list-style-type:none; padding:0;'>
-                            {string.Join("", order.OrderItems.Select(item =>
+                            {string.Join("", orderDetails.OrderItems.Select(item =>
                                                 $"<li>{item.Product.Name} &times; {item.Quantity} - ${item.UnitPrice * item.Quantity:F2}</li>"))}
                         </ul>
         
-                        <p><strong>Total Amount:</strong> ${order.TotalAmount:F2}</p>
+                        <p><strong>Total Amount:</strong> ${orderDetails.TotalAmount:F2}</p>
                         <p>{paymentStatusText}</p>
 
                         <p>We will notify you once your order has been shipped.</p>
                         <p style='margin-top:20px;'>Best regards,<br/>The Aura Store Team</p>
                     </div>";
-                await _emailService.SendEmailAsync(order.User.Email, "Your Order Confirmation", emailBody);
+                await _emailService.SendEmailAsync(orderDetails.User.Email, "Your Order Confirmation", emailBody);
             }
             ViewData["SuccessMessage"] = isPaid ? "Payment successful!" : "Order placed! Please pay upon delivery.";
             return View();

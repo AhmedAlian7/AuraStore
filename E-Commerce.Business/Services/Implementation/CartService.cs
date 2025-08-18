@@ -98,6 +98,10 @@ namespace E_Commerce.Business.Services.Implementation
             if (quantity <= 0)
                 quantity = 1;
 
+            // Check stock availability
+            if (cartItem.Product != null && quantity > cartItem.Product.StockCount)
+                throw new InvalidOperationException($"Only {cartItem.Product.StockCount} items available in stock.");
+
             cartItem.Quantity = quantity;
 
             _unitOfWork.CartItems.Update(cartItem);
@@ -162,6 +166,12 @@ namespace E_Commerce.Business.Services.Implementation
         private string GetCurrentUserId()
         {
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+
+        public async Task ClearCartAsync(string userId)
+        {
+            await _unitOfWork.Carts.ClearCartAsync(userId);
+            await _unitOfWork.SaveAsync();
         }
     }
 

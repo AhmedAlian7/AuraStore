@@ -6,9 +6,9 @@ namespace E_Commerce.Business.Services.Interfaces
     {
         Task AddToCartAsync(string userId, int productId, int quantity = 1);
         Task<CartViewModel> GetUserCartAsync(string userId);
-
         Task<CartSummaryDto> GetCartSummaryAsync();
         Task<UpdateQuantityResult> UpdateQuantityAsync(int cartItemId, int quantity);
         Task DeleteItemAsync(int cartItemId);
+        Task ClearCartAsync(string userId); // Added for clearing all cart items for a user
     }
 }

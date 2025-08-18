@@ -66,9 +66,7 @@ namespace E_Commerce.Business.Services.Implementation
             }
             await _unitOfWork.SaveAsync();
 
-            // Clear cart items
-            await _cartRepository.ClearCartAsync(userId);
-            await _unitOfWork.SaveAsync();
+            // Cart clearing removed from here. Now handled after payment success.
 
             return order;
         }
