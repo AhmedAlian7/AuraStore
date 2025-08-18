@@ -1,0 +1,266 @@
+﻿@using E_Commerce.Business.ViewModels.Admin
+@model PaginatedList<OrderViewModel>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h2 class="mb-0">Orders Management</h2>
+            <p class="text-muted">Manage and track all customer orders</p>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="@Url.Action("Create", "Orders")" class="btn btn-success">
+                <i class="fas fa-plus"></i> Add New Order
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead style="background-color: #000; color: #ffc107;">
+                                <tr>
+                                    <th class="py-3 px-4">Order ID</th>
+                                    <th class="py-3 px-4">User ID</th>
+                                    <th class="py-3 px-4">Total Items</th>
+                                    <th class="py-3 px-4">Total Amount</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var order in Model)
+                                    {
+                                        <tr class="@(Model.IndexOf(order) % 2 == 0 ? "table-light" : "")">
+                                            <td class="py-3 px-4 fw-bold">#@order.Id</td>
+                                            <td class="py-3 px-4">@order.UserId.Substring(0,5)</td>
+                                            <td class="py-3 px-4">
+                                                <span class="badge bg-light text-dark">@order.TotalItems items</span>
+                                            </td>
+                                            <td class="py-3 px-4 fw-bold">$@order.TotalAmount.ToString("N2")</td>
+                                            <td class="py-3 px-4">
+                                                @{
+                                                    var statusClass = "";
+                                                    var statusTextClass = "";
+                                                    switch (order.OrderStatus.ToString())
+                                                    {
+                                                        case "Pending":
+                                                            statusClass = "bg-warning";
+                                                            statusTextClass = "text-dark";
+                                                            break;
+                                                        case "Shipped":
+                                                            statusClass = "bg-primary";
+                                                            statusTextClass = "text-white";
+                                                            break;
+                                                        case "Delivered":
+                                                            statusClass = "bg-success";
+                                                            statusTextClass = "text-white";
+                                                            break;
+                                                        case "Cancelled":
+                                                            statusClass = "bg-danger";
+                                                            statusTextClass = "text-white";
+                                                            break;
+                                                        case "Returned":
+                                                            statusClass = "bg-warning";
+                                                            statusTextClass = "text-dark";
+                                                            break;
+                                                        case "PendingPayment":
+                                                            statusClass = "bg-secondary";
+                                                            statusTextClass = "text-white";
+                                                            break;
+                                                        default:
+                                                            statusClass = "bg-light";
+                                                            statusTextClass = "text-dark";
+                                                            break;
+                                                    }
+                                                }
+                                                <span class="badge @statusClass @statusTextClass px-3 py-2">
+                                                    @order.OrderStatus.ToString()
+                                                </span>
+                                            </td>
+                                            <td class="py-3 px-4 text-center">
+                                                <div class="btn-group" role="group">
+                                                    <a href="@Url.Action("Details", "Orders", new { id = order.Id })"
+                                                       class="btn btn-outline-primary btn-sm"
+                                                       title="View Details">
+                                                        <i class="fas fa-eye"></i> View
+                                                    </a>
+                                                    <button type="button"
+                                                            class="btn btn-outline-danger btn-sm"
+                                                            title="Delete Order"
+                                                            onclick="confirmDelete(@order.Id)">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center py-5 text-muted">
+                                            <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                            <h5>No orders found</h5>
+                                            <p>There are currently no orders to display.</p>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-muted">
+                        Showing page @Model.PageIndex of @Model.TotalPages
+                        (@Model.Count total orders)
+                    </div>
+                    <nav aria-label="Orders pagination">
+                        <ul class="pagination mb-0">
+                            @if (Model.HasPreviousPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageIndex - 1 })">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </span>
+                                </li>
+                            }
+
+                            @{
+                                var startPage = Math.Max(1, Model.PageIndex - 2);
+                                var endPage = Math.Min(Model.TotalPages, Model.PageIndex + 2);
+                            }
+
+                            @for (int i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                                </li>
+                            }
+
+                            @if (Model.HasNextPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageIndex + 1 })">
+                                        Next <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        Next <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this order? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete Order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table th {
+        border: none;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .table td {
+        border: none;
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-group .btn {
+        margin-right: 0;
+    }
+
+    .card {
+        border: none;
+        border-radius: 8px;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .pagination .page-link {
+        border-radius: 4px;
+        margin: 0 2px;
+        border: 1px solid #dee2e6;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #000;
+        border-color: #000;
+        color: #ffc107;
+    }
+
+    .fas {
+        font-size: 0.875rem;
+    }
+</style>
+
+<script>
+    function confirmDelete(orderId) {
+        document.getElementById('deleteForm').action = '@Url.Action("Delete", "Orders")/' + orderId;
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        deleteModal.show();
+    }
+</script>

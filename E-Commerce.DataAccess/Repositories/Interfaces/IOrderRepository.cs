@@ -7,6 +7,8 @@ namespace E_Commerce.DataAccess.Repositories.Interfaces
     public interface IOrderRepository : IRepository<Order>
     {
         Task<IEnumerable<Order>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<Order>> GetAllAsync();
+        Task<IEnumerable<Order>> GetAllWithItemsAsync();
         Task<IEnumerable<Order>> GetByStatusAsync(OrderStatus status);
         Task<decimal> GetTotalSalesByUserAsync(string userId);
         Task<int> GetOrderCountByStatusAsync(OrderStatus status);
