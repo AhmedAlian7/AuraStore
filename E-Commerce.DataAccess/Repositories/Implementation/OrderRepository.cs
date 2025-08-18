@@ -12,6 +12,19 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
         {
         }
 
+        public async Task<IEnumerable<Order>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetAllWithItemsAsync()
+        {
+            return await _dbSet
+                 .Include(o => o.OrderItems)
+                     .ThenInclude(oi => oi.Product)
+                 .ToListAsync();
+        }
+
         public async Task<IEnumerable<Order>> GetByStatusAsync(OrderStatus status)
         {
             return await _dbSet

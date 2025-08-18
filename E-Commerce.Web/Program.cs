@@ -56,7 +56,8 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService >();
             builder.Services.AddScoped<FileUploadService>();
             builder.Services.AddScoped<ICartService, CartService>();
-            //builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IOrderManagementService, OrderManagementService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             // Register Identity
