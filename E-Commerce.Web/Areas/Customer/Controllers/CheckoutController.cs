@@ -82,9 +82,10 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             // Optionally send confirmation email here
             if (order.User != null)
             {
+                var totalWithDelivery = order.TotalAmount + DeliveryTax;
                 var emailBody = $@"<h2>Thank you for your order!</h2><p>Order ID: {order.Id}</p><ul>" +
                     string.Join("", order.OrderItems.Select(item => $"<li>{item.Product.Name} x {item.Quantity} - ${item.UnitPrice * item.Quantity:F2}</li>")) +
-                    $"</ul><p><strong>Total: ${(order.TotalAmount + DeliveryTax):F2} (includes delivery tax)</strong></p>";
+                    $"</ul><p><strong>Total: ${totalWithDelivery:F2} (includes delivery tax)</strong></p>";
                 await _emailService.SendEmailAsync(order.User.Email, "Your Order Confirmation", emailBody);
             }
 
