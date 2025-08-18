@@ -3,6 +3,7 @@ using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace E_Commerce.Web.Areas.Customer.Controllers
 {
@@ -24,11 +25,18 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, string search = null, int? category = null, string sortBy = null)
         {
-            var products = await _productService.GetAllAsync(page);
-
-            ViewBag.Categories = await _unitIfWork.Categories.GetAllAsync("");
+            var products = await _productService.GetAllAsync(page, search, category, sortBy);
+            // Fetch all categories and map to SelectListItem for dropdown
+            var categories = _unitIfWork.Categories.GetAll()
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name,
+                    Selected = category.HasValue && x.Id == category.Value
+                }).ToList();
+            ViewBag.Categories = categories;
             return View("Index", products);
         }
 

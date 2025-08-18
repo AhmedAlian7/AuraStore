@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Payment Upon Receipt";
+    decimal deliveryTax = 12.00m; // Only for pay on delivery
+    decimal subtotal = Model?.Subtotal ?? 0;
+    decimal tax = Model?.Tax ?? 0;
+    decimal total = subtotal + tax + deliveryTax;
 }
 
 <div class="container-fluid py-4">
@@ -38,13 +42,19 @@
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-between align-items-center py-2">
                                     <span class="text-muted">Subtotal</span>
-                                    <span class="fw-bold">$@((Model?.Subtotal ?? 0).ToString("F2"))</span>
+                                    <span class="fw-bold">$@(subtotal.ToString("F2"))</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-between align-items-center py-2">
                                     <span class="text-muted">Tax</span>
-                                    <span class="fw-bold">$@((Model?.Tax ?? 0).ToString("F2"))</span>
+                                    <span class="fw-bold">$@(tax.ToString("F2"))</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center py-2">
+                                    <span class="text-muted">Pay on Delivery Fee</span>
+                                    <span class="fw-bold">$@(deliveryTax.ToString("F2"))</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -57,7 +67,7 @@
                         <hr class="my-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Total Amount</h5>
-                            <h4 class="mb-0 text-primary">$@((Model?.Total ?? 0).ToString("F2"))</h4>
+                            <h4 class="mb-0 text-primary">$@(total.ToString("F2"))</h4>
                         </div>
                         <div class="mt-2">
                             <small class="text-success">
@@ -91,59 +101,9 @@
                             <input type="hidden" asp-for="TotalItems" />
                             <input type="hidden" asp-for="Subtotal" />
                             <input type="hidden" asp-for="Tax" />
-                            <input type="hidden" asp-for="Total" />
+                            <input type="hidden" name="DeliveryTax" value="@deliveryTax" />
+                            <input type="hidden" name="Total" value="@total" />
                         }
-
-                        @* <div class="row g-3">
-                            <!-- Full Name -->
-                            <div class="col-12">
-                                <label for="FullName" class="form-label">
-                                    <i class="fas fa-user me-1"></i>Full Name <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="FullName" name="FullName"
-                                       placeholder="Enter your full name" required>
-                                <span asp-validation-for="FullName" class="text-danger"></span>
-                            </div>
-
-                            <!-- Street Address -->
-                            <div class="col-12">
-                                <label for="StreetAddress" class="form-label">
-                                    <i class="fas fa-map-marker-alt me-1"></i>Street Address <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="StreetAddress" name="StreetAddress"
-                                       placeholder="Enter your street address" required>
-                                <span asp-validation-for="StreetAddress" class="text-danger"></span>
-                            </div>
-
-                            <!-- City and Postal Code -->
-                            <div class="col-md-8">
-                                <label for="City" class="form-label">
-                                    <i class="fas fa-city me-1"></i>City <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="City" name="City"
-                                       placeholder="Enter your city" required>
-                                <span asp-validation-for="City" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="PostalCode" class="form-label">
-                                    <i class="fas fa-mail-bulk me-1"></i>Postal Code <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="PostalCode" name="PostalCode"
-                                       placeholder="12345" required>
-                                <span asp-validation-for="PostalCode" class="text-danger"></span>
-                            </div>
-
-                            <!-- Phone Number -->
-                            <div class="col-12">
-                                <label for="PhoneNumber" class="form-label">
-                                    <i class="fas fa-phone me-1"></i>Phone Number <span class="text-danger">*</span>
-                                </label>
-                                <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber"
-                                       placeholder="(123) 456-7890" required>
-                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                                <div class="form-text">We'll call you if there are any delivery issues.</div>
-                            </div>
-                        </div> *@
 
                         <!-- Action Buttons -->
                         <div class="row mt-4">

@@ -3,16 +3,15 @@
 }
 
 <div class="container py-5">
-    <div class="row">
+    <div class="row justify-content-center align-items-center min-vh-80" style="min-height: 70vh;">
         <!-- Left side - Payment Method -->
-        <div class="col-lg-8 mb-4">
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-body p-4">
-                    <h4 class="mb-4 fw-bold">Select Payment Method</h4>
+        <div class="col-lg-6 d-flex flex-column justify-content-center align-items-center mb-4">
+            <div class="card shadow-sm border-0 rounded-3 w-100" style="max-width: 450px;">
+                <div class="card-body p-4 d-flex flex-column justify-content-center align-items-center">
+                    <h4 class="mb-4 fw-bold text-center">Select Payment Method</h4>
 
                     <!-- Payment Options -->
-                    <div class="payment-options">
-
+                    <div class="payment-options w-100">
                         <!-- Payment Upon Receipt -->
                         <div class="payment-button" data-payment="receipt" onclick="selectPayment('receipt', this)">
                             <div class="payment-icon">
@@ -40,39 +39,20 @@
                                 <i class="fas fa-check-circle"></i>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Right side - Order Summary -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-body p-4">
-                    <h4 class="mb-4 fw-bold">Order Summary</h4>
-
-                    <!-- Example Cart Item -->
-                    <div class="d-flex justify-content-between align-items-center mb-3 cart-item">
-                        <div>
-                            <i class="fas fa-shopping-cart me-2"></i> 2 × Product Name
-                        </div>
-                        <span>$40</span>
-                    </div>
-
-                    <hr />
-
-                    <!-- Total -->
-                    <div class="d-flex justify-content-between align-items-center mb-4 fw-bold">
-                        <span>Total</span>
-                        <span>$40</span>
-                    </div>
-
+        <div class="col-lg-4 d-flex flex-column justify-content-between" style="min-height: 350px;">
+            <div class="card shadow-sm border-0 rounded-3 flex-grow-1 d-flex flex-column justify-content-between h-100">
+                <div class="card-body p-4 d-flex flex-column justify-content-between h-100">
                     <!-- Checkout Form -->
-                    <div class="checkout-section">
-                        <form asp-area="Customer" asp-controller="Checkout" asp-action="PaymentMethod" method="post">
+                    <div class="checkout-section d-flex flex-column justify-content-between h-100">
+                        <form asp-area="Customer" asp-controller="Checkout" asp-action="PaymentMethod" method="post" class="mt-auto">
                             <input type="hidden" name="option" id="selectedOption" />
-                            <button type="submit" class="btn btn-warning w-100 py-3 fw-bold checkout-btn" id="proceedBtn" disabled>
+                            <button type="submit" class="btn btn-warning w-100 py-3 fw-bold checkout-btn mt-auto" id="proceedBtn" disabled>
                                 <i class="fas fa-lock me-2"></i>Proceed to Checkout
                             </button>
                         </form>
@@ -82,7 +62,6 @@
                             </small>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -110,6 +89,9 @@
     </script>
 
     <style>
+        .min-vh-80 {
+            min-height: 80vh;
+        }
         /* smaller + lower icons */
         .cart-item i,
         .checkout-btn i,
@@ -133,6 +115,7 @@
             margin-bottom: 15px;
             cursor: pointer;
             transition: 0.2s;
+            background: #fff;
         }
 
             .payment-button.active {
@@ -153,6 +136,18 @@
 
         .payment-button.active .payment-check {
             display: block;
+        }
+
+        /* Ensure button stays at the bottom */
+        .checkout-section {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+        }
+        .checkout-btn {
+            margin-top: auto;
         }
     </style>
 }

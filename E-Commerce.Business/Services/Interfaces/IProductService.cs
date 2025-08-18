@@ -5,7 +5,7 @@ namespace E_Commerce.Business.Services.Interfaces
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductViewModel>> GetAllAsync(int page = 1);
+        Task<IEnumerable<ProductViewModel>> GetAllAsync(int page = 1, string search = null, int? categoryId = null, string sortBy = null);
 
         //Task<ProductViewModel?> GetProductByIdAsync(int? id);
 

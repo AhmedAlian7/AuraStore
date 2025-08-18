@@ -3,12 +3,26 @@ using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Enums;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace E_Commerce.DataAccess.Repositories.Implementation
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {
         public ProductRepository(AppDbContext context) : base(context) { }
+
+        public IQueryable<Product> GetAllQueryable(string includes = "")
+        {
+            var query = _context.Products.AsQueryable();
+            if (!string.IsNullOrEmpty(includes))
+            {
+                foreach (var include in includes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(include.Trim());
+                }
+            }
+            return query;
+        }
 
         public async Task<IEnumerable<Product>> GetTopSellingProductsAsync(int count)
         {

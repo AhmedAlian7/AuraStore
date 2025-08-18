@@ -145,9 +145,9 @@ namespace E_Commerce.Business.Services.Implementation
                 };
             }
 
-            // Calculate totals
+            // Calculate totals using EffectivePrice (discounted price if available)
             var totalItems = cartItems.Sum(c => c.Quantity);
-            var subtotal = cartItems.Sum(c => c.Quantity * c.Product.Price);
+            var subtotal = cartItems.Sum(c => c.Quantity * c.Product.EffectivePrice);
             var tax = subtotal * Numbers.TAX_RATE;
             var total = subtotal + tax;
 
