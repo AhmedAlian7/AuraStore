@@ -1,5 +1,4 @@
-﻿
-using E_Commerce.DataAccess.Enums;
+﻿using E_Commerce.DataAccess.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,7 +17,7 @@ namespace E_Commerce.DataAccess.Entities
 
         // Calculated properties
         [NotMapped]
-        public decimal TotalAmount => OrderItems?.Sum(oi => oi.Quantity * oi.Product.EffectivePrice) ?? 0;
+        public decimal TotalAmount => OrderItems?.Sum(oi => oi.Quantity * (oi.Product?.EffectivePrice ?? 0)) ?? 0;
         [NotMapped]
         public int TotalItems => OrderItems?.Sum(oi => oi.Quantity) ?? 0;
 

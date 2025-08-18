@@ -19,9 +19,11 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
 
         public async Task<IEnumerable<Order>> GetAllWithItemsAsync()
         {
+            
             return await _dbSet
                  .Include(o => o.OrderItems)
                      .ThenInclude(oi => oi.Product)
+                     .Where(o => !o.IsDeleted)
                  .ToListAsync();
         }
 
