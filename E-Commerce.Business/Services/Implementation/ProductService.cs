@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.Business.ViewModels;
 using E_Commerce.Business.ViewModels.Product;
@@ -48,6 +47,51 @@ namespace E_Commerce.Business.Services.Implementation
             });
 
             return PaginatedList<ProductViewModel>.Create(productsVM, page, Numbers.DefaultPageSize);
+        }
+
+        public async Task<IEnumerable<ProductViewModel>> GetAllAsync(int page = 1, string search = null, int? categoryId = null, string sortBy = null)
+        {
+            // Get all products with includes
+            var productsQuery = _unitOfWork.Products.GetAllQueryable("Category,Reviews");
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                productsQuery = productsQuery.Where(p => p.Name.Contains(search) || (p.Description != null && p.Description.Contains(search)));
+            }
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                productsQuery = productsQuery.Where(p => p.CategoryId == categoryId.Value);
+            }
+            // Sorting
+            productsQuery = sortBy switch
+            {
+                "name" => productsQuery.OrderBy(p => p.Name),
+                "price_asc" => productsQuery.OrderBy(p => p.DiscountPrice ?? p.Price),
+                "price_desc" => productsQuery.OrderByDescending(p => p.DiscountPrice ?? p.Price),
+                "rating" => productsQuery.OrderByDescending(p => p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0),
+                "newest" => productsQuery.OrderByDescending(p => p.CreatedAt),
+                _ => productsQuery.OrderBy(p => p.Id)
+            };
+
+            int pageSize = Numbers.DefaultPageSize;
+            var products = productsQuery.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var productsVM = products.Select(p => new ProductViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                DiscountPrice = p.DiscountPrice,
+                EffectivePrice = p.DiscountPrice ?? p.Price,
+                InStock = p.StockCount > 0,
+                AverageRating = (p.Reviews != null && p.Reviews.Any()) ? p.Reviews.Average(r => r.Rating) : 0,
+                ReviewCount = p.Reviews?.Count ?? 0,
+                MainImageUrl = p.MainImageUrl,
+                CategoryName = p.Category?.Name ?? string.Empty
+            });
+
+            return PaginatedList<ProductViewModel>.Create(productsVM, page, pageSize);
         }
 
         public async Task<IEnumerable<ProductViewModel>> GetRecentProductsAsync(int count = 8)
