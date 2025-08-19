@@ -29,7 +29,7 @@ public class AdminDashboardViewModel
 
     // Recent Orders
     public List<RecentOrderViewModel> RecentOrders { get; set; }
-
+  
     // Analytics Report
     public double CompanyFinanceGrowth { get; set; }
     public double CompanyExpensesRatio { get; set; }
@@ -65,5 +65,5 @@ public class TransactionViewModel
     public string OrderId { get; set; }
     public DateTime DateTime { get; set; }
     public decimal Amount { get; set; }
-    public int Percentage { get; set; }
+    public double Percentage { get; set; }
 }
