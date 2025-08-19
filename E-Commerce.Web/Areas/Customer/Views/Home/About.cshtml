@@ -3,57 +3,150 @@
 }
 
 <!-- Hero Banner -->
-<section class="about-hero d-flex align-items-center justify-content-center text-center mb-5"
-         style="background: linear-gradient(135deg, var(--accent-color), var(--accent-hover)), url('../../../../wwwroot/images/about-background.jpg') center/cover no-repeat; min-height: 45vh; position: relative; color: #fff;">
-
-    <!-- Overlay (comes first, sits under content) -->
-    <div style="position:absolute; inset:0; background:rgba(37,99,235,0.45); z-index:1;"></div>
-
-    <!-- Content -->
-    <div class="container position-relative" style="z-index:2;">
-        <h1 class="display-3 fw-bold mb-3">About Aura Store</h1>
-        <p class="lead mb-0">Modern e-commerce for a premium, secure, and global shopping experience.</p>
-    </div>
-</section>
-
-
-<!-- Our Story Section -->
-<section class="container mb-5">
-    <div class="row align-items-center g-5 flex-md-row flex-column-reverse">
-        <div class="col-md-6">
-            <h2 class="fw-bold mb-3">Our Story</h2>
-            <p class="fs-5 text-secondary">Aura Store was founded to redefine online shopping. As a modern e-commerce platform, we blend technology, trust, and style to deliver a seamless, secure, and delightful experience for customers worldwide. Our curated collections, innovative features, and customer-first approach set us apart in the digital marketplace.</p>
-        </div>
-        <div class="col-md-6 text-center">
-            <img src="/images/about-background.jpg" alt="Online Shopping" class="img-fluid rounded-4 shadow-lg" style="max-width: 400px;">
-        </div>
-    </div>
-</section>
-
-<!-- Meet the Developers Section -->
-<section class="container mb-5">
-    <h2 class="fw-bold text-center mb-4">Meet the Developers</h2>
-    <div class="row justify-content-center g-4">
-        <div class="col-md-5 col-12">
-            <div class="dev-card p-4 bg-white rounded-4 shadow-lg h-100 text-center position-relative transition-hover">
-                <img src="/images/A_logo.png" alt="Ahmed Alian" class="rounded-circle mb-3 shadow" style="width: 100px; height: 100px; object-fit: cover; border: 4px solid var(--accent-color);">
-                <h5 class="fw-bold mb-1">Ahmed Alian</h5>
-                <p class="text-secondary mb-2">Back-End Developer</p>
-                <div>
-                    <a href="https://www.linkedin.com/in/ahmedalian7" target="_blank" class="me-3 text-decoration-none text-primary fs-4"><i class="fab fa-linkedin"></i></a>
-                    <a href="https://github.com/ahmedalian7" target="_blank" class="text-decoration-none text-dark fs-4"><i class="fab fa-github"></i></a>
+<section class="hero-banner position-relative overflow-hidden">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="container position-relative">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="section-title mb-4">About Aura Store</h1>
+                <p class="hero-subtitle mb-5">Redefining e-commerce with cutting-edge technology and exceptional customer experience</p>
+                <div class="hero-stats d-flex justify-content-center flex-wrap gap-4">
+                    <div class="stat-item">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">Happy Customers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">99%</div>
+                        <div class="stat-label">Satisfaction Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support</div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-5 col-12">
-            <div class="dev-card p-4 bg-white rounded-4 shadow-lg h-100 text-center position-relative transition-hover">
-                <img src="/images/omar.jpeg" alt="Ahmed Alian" class="rounded-circle mb-3 shadow" style="width: 100px; height: 100px; object-fit: cover; border: 4px solid var(--accent-color);">
+    </div>
+</section>
 
-                <h5 class="fw-bold mb-1">Omar Elsheikh</h5>
-                <p class="text-secondary mb-2">Back-End Developer</p>
-                <div>
-                    <a href="https://www.linkedin.com/in/OmarElsheikh22" target="_blank" class="me-3 text-decoration-none text-primary fs-4"><i class="fab fa-linkedin"></i></a>
-                    <a href="https://github.com/OmarElsheikh20" target="_blank" class="text-decoration-none text-dark fs-4"><i class="fab fa-github"></i></a>
+<!-- Our Story Section -->
+<section class="story-section py-6">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="story-content">
+                    <div class="section-badge mb-3">Our Journey</div>
+                    <h2 class="section-title mb-4">Building the Future of E-commerce</h2>
+                    <p class="story-text mb-4">
+                        Aura Store was born from a vision to transform online shopping into an extraordinary experience. We leverage cutting-edge technology, data-driven insights, and human-centered design to create a platform that doesn't just sell products—it builds relationships.
+                    </p>
+                    <p class="story-text mb-5">
+                        Our commitment to innovation, security, and customer satisfaction has positioned us as a leader in the digital marketplace, serving customers across the globe with unmatched service quality.
+                    </p>
+                    <div class="story-features">
+                        <div class="feature-item d-flex align-items-center mb-3">
+                            <div class="feature-icon me-3">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <span>Enterprise-grade security</span>
+                        </div>
+                        <div class="feature-item d-flex align-items-center mb-3">
+                            <div class="feature-icon me-3">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <span>Global shipping network</span>
+                        </div>
+                        <div class="feature-item d-flex align-items-center">
+                            <div class="feature-icon me-3">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <span>Award-winning customer service</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="story-image">
+                    <div class="image-wrapper">
+                        <img src="/images/about-background.jpg" alt="Modern E-commerce" class="img-fluid">
+                        <div class="image-overlay">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="team-section py-6">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <div class="section-badge mb-3">Our Team</div>
+                <h2 class="section-title mb-4">Meet the Visionaries</h2>
+                <p class="section-subtitle">
+                    Passionate innovators dedicated to revolutionizing the e-commerce landscape through technology and creativity.
+                </p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/images/A_logo.png" alt="Ahmed Alian">
+                        <div class="team-overlay">
+                            <div class="social-links">
+                                <a href="https://www.linkedin.com/in/ahmedalian7" target="_blank" class="social-link">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://github.com/ahmedalian7" target="_blank" class="social-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h5 class="team-name">Ahmed Alian</h5>
+                        <p class="team-role">Senior Backend Developer</p>
+                        <div class="team-skills">
+                            <span class="skill-tag">.NET</span>
+                            <span class="skill-tag">C#</span>
+                            <span class="skill-tag">Azure</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/images/omar.jpeg" alt="Omar Elsheikh">
+                        <div class="team-overlay">
+                            <div class="social-links">
+                                <a href="https://www.linkedin.com/in/OmarElsheikh22" target="_blank" class="social-link">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://github.com/OmarElsheikh20" target="_blank" class="social-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h5 class="team-name">Omar Elsheikh</h5>
+                        <p class="team-role">Senior Backend Developer</p>
+                        <div class="team-skills">
+                            <span class="skill-tag">ASP.NET</span>
+                            <span class="skill-tag">SQL</span>
+                            <span class="skill-tag">API</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -61,79 +154,589 @@
 </section>
 
 <!-- Mission & Vision Section -->
-<section class="container mb-5">
-    <div class="row justify-content-center g-4">
-        <div class="col-md-4 col-12">
-            <div class="p-4 bg-light rounded-4 shadow-sm text-center h-100">
-                <div class="mb-3 fs-1 text-primary"><i class="fas fa-bullseye"></i></div>
-                <h6 class="fw-bold mb-2">Our Mission</h6>
-                <p class="text-secondary mb-0">To empower customers with a secure, enjoyable, and customer-focused online shopping journey.</p>
+<section class="mission-section py-6">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="mission-content">
+                        <h3 class="mission-title">Our Mission</h3>
+                        <p class="mission-text">
+                            To revolutionize online shopping by delivering secure, intuitive, and personalized experiences that exceed customer expectations and drive global commerce innovation.
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-md-4 col-12">
-            <div class="p-4 bg-light rounded-4 shadow-sm text-center h-100">
-                <div class="mb-3 fs-1 text-primary"><i class="fas fa-globe"></i></div>
-                <h6 class="fw-bold mb-2">Our Vision</h6>
-                <p class="text-secondary mb-0">To expand globally and lead innovation in the e-commerce industry.</p>
+            <div class="col-lg-6">
+                <div class="mission-card">
+                    <div class="mission-icon vision-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="mission-content">
+                        <h3 class="mission-title">Our Vision</h3>
+                        <p class="mission-text">
+                            To become the world's most trusted e-commerce platform, connecting millions of customers with premium products while setting new standards for digital commerce excellence.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Core Values Section -->
-<section class="container mb-5">
-    <h2 class="fw-bold text-center mb-4">Our Core Values</h2>
-    <div class="row g-4 justify-content-center">
-        <div class="col-md-3 col-6">
-            <div class="p-4 bg-white rounded-4 shadow-sm text-center h-100">
-                <div class="mb-2 fs-2 text-primary"><i class="fas fa-handshake"></i></div>
-                <h6 class="fw-semibold mb-1">Trust</h6>
-                <p class="text-secondary small mb-0">We build lasting relationships through honesty and reliability.</p>
+<section class="values-section py-6">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <div class="section-badge mb-3">Our Values</div>
+                <h2 class="section-title mb-4">What Drives Us Forward</h2>
             </div>
         </div>
-        <div class="col-md-3 col-6">
-            <div class="p-4 bg-white rounded-4 shadow-sm text-center h-100">
-                <div class="mb-2 fs-2 text-primary"><i class="fas fa-lightbulb"></i></div>
-                <h6 class="fw-semibold mb-1">Innovation</h6>
-                <p class="text-secondary small mb-0">We embrace creativity and technology to enhance shopping.</p>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h5 class="value-title">Trust & Integrity</h5>
+                    <p class="value-text">Building lasting relationships through transparency, honesty, and unwavering reliability in every interaction.</p>
+                </div>
             </div>
-        </div>
-        <div class="col-md-3 col-6">
-            <div class="p-4 bg-white rounded-4 shadow-sm text-center h-100">
-                <div class="mb-2 fs-2 text-primary"><i class="fas fa-users"></i></div>
-                <h6 class="fw-semibold mb-1">Customer Care</h6>
-                <p class="text-secondary small mb-0">Our customers are at the heart of everything we do.</p>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h5 class="value-title">Innovation</h5>
+                    <p class="value-text">Embracing cutting-edge technology and creative solutions to continuously enhance the shopping experience.</p>
+                </div>
             </div>
-        </div>
-        <div class="col-md-3 col-6">
-            <div class="p-4 bg-white rounded-4 shadow-sm text-center h-100">
-                <div class="mb-2 fs-2 text-primary"><i class="fas fa-gem"></i></div>
-                <h6 class="fw-semibold mb-1">Quality</h6>
-                <p class="text-secondary small mb-0">We deliver only the best products and services.</p>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h5 class="value-title">Customer-Centric</h5>
+                    <p class="value-text">Putting customers at the heart of every decision, ensuring their success drives our success.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h5 class="value-title">Excellence</h5>
+                    <p class="value-text">Delivering exceptional quality in products, services, and experiences that exceed expectations.</p>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Call-to-Action Section -->
-<section class="container-fluid py-5" style="background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));">
-    <div class="container text-center">
-        <h2 class="fw-bold text-white mb-3">Join the Aura Store Community</h2>
-        <a href="/Customer/Product" class="btn btn-lg btn-light rounded-pill px-5 fw-semibold shadow-sm">Start Shopping</a>
+<!-- CTA Section -->
+<section class="cta-section py-6">
+    <div class="container">
+        <div class="cta-wrapper">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="cta-title mb-3">Ready to Experience the Future of Shopping?</h2>
+                    <p class="cta-subtitle">Join thousands of satisfied customers who trust Aura Store for their premium shopping needs.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="/Customer/Product" class="btn btn-cta">
+                        Start Shopping
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
 @section Styles {
     <style>
-        .about-hero { position: relative; min-height: 45vh; }
-        .about-hero .container { position: relative; z-index: 2; }
-        .dev-card { transition: transform 0.2s, box-shadow 0.2s; }
-        .dev-card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 8px 32px rgba(37,99,235,0.12); }
-        .rounded-4 { border-radius: 2rem !important; }
-        .transition-hover { transition: all 0.2s; }
+        :root {
+            --primary-color: #0f172a;
+            --secondary-color: #334155;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --surface: #ffffff;
+            --surface-secondary: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+
+        .py-6 {
+            padding: 5rem 0;
+        }
+
+        /* Hero Section */
+        .hero-banner {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            background: url('/images/store-background.jpg') center/cover no-repeat;
+            position: relative;
+        }
+
+        .hero-bg {
+            display: none;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            /* background: linear-gradient(135deg, rgba(99, 102, 241, 0.8) 0%, rgba(79, 70, 229, 0.8) 100%); */
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.375rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+        }
+
+        .hero-stats {
+            gap: 3rem !important;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        /* Section Styling */
+        .section-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .section-title {
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Story Section */
+        .story-section {
+            background: var(--surface-secondary);
+        }
+
+        .story-text {
+            font-size: 1.125rem;
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+
+        .feature-item {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .story-image .image-wrapper {
+            position: relative;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .story-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-wrapper:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            cursor: pointer;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+            .play-button:hover {
+                transform: scale(1);
+            }
+
+        /* Team Section */
+        .team-card {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+
+            .team-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            }
+
+        .team-image {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--accent-color);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+            .team-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+        .team-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .team-card:hover .team-overlay {
+            opacity: 0.95;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+            .social-link:hover {
+                transform: scale(1.1);
+                color: var(--accent-hover);
+            }
+
+        .team-info {
+            text-align: center;
+        }
+
+        .team-name {
+            font-size: 1.375rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .team-role {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .team-skills {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--surface-secondary);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent-color);
+        }
+
+        /* Mission Section */
+        .mission-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            height: 100%;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+            .mission-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            }
+
+        .mission-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .vision-icon {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .mission-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .mission-text {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 1.125rem;
+        }
+
+        /* Values Section */
+        .values-section {
+            background: var(--surface-secondary);
+        }
+
+        .value-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            height: 100%;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+            .value-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            }
+
+        .value-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1.5rem;
+        }
+
+        .value-title {
+            font-size: 1.375rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .value-text {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+
+        .cta-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            padding: 3rem;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1.2;
+        }
+
+        .cta-subtitle {
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0;
+        }
+
+        .btn-cta {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.125rem;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+            .btn-cta:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4);
+                color: white;
+            }
+
+        /* Responsive Design */
+        @@media (max-width: 991.98px) {
+            .hero-title
+
+        {
+            font-size: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.25rem;
+        }
+
+        .hero-stats {
+            gap: 2rem !important;
+        }
+
+        }
+
         @@media (max-width: 767.98px) {
-            .about-hero { min-height: 30vh; }
-            .rounded-4 { border-radius: 1.2rem !important; }
+            .py-6
+
+        {
+            padding: 3rem 0;
+        }
+
+        .hero-banner {
+            min-height: 60vh;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+        }
+
+        .cta-wrapper {
+            padding: 2rem;
+        }
+
+        .hero-stats {
+            gap: 1.5rem !important;
+            justify-content: space-around !important;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
         }
     </style>
 }

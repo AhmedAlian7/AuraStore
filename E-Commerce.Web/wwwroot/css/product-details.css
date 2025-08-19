@@ -502,15 +502,17 @@
     border-radius: 8px 0 0 8px;
     border-color: var(--accent-color);
     box-shadow: none;
+    color: var(--text-gray);
 }
 
     .newsletter-input::placeholder {
-        color: #6b7280;
+        color: var(--text-gray);
     }
 
     .newsletter-input:focus {
         border-color: var(--accent-color);
         box-shadow: none;
+        color: var(--text-gray);
     }
 
 .newsletter-btn {

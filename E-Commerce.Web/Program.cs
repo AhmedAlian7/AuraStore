@@ -61,6 +61,8 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IOrderManagementService, OrderManagementService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IOrderManagementService, OrderManagementService>();
+            //builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
 
             // Register Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

@@ -2,6 +2,9 @@
 using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace E_Commerce.DataAccess.Repositories.Implementation
 {
@@ -28,6 +31,16 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
                 .Select(o => o.Id);
 
             return query.AnyAsync();
+        }
+
+        public async Task<IEnumerable<Review>> GetLatestReviewsAsync(int count)
+        {
+            return await _context.Reviews
+                    .Include(r => r.User)
+                    .Where(r => r.IsVerifiedPurchase && r.Rating >= 4)
+                    .OrderByDescending(r => r.CreatedAt)
+                    .Take(count)
+                    .ToListAsync();
         }
     }
 }

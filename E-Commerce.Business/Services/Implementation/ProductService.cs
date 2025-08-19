@@ -107,27 +107,27 @@ namespace E_Commerce.Business.Services.Implementation
 
         }
 
-        public async Task<IEnumerable<ProductViewModel>> GetBestSalesProductsAsync(int count = 8)
+        public async Task<IEnumerable<ProductViewModel>> GetBestSalesProductsAsync(int count = 4)
         {
 
             var products = await _unitOfWork.Products.GetTopSellingProductsAsync(count);
 
-            var ProductsVM = _mapper.Map<IEnumerable<ProductViewModel>>(products);
+            var productsVM = products.Select(p => new ProductViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                DiscountPrice = p.DiscountPrice,
+                EffectivePrice = p.DiscountPrice ?? p.Price,
+                InStock = p.StockCount > 0,
+                AverageRating = (p.Reviews != null && p.Reviews.Any()) ? p.Reviews.Average(r => r.Rating) : 0,
+                ReviewCount = p.Reviews?.Count ?? 0,
+                MainImageUrl = p.MainImageUrl,
+                CategoryName = p.Category?.Name ?? string.Empty
+            });
 
-
-            return ProductsVM;
-
-        }
-
-        public async Task<IEnumerable<ProductViewModel>> GetProductsByCategoryIdAsync(int CategoryId)
-        {
-
-            var products = await _unitOfWork.Products.GetProductsByCategoryAsync(CategoryId);
-
-            var ProductsVM = _mapper.Map<IEnumerable<ProductViewModel>>(products);
-
-            return ProductsVM;
-
+            return productsVM;
 
         }
 
