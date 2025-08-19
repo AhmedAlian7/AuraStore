@@ -1,0 +1,153 @@
+﻿@using E_Commerce.Business.ViewModels.Order
+@model OrderDetailsViewModel
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Order Details</h2>
+
+            <!-- Order Information Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Order Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="card-text">
+                                <strong>Order ID:</strong> @Model.Id
+                            </p>
+                            <p class="card-text">
+                                <strong>User ID:</strong>
+                                @if (!string.IsNullOrEmpty(Model.userName))
+                                {
+                                    @Model.userName
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not specified</span>
+                                }
+                            </p>
+                            <p class="card-text">
+                                <strong>Created At:</strong>
+                                @if (Model.CreatedAt.HasValue)
+                                {
+                                    @Model.CreatedAt.Value.ToString("MMM dd, yyyy hh:mm tt")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not specified</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="card-text">
+                                <strong>Total Amount:</strong>
+                                <span class="text-success fw-bold">@Model.TotalAmount.ToString("C")</span>
+                            </p>
+                            <p class="card-text">
+                                <strong>Total Items:</strong> @Model.TotalItems
+                            </p>
+                            <p class="card-text">
+                                <strong>Order Status:</strong>
+                                <span class="badge @GetStatusBadgeClass(Model.OrderStatus)">
+                                    @Model.OrderStatus.ToString()
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items Table -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Order Items</h4>
+                </div>
+                <div class="card-body">
+                    @if (Model.OrderItems != null && Model.OrderItems.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col">Product Name</th>
+                                        <th scope="col" class="text-center">Quantity</th>
+                                        <th scope="col" class="text-end">Price</th>
+                                        <th scope="col" class="text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderItems)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <strong>@item.Product.Name</strong>
+                                                @if (!string.IsNullOrEmpty(item.Product.Description))
+                                                {
+                                                    <br>
+                                                    <small class="text-muted">@item.Product.Description</small>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-secondary">@item.Quantity</span>
+                                            </td>
+                                            <td class="text-end">@item.UnitPrice.ToString("C")</td>
+                                            <td class="text-end">
+                                                <strong>@((item.Quantity * item.UnitPrice).ToString("C"))</strong>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <th colspan="3" class="text-end">Total:</th>
+                                        <th class="text-end text-success">@Model.TotalAmount.ToString("C")</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle"></i> No items found for this order.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-4 mb-4">
+                <a asp-area="Admin"
+                   asp-controller="Order"
+                   asp-action="Index"
+                   class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Orders
+                </a>
+                <button type="button" class="btn btn-primary ms-2" onclick="window.print()">
+                    <i class="bi bi-printer"></i> Print Order
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusBadgeClass(OrderStatus status)
+    {
+        return status switch
+        {
+            OrderStatus.Pending => "bg-warning text-dark",
+            OrderStatus.Processing => "bg-info",
+            OrderStatus.Shipped => "bg-primary",
+            OrderStatus.Delivered => "bg-success",
+            OrderStatus.Cancelled => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}

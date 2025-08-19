@@ -8,6 +8,7 @@ namespace E_Commerce.DataAccess.Entities
         public string? Address { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         // Navigation properties
         public int CartId { get; set; }

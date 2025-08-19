@@ -31,7 +31,8 @@ namespace E_Commerce.Business.Services.Implementation
 
         public async Task<PaginatedList<CustomerViewModel>> GetAllAsync(int page)
         {
-            var users = _userManager.Users.ToList();
+            var users = _userManager.Users.Where(o => !o.IsDeleted)
+                .ToList();
             var models = new List<CustomerViewModel>();
 
             foreach (var x in users)
@@ -58,6 +59,7 @@ namespace E_Commerce.Business.Services.Implementation
         {
             var user = await _userManager
                 .Users
+                .Where(o => !o.IsDeleted)
                 .Include(o => o.Orders)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
@@ -75,14 +77,15 @@ namespace E_Commerce.Business.Services.Implementation
         {
             var user = await _userManager.FindByIdAsync(id);
 
-            if (user == null)
+            if (user == null || user.IsDeleted)
             {
                 return false;
             }
 
-            var result = await _userManager.DeleteAsync(user);
+            var result = user.IsDeleted = true;
+            await _userManager.UpdateAsync(user);
 
-            return result.Succeeded;
+            return result;
         }
 
         public async Task<bool> ChangeStatus(string id, string status)
@@ -105,16 +108,6 @@ namespace E_Commerce.Business.Services.Implementation
             var result = await _userManager.UpdateAsync(user);
             return result.Succeeded;
         }
-
-        //public async Task<IdentityResult> ChangePassword(string id,string oldPassword, string newPassword)
-        //{
-        //    var user = await _userManager.FindByIdAsync(id);
-
-        //    await _userManager.ChangePasswordAsync(user, oldPassword ,newPassword);
-            
-        //    var result = await _userManager.UpdateAsync(user);
-        //    return result;
-        //}
 
     }
 }

@@ -1,4 +1,4 @@
-@using E_Commerce.Business.ViewModels.Admin
+@using E_Commerce.Business.ViewModels.Order
 @model PaginatedList<OrderViewModel>
 
 @{
@@ -11,7 +11,7 @@
     @if (!Model.Any())
     {
         <div class="alert alert-info">
-            You don’t have any orders yet.
+            You don't have any orders yet.
         </div>
     }
     else
@@ -25,7 +25,7 @@
                         <th>Total Items</th>
                         <th>Created At</th>
                         <th>Status</th>
-                        <th></th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,18 +40,28 @@
                                 <span class="badge bg-primary">@order.OrderStatus</span>
                             </td>
                             <td>
-                                @if (order.OrderStatus.ToString() != "Cancelled")
-                                {
-                                    <form asp-controller="Orders" asp-action="CancelOrder" asp-route-id="@order.Id" method="post" class="d-inline cancel-form">
-                                        <button type="button" class="btn btn-sm btn-danger btn-cancel" data-order-id="@order.Id">
-                                            Cancel
-                                        </button>
-                                    </form>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">Already Cancelled</span>
-                                }
+                                <div class="d-flex gap-2">
+                                    <a asp-area="Customer"
+                                       asp-controller="Orders"
+                                       asp-action="ViewDetails"
+                                       asp-route-id="@order.Id"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+
+                                    @if (order.OrderStatus.ToString() != "Cancelled")
+                                    {
+                                        <form asp-controller="Orders" asp-action="CancelOrder" asp-route-id="@order.Id" method="post" class="d-inline cancel-form">
+                                            <button type="button" class="btn btn-sm btn-danger btn-cancel" data-order-id="@order.Id">
+                                                <i class="bi bi-x-circle"></i> Cancel
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">Already Cancelled</span>
+                                    }
+                                </div>
                             </td>
                         </tr>
                     }

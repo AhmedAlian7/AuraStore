@@ -11,5 +11,7 @@ namespace E_Commerce.Business.Services.Interfaces
         Task UpdatePaymentDetailsAsync(string orderId, string paymentIntentId, string sessionId, decimal? amount, string currency);
         Task<CheckoutViewModel> GetCheckoutDataAsync(string userId, string? discountCode = null);
         Task<Order> CreateOrderFromCartAsync(string userId);
+
+
     }
 }

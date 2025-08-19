@@ -1,6 +1,6 @@
 ﻿
 using E_Commerce.Business.ViewModels;
-using E_Commerce.Business.ViewModels.Admin;
+using E_Commerce.Business.ViewModels.Order;
 
 namespace E_Commerce.Business.Services.Interfaces
 {
@@ -10,5 +10,8 @@ namespace E_Commerce.Business.Services.Interfaces
         Task<PaginatedList<OrderViewModel>> GetAllOrdersAsync(int page);
         Task<PaginatedList<OrderViewModel>> GetAllOrdersByUserIdAsync(string id ,int page);
         Task<bool> DeleteOrderAsync(string orderid, string userid);
+        Task<OrderDetailsViewModel> GetOrderDetailsAsync(string orderid);
+
     }
+
 }

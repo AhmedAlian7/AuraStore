@@ -19,7 +19,11 @@ namespace E_Commerce.DataAccess.Data.Config
             builder.Property(u => u.IsActive)
                 .IsRequired()
                 .HasDefaultValue(true);
-            
+
+            builder.Property(u => u.IsDeleted)
+                .IsRequired()
+                .HasDefaultValue(false);
+
             // Configure relationships
             builder.HasOne(u => u.Cart)
                 .WithOne(c => c.User)

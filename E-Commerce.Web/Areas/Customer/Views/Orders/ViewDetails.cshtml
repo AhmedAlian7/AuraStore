@@ -1,0 +1,183 @@
+﻿@using E_Commerce.Business.ViewModels.Order
+@using E_Commerce.DataAccess.Enums
+@model OrderDetailsViewModel
+
+@{
+    ViewData["Title"] = "My Order Details";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header Section -->
+            <div class="bg-gradient bg-primary text-white rounded-3 p-4 mb-4 shadow">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="display-6 mb-1">Order #@Model.Id</h1>
+                        <p class="mb-0 opacity-75">
+                            @if (Model.CreatedAt.HasValue)
+                            {
+                                <span>Placed on @Model.CreatedAt.Value.ToString("MMMM dd, yyyy 'at' h:mm tt")</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge @GetStatusBadgeClass(Model.OrderStatus) fs-6 px-3 py-2">
+                            @Model.OrderStatus.ToString()
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary Card -->
+            <div class="card shadow mb-4 border-0">
+                <div class="card-body p-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="row text-center text-white">
+                        <div class="col-md-4">
+                            <div class="border-end border-light border-opacity-25 h-100 d-flex flex-column justify-content-center">
+                                <i class="bi bi-box-seam display-6 mb-2 opacity-75"></i>
+                                <h4 class="mb-1">@Model.TotalItems</h4>
+                                <small class="opacity-75">Total Items</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border-end border-light border-opacity-25 h-100 d-flex flex-column justify-content-center">
+                                <i class="bi bi-currency-dollar display-6 mb-2 opacity-75"></i>
+                                <h4 class="mb-1">@Model.TotalAmount.ToString("C")</h4>
+                                <small class="opacity-75">Order Total</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex flex-column justify-content-center">
+                                <i class="bi bi-check-circle display-6 mb-2 opacity-75"></i>
+                                <span class="badge bg-white text-dark mb-1 py-2">@Model.OrderStatus</span>
+                                <small class="opacity-75">Status</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="card shadow mb-4 border-0">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="card-title mb-0 d-flex align-items-center">
+                        <i class="bi bi-bag-check me-2"></i>
+                        Items Ordered
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.OrderItems != null && Model.OrderItems.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead style="background-color: #f8f9fa;">
+                                    <tr>
+                                        <th scope="col" class="border-0 py-3">Product</th>
+                                        <th scope="col" class="text-center border-0 py-3">Qty</th>
+                                        <th scope="col" class="text-end border-0 py-3">Unit Price</th>
+                                        <th scope="col" class="text-end border-0 py-3">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderItems)
+                                    {
+                                        <tr>
+                                            <td class="py-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-3">
+                                                        <div class="bg-primary bg-opacity-10 rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                            <i class="bi bi-box text-primary fs-5"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1 text-dark">@item.Product.Name</h6>
+                                                        @if (!string.IsNullOrEmpty(item.Product.Description))
+                                                        {
+                                                            <small class="text-muted">@item.Product.Description</small>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <span class="badge bg-primary rounded-pill px-3">@item.Quantity</span>
+                                            </td>
+                                            <td class="text-end align-middle">
+                                                <span class="fw-medium text-dark">@item.UnitPrice.ToString("C")</span>
+                                            </td>
+                                            <td class="text-end align-middle">
+                                                <span class="fw-bold text-success">@((item.Quantity * item.UnitPrice).ToString("C"))</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Order Total -->
+                        <div class="border-top bg-success bg-opacity-10 p-3">
+                            <div class="row">
+                                <div class="col-md-8"></div>
+                                <div class="col-md-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0 text-dark">Order Total:</h5>
+                                        <h4 class="mb-0 text-success fw-bold">@Model.TotalAmount.ToString("C")</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center bg-light">
+                            <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                            <p class="text-muted mb-0">No items found for this order.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+            <!-- Action Buttons -->
+            <div class="bg-light rounded-3 p-4">
+                <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
+                    <a asp-controller="Order"
+                       asp-action="MyOrders"
+                       class="btn btn-outline-dark btn-lg d-flex align-items-center">
+                        <i class="bi bi-arrow-left me-2"></i> Back to My Orders
+                    </a>
+
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-primary btn-lg d-flex align-items-center" onclick="window.print()">
+                            <i class="bi bi-printer me-2"></i> Print Receipt
+                        </button>
+                        @if (Model.OrderStatus == OrderStatus.Delivered)
+                        {
+                            <a asp-controller="Review"
+                               asp-action="Create"
+                               asp-route-orderId="@Model.Id"
+                               class="btn btn-success btn-lg d-flex align-items-center">
+                                <i class="bi bi-star me-2"></i> Leave a Review
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusBadgeClass(OrderStatus status)
+    {
+        return status switch
+        {
+            OrderStatus.Pending => "bg-warning text-dark",
+            OrderStatus.Processing => "bg-info text-white",
+            OrderStatus.Shipped => "bg-primary text-white",
+            OrderStatus.Delivered => "bg-success text-white",
+            OrderStatus.Cancelled => "bg-danger text-white",
+            _ => "bg-secondary text-white"
+        };
+    }
+}
