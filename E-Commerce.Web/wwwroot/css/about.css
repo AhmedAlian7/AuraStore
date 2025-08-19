@@ -1,0 +1,611 @@
+﻿:root {
+    --primary-color: #0f172a;
+    --secondary-color: #334155;
+    --accent-color: #6366f1;
+    --accent-hover: #4f46e5;
+    --text-color: #1e293b;
+    --text-muted: #64748b;
+    --surface: #ffffff;
+    --surface-secondary: #f8fafc;
+    --border-color: #e2e8f0;
+}
+
+.py-6 {
+    padding: 5rem 0;
+}
+
+/* Hero Section */
+.hero-banner {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    background: url('/images/about-background.jpg') center no-repeat;
+    position: relative;
+}
+
+.hero-bg {
+    display: none;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+     background: linear-gradient(135deg, rgba(99, 102, 241, 0.8) 0%, rgba(79, 70, 229, 0.8) 100%); 
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+    font-size: 1.375rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+}
+
+.hero-stats {
+    gap: 3rem !important;
+}
+
+.stat-item {
+    text-align: center;
+    color: white;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+/* Section Styling */
+.section-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.section-title {
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.section-subtitle {
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Story Section */
+.story-section {
+    background: var(--surface-secondary);
+}
+
+.story-text {
+    font-size: 1.125rem;
+    color: var(--text-color);
+    line-height: 1.7;
+}
+
+.feature-item {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.story-image .image-wrapper {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.story-image img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.image-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-wrapper:hover .image-overlay {
+    opacity: 1;
+}
+
+.play-button {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    cursor: pointer;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+    .play-button:hover {
+        transform: scale(1);
+    }
+
+/* Team Section */
+.team-card {
+    background: white;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    padding: 2rem 1.5rem;
+}
+
+    .team-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+.team-image {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid var(--accent-color);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+    .team-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+.team-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+}
+
+.team-card:hover .team-overlay {
+    opacity: 0.95;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+    .social-link:hover {
+        transform: scale(1.1);
+        color: var(--accent-hover);
+    }
+
+.team-info {
+    text-align: center;
+}
+
+.team-name {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.team-role {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.team-skills {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.skill-tag {
+    padding: 0.25rem 0.75rem;
+    background: var(--surface-secondary);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent-color);
+}
+
+/* Mission Section */
+.mission-card {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    height: 100%;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+    .mission-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+.mission-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.vision-icon {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.mission-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.mission-text {
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-size: 1.125rem;
+}
+
+/* Values Section */
+.values-section {
+    background: var(--surface-secondary);
+}
+
+.value-card {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    height: 100%;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+    .value-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+.value-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin: 0 auto 1.5rem;
+}
+
+.value-title {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.value-text {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+}
+
+.cta-wrapper {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2rem;
+    padding: 3rem;
+}
+
+.cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+}
+
+.cta-subtitle {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0;
+}
+
+.btn-cta {
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.125rem;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+    .btn-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4);
+        color: white;
+    }
+
+
+
+
+
+/* Hero Section - Background Image with Improved Overlay */
+.hero-banner {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    background: url('/images/store-background.jpg') center/cover no-repeat;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-bg {
+    display: none;
+}
+
+/* Less transparent overlay for better eye comfort */
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    /* Reduced transparency from 0.8 to 0.9 for better readability */
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(79, 70, 229, 0.9) 100%);
+    z-index: 1;
+}
+
+/* Alternative overlay options - choose one */
+/* Option 1: Darker solid overlay */
+/*
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(30, 41, 59, 0.85);
+    z-index: 1;
+}
+*/
+
+/* Option 2: Multi-layered overlay for better text contrast */
+/*
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: 
+        linear-gradient(135deg, rgba(99, 102, 241, 0.85) 0%, rgba(79, 70, 229, 0.85) 100%),
+        rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+*/
+
+/* Option 3: Gradient with blur effect */
+/*
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.85) 0%, rgba(79, 70, 229, 0.85) 100%);
+    backdrop-filter: blur(1px);
+    z-index: 1;
+}
+*/
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+    font-size: 1.375rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 400;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-stats {
+    gap: 3rem !important;
+    position: relative;
+    z-index: 2;
+}
+
+.stat-item {
+    text-align: center;
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .stat-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .stat-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .stat-item:hover::before {
+        left: 100%;
+    }
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+/* Container positioning */
+.container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .stat-item {
+        padding: 1.5rem 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .hero-stats {
+        gap: 1.5rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-banner {
+        min-height: 60vh;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-stats {
+        gap: 1rem !important;
+    }
+}

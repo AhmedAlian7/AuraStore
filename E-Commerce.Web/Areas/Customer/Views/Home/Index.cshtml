@@ -142,7 +142,7 @@
                 @foreach (var product in Model.TrendingProducts)
                 {
                     <div class="col-lg-3 col-md-6">
-                        <div class="product-card">
+                        <div class="product-card" onclick="window.location.href='/Customer/Product/Details/@product.Id'" style="cursor: pointer;">
                             <div class="product-image">
                                 <img src="@product.MainImageUrl" alt="@product.Name" class="img-fluid">
                                 <div class="product-actions">
@@ -168,6 +168,7 @@
                         </div>
                     </div>
                 }
+
             </div>
         </div>
     </div>
@@ -187,7 +188,7 @@
                 <div class="col-lg-4">
                     <div class="testimonial-card">
                         <div class="testimonial-content">
-                            <p>@review.Comment</p>
+                            <p>"@review.Comment"</p>
                         </div>
                         <div class="testimonial-author">
                             <div class="author-info">
