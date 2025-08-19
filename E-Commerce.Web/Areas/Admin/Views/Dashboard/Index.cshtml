@@ -266,13 +266,21 @@
                                                     @{
                                                         var statusClass = order.Status switch
                                                         {
-                                                            OrderStatus.Delivered => "status-Delivered",
-                                                            OrderStatus.Pending => "status-Pending",
-                                                            OrderStatus.Cancelled => "status-Cancelled",
+                                                            OrderStatus.Delivered => "status-approved",
+                                                            OrderStatus.Paid => "status-approved",
+                                                            OrderStatus.Pending => "status-pending",
+                                                            OrderStatus.PendingPayment => "status-pending",
+                                                            OrderStatus.Cancelled => "status-rejected",
                                                             _ => "status-pending"
                                                         };
+
+                                                        var statusText = order.Status switch
+                                                        {
+                                                            OrderStatus.PendingPayment => "Pending Payment",
+                                                            _ => order.Status.ToString()
+                                                        };
                                                     }
-                                                    <span class="badge @statusClass status-badge">@order.Status</span>
+                                                    <span class="badge @statusClass status-badge">@statusText</span>
                                                 </td>
                                                 <td class="fw-bold">$@order.TotalAmount.ToString("N2")</td>
                                             </tr>
