@@ -1,5 +1,5 @@
-﻿
-using E_Commerce.DataAccess.Entities;
+﻿using E_Commerce.DataAccess.Entities;
+using System.Threading.Tasks;
 
 namespace E_Commerce.DataAccess.Repositories.Interfaces
 {
@@ -7,5 +7,6 @@ namespace E_Commerce.DataAccess.Repositories.Interfaces
     {
         Task<IEnumerable<OrderItem>> GetByOrderIdAsync(int orderId);
         Task<OrderItem?> GetByOrderAndProductAsync(int orderId, int productId);
+        Task<bool> HasUserPurchasedProductAsync(string userId, int productId);
     }
 }

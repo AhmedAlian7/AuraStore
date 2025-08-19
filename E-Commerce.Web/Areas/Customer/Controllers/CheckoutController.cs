@@ -77,17 +77,10 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             // Create order from cart (with payment upon receipt)
             var order = await _orderService.CreateOrderFromCartAsync(user.Id);
             // Set order status to Pending (for cash on delivery)
-            await _orderService.UpdateOrderStatusAsync(order.Id.ToString(), E_Commerce.DataAccess.Enums.OrderStatus.Pending);
+            await _orderService.UpdateOrderStatusAsync(order.Id.ToString(), OrderStatus.Pending);
 
-            // Optionally send confirmation email here
-            if (order.User != null)
-            {
-                var totalWithDelivery = order.TotalAmount + DeliveryTax;
-                var emailBody = $@"<h2>Thank you for your order!</h2><p>Order ID: {order.Id}</p><ul>" +
-                    string.Join("", order.OrderItems.Select(item => $"<li>{item.Product.Name} x {item.Quantity} - ${item.UnitPrice * item.Quantity:F2}</li>")) +
-                    $"</ul><p><strong>Total: ${totalWithDelivery:F2} (includes delivery tax)</strong></p>";
-                await _emailService.SendEmailAsync(order.User.Email, "Your Order Confirmation", emailBody);
-            }
+            // Clear cart after order creation (for pay upon receipt)
+            await _cartService.ClearCartAsync(user.Id);
 
             // Redirect to success page
             return RedirectToAction("Success", new { orderId = order.Id });
@@ -142,6 +135,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         {
             bool isPaid = !string.IsNullOrEmpty(session_id);
             var order = await _orderService.GetOrderAsync(orderId.ToString());
+            decimal deliveryFee = 12.00m; // Fixed delivery fee for pay upon delivery
             if (isPaid)
             {
                 await _orderService.UpdateOrderStatusAsync(orderId.ToString(), OrderStatus.Paid);
@@ -154,30 +148,44 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             var orderDetails = order;
             if (orderDetails != null && orderDetails.User != null)
             {
-                var paymentStatusText = isPaid
-                    ? "<strong>Status:</strong> Paid online via Credit Card."
-                    : "<strong>Status:</strong> Payment due upon delivery.";
+                string paymentStatusText;
+                string totalsSection;
+
+                if (isPaid)
+                {
+                    paymentStatusText = "<strong>Status:</strong> Paid online via Credit Card.";
+                    totalsSection = $"<p><strong>Total Amount:</strong> ${orderDetails.TotalAmount:F2}</p>";
+                }
+                else
+                {
+                    paymentStatusText = "<strong>Status:</strong> Payment due upon delivery.";
+                    totalsSection = $@"
+                        <p><strong>Subtotal:</strong> ${orderDetails.SubTotal:F2}</p>
+                        <p><strong>Tax:</strong> ${orderDetails.TaxAmount:F2}</p>
+                        <p><strong>Delivery Fee:</strong> ${deliveryFee:F2}</p>
+                        <p><strong>Total (incl. tax & delivery):</strong> ${(orderDetails.SubTotal + orderDetails.TaxAmount + deliveryFee):F2}</p>";
+                }
 
                 var emailBody = $@"
-                    <div style='font-family: Arial, sans-serif; color: #333;'>
-                        <h2 style='color:#4CAF50;'>Order Confirmation</h2>
-                        <p>Dear {orderDetails.User.Email.Split('@')[0]},</p>
-                        <p>Thank you for shopping with us! We are pleased to confirm that we have received your order.</p>
+                        <div style='font-family: Arial, sans-serif; color: #333;'>
+                            <h2 style='color:#4CAF50;'>Order Confirmation</h2>
+                            <p>Dear {orderDetails.User.Email.Split('@')[0]},</p>
+                            <p>Thank you for shopping with us! We are pleased to confirm that we have received your order.</p>
         
-                        <p><strong>Order ID:</strong> {orderDetails.Id}</p>
+                            <p><strong>Order ID:</strong> {orderDetails.Id}</p>
         
-                        <h3>Order Details:</h3>
-                        <ul style='list-style-type:none; padding:0;'>
-                            {string.Join("", orderDetails.OrderItems.Select(item =>
+                            <h3>Order Details:</h3>
+                            <ul style='list-style-type:none; padding:0;'>
+                                {string.Join("", orderDetails.OrderItems.Select(item =>
                                                 $"<li>{item.Product.Name} &times; {item.Quantity} - ${item.UnitPrice * item.Quantity:F2}</li>"))}
-                        </ul>
-        
-                        <p><strong>Total Amount:</strong> ${orderDetails.TotalAmount:F2}</p>
-                        <p>{paymentStatusText}</p>
+                            </ul>
 
-                        <p>We will notify you once your order has been shipped.</p>
-                        <p style='margin-top:20px;'>Best regards,<br/>The Aura Store Team</p>
-                    </div>";
+                            {totalsSection}
+                            <p>{paymentStatusText}</p>
+
+                            <p>We will notify you once your order has been shipped.</p>
+                            <p style='margin-top:20px;'>Best regards,<br/>The Aura Store Team</p>
+                        </div>";
                 await _emailService.SendEmailAsync(orderDetails.User.Email, "Your Order Confirmation", emailBody);
             }
             ViewData["SuccessMessage"] = isPaid ? "Payment successful!" : "Order placed! Please pay upon delivery.";

@@ -3,6 +3,32 @@
     ViewData["Title"] = Model.Name;
 }
 
+
+<style>
+    .rating-stars {
+        display: flex;
+        gap: 8px;
+        font-size: 2rem;
+        cursor: pointer;
+    }
+
+    .star-select {
+        color: #ddd;
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+        .star-select:hover,
+        .star-select.hovered {
+            color: #ffc107; /* gold */
+            transform: scale(1.2);
+        }
+
+        .star-select.selected {
+            color: #ffb400; /* brighter gold */
+        }
+
+</style>
+
 <div class="product-details-container">
     <!-- Top Section - Two Columns -->
     <div class="product-main-section">
@@ -74,7 +100,7 @@
                 <div class="stars">
                     @for (int i = 1; i <= 5; i++)
                     {
-                        <span class="star @(i <= Model.AverageRating ? "filled" : "empty")">★</span>
+                        <i class="fa@(i <= Model.AverageRating ? "s" : "r") fa-star text-warning"></i>
                     }
                 </div>
                 <span class="rating-text">@Model.AverageRating.ToString("F1") (@Model.ReviewCount reviews)</span>
@@ -131,41 +157,33 @@
 
             <!-- Reviews Tab -->
             <div id="reviews" class="tab-content">
-                <div class="reviews-list">
-                    @if (Model.Reviews.Any())
-                    {
-                        @foreach (var review in Model.Reviews)
-                        {
-                            <div class="review-item">
-                                <div class="review-header">
-                                    <span class="reviewer-name">@review.UserName</span>
-                                    @if (review.IsVerifiedPurchase)
-                                    {
-                                        <span class="verified-badge">✓ Verified Purchase</span>
-                                    }
-                                    <span class="review-date">@review.FormattedDate</span>
-                                </div>
-                                <div class="review-rating">
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        <span class="star @(i <= review.Rating ? "filled" : "empty")">★</span>
-                                    }
-                                </div>
-                                @if (!string.IsNullOrEmpty(review.Comment))
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form id="addReviewForm" class="mb-4">
+                        <input type="hidden" name="productId" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Pick Your Rating:</label>
+                            <div id="starRating" class="rating-stars">
+                                @for (int i = 1; i <= 5; i++)
                                 {
-                                    <p class="review-comment">@review.Comment</p>
+                                    <i class="fa fa-star star-select" data-value="@i"></i>
                                 }
-                                <div class="review-actions">
-                                    <button class="review-action-btn" onclick="likeReview(@review.Id)">👍 Helpful</button>
-                                    <button class="review-action-btn" onclick="replyToReview(@review.Id)">💬 Reply</button>
-                                </div>
                             </div>
-                        }
-                    }
-                    else
-                    {
-                        <p class="no-reviews">No reviews yet. Be the first to review this product!</p>
-                    }
+                            <input type="hidden" name="rating" id="ratingInput" value="5" />
+                        </div>
+
+                        <div class="input-group">
+                            <input name="comment" type="text" class="form-control newsletter-input" placeholder="Write your review..." required>
+                            <button type="submit" class="btn newsletter-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+
+                    </form>
+                }
+                <div id="reviewsList">
+                    @await Html.PartialAsync("_ReviewsListPartial", Model.Reviews)
                 </div>
             </div>
 
@@ -183,62 +201,88 @@
 
         <!-- Right Side - Rating Summary -->
         <div class="rating-summary">
-            <div class="rating-summary-card">
-                <h3>Customer Reviews</h3>
-                <div class="overall-rating">
-                    <div class="rating-number">@Model.AverageRating.ToString("F1")</div>
-                    <div class="rating-stars">
-                        @for (int i = 1; i <= 5; i++)
-                        {
-                            <span class="star @(i <= Model.AverageRating ? "filled" : "empty")">★</span>
-                        }
-                    </div>
-                    <div class="total-reviews">@Model.ReviewCount total reviews</div>
-                </div>
-
-                <div class="rating-breakdown">
-                    <div class="rating-bar-item">
-                        <span class="rating-label">5★</span>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: @Model.RatingBreakdown.FiveStarPercentage%"></div>
-                        </div>
-                        <span class="rating-count">@Model.RatingBreakdown.FiveStarCount</span>
-                    </div>
-                    <div class="rating-bar-item">
-                        <span class="rating-label">4★</span>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: @Model.RatingBreakdown.FourStarPercentage%"></div>
-                        </div>
-                        <span class="rating-count">@Model.RatingBreakdown.FourStarCount</span>
-                    </div>
-                    <div class="rating-bar-item">
-                        <span class="rating-label">3★</span>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: @Model.RatingBreakdown.ThreeStarPercentage%"></div>
-                        </div>
-                        <span class="rating-count">@Model.RatingBreakdown.ThreeStarCount</span>
-                    </div>
-                    <div class="rating-bar-item">
-                        <span class="rating-label">2★</span>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: @Model.RatingBreakdown.TwoStarPercentage%"></div>
-                        </div>
-                        <span class="rating-count">@Model.RatingBreakdown.TwoStarCount</span>
-                    </div>
-                    <div class="rating-bar-item">
-                        <span class="rating-label">1★</span>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: @Model.RatingBreakdown.OneStarPercentage%"></div>
-                        </div>
-                        <span class="rating-count">@Model.RatingBreakdown.OneStarCount</span>
-                    </div>
-                </div>
+            <div id="ratingSummary">
+                @await Html.PartialAsync("_RatingSummaryPartial", Model)
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-	<link rel="stylesheet" href="~/css/product-details.css" />
-	<script src="~/js/product-details.js"></script>
+    <link rel="stylesheet" href="~/css/product-details.css" />
+    <script src="~/js/product-details.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+    $(function () {
+        // Star rating selection
+        $('#starRating .star-select').on('click', function () {
+            var val = $(this).data('value');
+            $('#ratingInput').val(val);
+            $('#starRating .star-select').removeClass('text-warning');
+            $('#starRating .star-select').each(function () {
+                if ($(this).data('value') <= val) $(this).addClass('text-warning');
+            });
+        });
+        // Submit review via AJAX
+        $('#addReviewForm').on('submit', function (e) {
+            e.preventDefault();
+            var form = $(this);
+            $.post('/Customer/Product/AddReview', form.serialize(), function (data) {
+                $('#reviewsList').html(data.reviewsHtml);
+                $('#ratingSummary').html(data.ratingHtml);
+                form[0].reset();
+                $('#ratingInput').val(5);
+                $('#starRating .star-select').removeClass('text-warning').slice(0, 5).addClass('text-warning');
+            });
+        });
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const stars = document.querySelectorAll("#starRating .star-select");
+        const ratingInput = document.getElementById("ratingInput");
+
+        let currentRating = parseInt(ratingInput.value) || 0;
+
+        function updateStars(value) {
+            stars.forEach(s => {
+                s.classList.toggle("selected", s.getAttribute("data-value") <= value);
+            });
+        }
+
+        // Initial render
+        updateStars(currentRating);
+
+        stars.forEach(star => {
+            // Hover preview
+            star.addEventListener("mouseenter", () => {
+                const value = star.getAttribute("data-value");
+                stars.forEach(s => {
+                    s.classList.toggle("hovered", s.getAttribute("data-value") <= value);
+                });
+            });
+
+            star.addEventListener("mouseleave", () => {
+                stars.forEach(s => s.classList.remove("hovered"));
+            });
+
+            star.addEventListener("click", () => {
+                const value = parseInt(star.getAttribute("data-value"));
+
+                if (currentRating === value) {
+                    currentRating = 0;
+                    ratingInput.value = 0;
+                } else {
+                    currentRating = value;
+                    ratingInput.value = value;
+                }
+
+                updateStars(currentRating);
+            });
+        });
+        });
+
+
+
+    </script>
 }

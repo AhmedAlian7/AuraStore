@@ -4,6 +4,7 @@ using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using E_Commerce.Web.Helpers;
 
 namespace E_Commerce.Web.Areas.Customer.Controllers
 {
@@ -63,5 +64,25 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             TempData["SuccessMessage"] = "Product added to cart successfully!";
             return RedirectToAction("Details", "Product", new { id = productId });
         }
+
+        // Ajax call method
+        [HttpPost]
+        public async Task<IActionResult> AddReview(int productId, int rating, string comment)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            await _productService.AddReviewAsync(productId, user.Id, rating, comment);
+
+            var productDetails = await _productService.GetProductDetailsAsync(productId);
+
+            // Return partials for AJAX update
+            return Json(new
+            {
+                reviewsHtml = await ControllerExtensions.RenderViewAsync(this, "_ReviewsListPartial", productDetails.Reviews, true),
+                ratingHtml = await ControllerExtensions.RenderViewAsync(this, "_RatingSummaryPartial", productDetails, true)
+            });
+        }
+
     }
 }

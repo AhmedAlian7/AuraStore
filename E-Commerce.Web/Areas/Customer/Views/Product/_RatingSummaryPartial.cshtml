@@ -1,0 +1,55 @@
+﻿@model E_Commerce.Business.ViewModels.Product.ProductDetailsViewModel
+<div class="rating-summary-card">
+    <h3>Customer Reviews</h3>
+    <div class="overall-rating">
+        <div class="rating-number">@Model.AverageRating.ToString("F1")</div>
+        <div class="rating-stars">
+            @for (int i = 1; i <= 5; i++)
+            {
+                <i class="fa@(i <= Model.AverageRating ? "s" : "r") fa-star text-warning"></i>
+            }
+        </div>
+        <div class="total-reviews">@Model.ReviewCount total reviews</div>
+    </div>
+    <div class="rating-breakdown">
+        <div class="rating-bar-item">
+            <span class="rating-label">5★</span>
+            <div class="rating-bar">
+                <div class="rating-fill" style="width: @Model.RatingBreakdown.FiveStarPercentage%"></div>
+            </div>
+            <span class="rating-count">@Model.RatingBreakdown.FiveStarCount</span>
+        </div>
+        <div class="rating-bar-item">
+            <span class="rating-label">4★</span>
+            <div class="rating-bar">
+                <div class="rating-fill" style="width: @Model.RatingBreakdown.FourStarPercentage%"></div>
+            </div>
+            <span class="rating-count">@Model.RatingBreakdown.FourStarCount</span>
+        </div>
+        <div class="rating-bar-item">
+            <span class="rating-label">3★</span>
+            <div class="rating-bar">
+                <div class="rating-fill" style="width: @Model.RatingBreakdown.ThreeStarPercentage%"></div>
+            </div>
+            <span class="rating-count">@Model.RatingBreakdown.ThreeStarCount</span>
+        </div>
+        <div class="rating-bar-item">
+            <span class="rating-label">2★</span>
+            <div class="rating-bar">
+                <div class="rating-fill" style="width: @Model.RatingBreakdown.TwoStarPercentage%"></div>
+            </div>
+            <span class="rating-count">@Model.RatingBreakdown.TwoStarCount</span>
+        </div>
+        <div class="rating-bar-item">
+            <span class="rating-label">1★</span>
+            <div class="rating-bar">
+                <div class="rating-fill" style="width: @Model.RatingBreakdown.OneStarPercentage%"></div>
+            </div>
+            <span class="rating-count">@Model.RatingBreakdown.OneStarCount</span>
+        </div>
+    </div>
+    @if (Model.RatingBreakdown.TotalReviews == 0)
+    {
+        <div class="text-muted small mt-2">No ratings yet.</div>
+    }
+</div>

@@ -4,6 +4,7 @@ using E_Commerce.Business.ViewModels;
 using E_Commerce.Business.ViewModels.Product;
 using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Entities;
+using E_Commerce.DataAccess.Enums;
 using E_Commerce.DataAccess.Repositories.Implementation;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.VisualBasic;
@@ -281,6 +282,7 @@ namespace E_Commerce.Business.Services.Implementation
             {
                 throw new KeyNotFoundException($"Product with ID {id} not found.");
             }
+            var reviews = product.Reviews?.ToList() ?? new List<Review>();
             var productDetailsVM = new ProductDetailsViewModel
             {
                 Id = product.Id,
@@ -299,9 +301,9 @@ namespace E_Commerce.Business.Services.Implementation
                     ImageUrl = img.ImageUrl,
                     AltText = $"{product.Name} - Image {img.Id}"
                 }).ToList(),
-                AverageRating = product.AverageRating,
-                ReviewCount = product.ReviewCount,
-                Reviews = product.Reviews.OrderByDescending(r => r.CreatedAt).Select(r => new ReviewViewModel
+                AverageRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0,
+                ReviewCount = reviews.Count,
+                Reviews = reviews.OrderByDescending(r => r.CreatedAt).Select(r => new ReviewViewModel
                 {
                     Id = r.Id,
                     UserName = r.User?.Email?.Split('@')[0] ?? "Anonymous",
@@ -312,11 +314,12 @@ namespace E_Commerce.Business.Services.Implementation
                 }).ToList(),
                 RatingBreakdown = new RatingBredownViewModel
                 {
-                    OneStarCount = product.Reviews.Count(r => r.Rating == 1),
-                    TwoStarCount = product.Reviews.Count(r => r.Rating == 2),
-                    ThreeStarCount = product.Reviews.Count(r => r.Rating == 3),
-                    FourStarCount = product.Reviews.Count(r => r.Rating == 4),
-                    FiveStarCount = product.Reviews.Count(r => r.Rating == 5)
+                    FiveStarCount = reviews.Count(r => r.Rating == 5),
+                    FourStarCount = reviews.Count(r => r.Rating == 4),
+                    ThreeStarCount = reviews.Count(r => r.Rating == 3),
+                    TwoStarCount = reviews.Count(r => r.Rating == 2),
+                    OneStarCount = reviews.Count(r => r.Rating == 1),
+                    TotalReviews = reviews.Count
                 }
             };
             return productDetailsVM;
@@ -348,6 +351,23 @@ namespace E_Commerce.Business.Services.Implementation
             return true;
         }
 
+        public async Task AddReviewAsync(int productId, string userId, int rating, string comment)
+        {
+            // Use repository method to check if user purchased the product
+            bool hasPurchased = await _unitOfWork.OrderItems.HasUserPurchasedProductAsync(userId, productId);
+
+            var review = new Review
+            {
+                ProductId = productId,
+                UserId = userId,
+                Rating = rating,
+                Comment = comment,
+                IsVerifiedPurchase = hasPurchased,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _unitOfWork.Reviews.AddAsync(review);
+            await _unitOfWork.SaveAsync();
+        }
     }
 
 

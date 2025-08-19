@@ -26,6 +26,8 @@ namespace E_Commerce.Business.Services.Interfaces
         Task<ProductDetailsViewModel> GetProductDetailsAsync(int id);
         Task<bool> DeleteProductAsync(int id);
 
+        Task AddReviewAsync(int productId, string userId, int rating, string comment);
+
         //Task<bool> AddToCart(int productId, int quantity = 1);
 
     }
