@@ -173,11 +173,13 @@
                             <input type="hidden" name="rating" id="ratingInput" value="5" />
                         </div>
 
-                        <div class="mb-3">
-                            <textarea name="comment" class="form-control" placeholder="Write your review..." required></textarea>
+                        <div class="input-group">
+                            <input name="comment" type="text" class="form-control newsletter-input" placeholder="Write your review..." required>
+                            <button type="submit" class="btn newsletter-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Submit Review</button>
                     </form>
                 }
                 <div id="reviewsList">

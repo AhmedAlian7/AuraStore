@@ -25,7 +25,6 @@ namespace E_Commerce.Web
             builder.Services.AddDbContext<AppDbContext>(op =>
                 op.UseSqlServer(builder.Configuration.GetConnectionString("HostingConnection")));
 
-
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Smtp"));
 

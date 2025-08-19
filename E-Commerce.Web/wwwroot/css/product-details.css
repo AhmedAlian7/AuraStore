@@ -1,4 +1,15 @@
-﻿* {
+﻿:root {
+
+    --accent-color: #2563eb; /* Deep blue accent */
+    --accent-hover: #1d4ed8;
+    --light-gray: #f8f9fa;
+    --border-gray: #e5e7eb;
+    --text-gray: #6b7280;
+    --white: #ffffff;
+}
+
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -484,3 +495,34 @@
         justify-content: center;
     }
 }
+
+/* Newsletter Styles */
+.newsletter-input {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px 0 0 8px;
+    border-color: var(--accent-color);
+    box-shadow: none;
+}
+
+    .newsletter-input::placeholder {
+        color: #6b7280;
+    }
+
+    .newsletter-input:focus {
+        border-color: var(--accent-color);
+        box-shadow: none;
+    }
+
+.newsletter-btn {
+    background-color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 0 8px 8px 0;
+    color: var(--white);
+    padding: 0.75rem 1rem;
+}
+
+    .newsletter-btn:hover {
+        background-color: var(--accent-hover);
+        border-color: var(--accent-hover);
+        color: var(--white);
+    }
