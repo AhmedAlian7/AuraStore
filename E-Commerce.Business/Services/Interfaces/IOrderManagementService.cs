@@ -8,7 +8,7 @@ namespace E_Commerce.Business.Services.Interfaces
     {
 
         Task<PaginatedList<OrderViewModel>> GetAllOrdersAsync(int page);
-
+        Task<PaginatedList<OrderViewModel>> GetAllOrdersByUserIdAsync(string id ,int page);
         Task<bool> DeleteOrderAsync(string orderid, string userid);
     }
 }

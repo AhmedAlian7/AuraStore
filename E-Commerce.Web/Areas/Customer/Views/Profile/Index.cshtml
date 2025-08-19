@@ -1,0 +1,28 @@
+﻿@using E_Commerce.Business.ViewModels.Customer
+@model ProfileViewModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">User Profile</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 p-3 bg-light rounded">
+                        <h5>@Model.email</h5>
+                    </div>
+                    <p class="fw-bold text-primary">Total Orders: @Model.OrdersCount</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">
+                        Back to Home
+                    </a>
+                    <a asp-action="ChangePassword" asp-controller="Profile" class="btn btn-warning">
+                        Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

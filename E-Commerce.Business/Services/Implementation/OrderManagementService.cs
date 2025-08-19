@@ -36,6 +36,28 @@ namespace E_Commerce.Business.Services.Implementation
 
         }
 
+        public async Task<PaginatedList<OrderViewModel>> GetAllOrdersByUserIdAsync(string id, int page)
+        {
+            var orders = await _unitOfWork.Orders.GetByUserIdAsync(id);
+
+            var models = orders.Where(o => !o.IsDeleted).Select(o => new OrderViewModel
+            {
+
+                Id = o.Id,
+                TotalAmount = o.TotalAmount,
+                TotalItems = o.TotalItems,
+                CreatedAt = o.CreatedAt,
+                UserId = o.UserId,
+                OrderStatus = o.OrderStatus,
+
+            });
+
+            return PaginatedList<OrderViewModel>.Create(models, page, Numbers.DefaultPageSize);
+
+        }
+
+
+
         public async Task<bool> DeleteOrderAsync(string orderid,string userid)
         {
             var order = await _OrderService.GetOrderAsync(orderid, userid);

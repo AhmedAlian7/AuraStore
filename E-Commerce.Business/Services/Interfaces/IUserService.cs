@@ -11,7 +11,8 @@ namespace E_Commerce.Business.Services.Interfaces
         Task<bool> DeleteUserAsync(string id);
 
         Task<bool> ChangeStatus(string id, string status);
-
+        //Task<bool> ChangePassword(string id, string oldPassword, string newPassword);
+        Task<ProfileViewModel> ShowProfile(string id);
 
     }
 }

@@ -8,6 +8,7 @@ namespace E_Commerce.Business.ViewModels.Admin
     {
         public int Id { get; set; }
         public decimal TotalAmount { get; set; }
+        public DateTime? CreatedAt  { get; set; }
         public int TotalItems { get; set; }
         public string UserId { get; set; }
         public OrderStatus OrderStatus { get; set; }
