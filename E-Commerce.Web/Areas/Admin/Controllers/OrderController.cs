@@ -37,6 +37,17 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
             return View(orders);
         }
 
+        public async Task<IActionResult> ViewDetails(string id)
+        {
+
+            var order = await _orderManagementService.GetOrderDetailsAsync(id);
+
+            return View(order);
+
+        }
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeStatus(string orderid, OrderStatus status)

@@ -96,6 +96,8 @@ namespace E_Commerce.Business.Services.Implementation
             return order;
         }
 
+
+
         public Task UpdatePaymentDetailsAsync(string orderId, string paymentIntentId, string sessionId, decimal? amount, string currency)
         {
             // Dummy implementation for compatibility

@@ -2,7 +2,7 @@
 using E_Commerce.DataAccess.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace E_Commerce.Business.ViewModels.Admin
+namespace E_Commerce.Business.ViewModels.Order
 {
     public class OrderViewModel
     {

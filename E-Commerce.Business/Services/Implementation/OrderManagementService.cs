@@ -1,6 +1,6 @@
 ﻿using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.Business.ViewModels;
-using E_Commerce.Business.ViewModels.Admin;
+using E_Commerce.Business.ViewModels.Order;
 using E_Commerce.Business.ViewModels.Customer;
 using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Repositories.Interfaces;
@@ -20,20 +20,45 @@ namespace E_Commerce.Business.Services.Implementation
 
         public async Task<PaginatedList<OrderViewModel>> GetAllOrdersAsync(int page)
         {
-            var orders = await _unitOfWork.Orders.GetAllWithItemsAsync();
-            var models = orders.Select(o => new OrderViewModel
-            {
+            // Use IQueryable for paging
+            var ordersQuery =  _unitOfWork.Orders.GetAllWithItemsAsync().Result.AsQueryable().OrderByDescending(o => o.CreatedAt);
+            var totalCount = ordersQuery.Count();
+            var pagedOrders = ordersQuery
+                .Skip((page - 1) * Numbers.DefaultPageSize)
+                .Take(Numbers.DefaultPageSize)
+                .ToList();
 
+            var models = pagedOrders.Select(o => new OrderViewModel
+            {
                 Id = o.Id,
                 TotalAmount = o.TotalAmount,
                 TotalItems = o.TotalItems,
-                UserId = o.UserId,
+                CreatedAt = o.CreatedAt,
                 OrderStatus = o.OrderStatus,
-                
+                UserId = o.UserId,
+               
             });
 
-            return PaginatedList<OrderViewModel>.Create(models, page, Numbers.DefaultPageSize);
+            return new PaginatedList<OrderViewModel>(models, totalCount, page, Numbers.DefaultPageSize);
+        }
 
+        public async Task<OrderDetailsViewModel> GetOrderDetailsAsync(string orderid)
+        {
+            var order = await _OrderService.GetOrderAsync(orderid);
+            var model = new OrderDetailsViewModel
+            {
+
+                Id = order.Id,
+                userName = order.User.ToString(),
+                TotalAmount = order.TotalAmount,
+                OrderItems = order.OrderItems,
+                TotalItems = order.TotalItems,
+                CreatedAt = order.CreatedAt,
+                OrderStatus = order.OrderStatus,
+
+            };
+
+            return model;
         }
 
         public async Task<PaginatedList<OrderViewModel>> GetAllOrdersByUserIdAsync(string id, int page)

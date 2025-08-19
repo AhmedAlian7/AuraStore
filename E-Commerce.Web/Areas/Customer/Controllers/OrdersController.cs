@@ -1,5 +1,4 @@
 using E_Commerce.Business.Services.Interfaces;
-using E_Commerce.Business.ViewModels.Admin;
 using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Enums;
@@ -30,6 +29,15 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
            
             var orders = await _orderManagementService.GetAllOrdersByUserIdAsync(userId, page);
             return View(orders);
+        }
+
+        public async Task<IActionResult> ViewDetails(string id)
+        {
+
+            var order = await _orderManagementService.GetOrderDetailsAsync(id);
+
+            return View(order);
+
         }
 
         [HttpPost]
