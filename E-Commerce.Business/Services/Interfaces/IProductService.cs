@@ -1,4 +1,5 @@
-﻿using E_Commerce.Business.ViewModels.Product;
+﻿using E_Commerce.Business.Services.Implementation;
+using E_Commerce.Business.ViewModels.Product;
 using E_Commerce.DataAccess.Entities;
 
 namespace E_Commerce.Business.Services.Interfaces
@@ -23,6 +24,9 @@ namespace E_Commerce.Business.Services.Interfaces
 
         Task AddReviewAsync(int productId, string userId, int rating, string comment);
 
+
+        Task<IEnumerable<ProductDto>> GetAllProductsDtoAsync();
+        Task<ProductDto> GetProductDto(int Id);
 
     }
 

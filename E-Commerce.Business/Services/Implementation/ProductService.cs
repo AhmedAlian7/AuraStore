@@ -4,10 +4,7 @@ using E_Commerce.Business.ViewModels;
 using E_Commerce.Business.ViewModels.Product;
 using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Entities;
-using E_Commerce.DataAccess.Enums;
-using E_Commerce.DataAccess.Repositories.Implementation;
 using E_Commerce.DataAccess.Repositories.Interfaces;
-using Microsoft.VisualBasic;
 using mvcFirstApp.Services;
 
 namespace E_Commerce.Business.Services.Implementation
@@ -368,7 +365,48 @@ namespace E_Commerce.Business.Services.Implementation
             await _unitOfWork.Reviews.AddAsync(review);
             await _unitOfWork.SaveAsync();
         }
+
+        public async Task<ProductDto> GetProductDto(int Id)
+        {
+            var product = await _unitOfWork.Products.GetByIdAsync(Id, "Category,Reviews");
+
+
+            if (product == null) return null;
+            return new ProductDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.DiscountPrice ?? product.Price,
+                DiscountPrice = product.DiscountPrice,
+                StockCount = product.StockCount,
+                ImageUrl = product.MainImageUrl,
+                CategoryId = product.CategoryId,
+                CategoryName = product.Category.Name,
+                Rating = product.Reviews != null && product.Reviews.Any() ? product.Reviews.Average(r => r.Rating) : 0,
+
+            };
+        }
+
+        public async Task<IEnumerable<ProductDto>> GetAllProductsDtoAsync()
+        {
+            var products = await _unitOfWork.Products.GetAllAsync("Category,Reviews");
+
+            var productsDto = products.Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.DiscountPrice ?? p.Price,
+                DiscountPrice = p.DiscountPrice,
+                StockCount = p.StockCount,
+                ImageUrl = p.MainImageUrl,
+                CategoryId = p.CategoryId,
+                CategoryName = p.Category?.Name ?? string.Empty,
+                Rating = (p.Reviews != null && p.Reviews.Any()) ? p.Reviews.Average(r => r.Rating) : 0
+            });
+
+            return productsDto;
+        }
     }
-
-
 }

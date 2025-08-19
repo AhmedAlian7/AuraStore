@@ -37,4 +37,8 @@
     <ProjectReference Include="..\E-Commerce.Business\E-Commerce.Business.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Api\Data\" />
+  </ItemGroup>
+
 </Project>
