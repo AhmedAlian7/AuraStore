@@ -1,6 +1,7 @@
-using System.Diagnostics;
 using E_Commerce.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Security.Claims;
 
 namespace E_Commerce.Web.Areas.Customer.Controllers
 {

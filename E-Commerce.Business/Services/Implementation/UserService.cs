@@ -8,6 +8,8 @@ using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using mvcFirstApp.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -52,6 +54,23 @@ namespace E_Commerce.Business.Services.Implementation
             return PaginatedList<CustomerViewModel>.Create(orderdModels, page, Numbers.DefaultPageSize);
         }
 
+        public async Task<ProfileViewModel> ShowProfile(string id)
+        {
+            var user = await _userManager
+                .Users
+                .Include(o => o.Orders)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+
+            var model = new ProfileViewModel
+            {
+                email = user.Email,
+                OrdersCount = user.Orders?.Count() ?? 0,
+            };
+            
+            return model;
+        }
+
         public async Task<bool> DeleteUserAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -86,6 +105,16 @@ namespace E_Commerce.Business.Services.Implementation
             var result = await _userManager.UpdateAsync(user);
             return result.Succeeded;
         }
+
+        //public async Task<IdentityResult> ChangePassword(string id,string oldPassword, string newPassword)
+        //{
+        //    var user = await _userManager.FindByIdAsync(id);
+
+        //    await _userManager.ChangePasswordAsync(user, oldPassword ,newPassword);
+            
+        //    var result = await _userManager.UpdateAsync(user);
+        //    return result;
+        //}
 
     }
 }

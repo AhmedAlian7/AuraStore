@@ -427,12 +427,12 @@
                             }
 
                             <!-- Profile -->
-                            <button class="icon-btn" onclick="location.href='@Url.Action("Profile", "Account")'" title="Profile">
+                            <button class="icon-btn" onclick="location.href='@Url.Action("Index", "Profile", new { area = "Customer" })'" title="Profile">
                                 <i class="fas fa-user"></i>
                             </button>
 
                             <!-- Orders -->
-                            <button class="icon-btn" onclick="location.href='@Url.Action("Orders", "Account")'" title="My Orders">
+                            <button class="icon-btn" onclick="location.href='@Url.Action("Index", "Orders" ,new {area = "Customer"})'" title="My Orders">
                                 <i class="fas fa-box"></i>
                             </button>
 
