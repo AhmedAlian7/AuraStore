@@ -165,46 +165,6 @@
 
     <script>
         $(document).ready(function() {
-            // Phone number formatting
-            $('#PhoneNumber').on('input', function() {
-                let value = this.value.replace(/\D/g, '');
-                let formattedValue = '';
-
-                if (value.length > 0) {
-                    formattedValue = '(' + value.substring(0, 3);
-                }
-                if (value.length > 3) {
-                    formattedValue += ') ' + value.substring(3, 6);
-                }
-                if (value.length > 6) {
-                    formattedValue += '-' + value.substring(6, 10);
-                }
-
-                this.value = formattedValue;
-            });
-
-            // Postal code validation (simple US format)
-            $('#PostalCode').on('input', function() {
-                let value = this.value.replace(/\D/g, '');
-                if (value.length > 5) {
-                    value = value.substring(0, 5);
-                }
-                this.value = value;
-            });
-
-            // Form submission with loading overlay
-            $('#shippingForm').on('submit', function(e) {
-                if ($(this).valid()) {
-                    $('#loading-overlay').removeClass('d-none');
-                    $('#confirmOrderBtn').prop('disabled', true);
-
-                    // Add slight delay to show loading animation
-                    setTimeout(function() {
-                        // Form will submit naturally after this
-                    }, 500);
-                }
-            });
-
             // Smooth scroll to validation errors
             $('form').on('invalid-form.validate', function() {
                 let firstError = $(this).find('.input-validation-error').first();
@@ -213,27 +173,6 @@
                         scrollTop: firstError.offset().top - 100
                     }, 500);
                 }
-            });
-
-            $('#pay-on-receipt-btn').click(function () {
-                $('#loading-overlay').removeClass('d-none');
-                $.ajax({
-                    url: '/Customer/Checkout/PayOnReceipt',
-                    type: 'POST',
-                    success: function (response) {
-                        $('#loading-overlay').addClass('d-none');
-                        if (response.success) {
-                            // Display cart data or redirect as needed
-                            // Example: $('#cart-summary').html(response.cartHtml);
-                        } else {
-                            alert('Failed to process payment upon receipt.');
-                        }
-                    },
-                    error: function () {
-                        $('#loading-overlay').addClass('d-none');
-                        alert('An error occurred.');
-                    }
-                });
             });
         });
     </script>
