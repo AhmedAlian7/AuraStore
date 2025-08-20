@@ -68,4 +68,5 @@ namespace E_Commerce.Web.Areas.Api.Controllers
             await _productService.AddProductAsync(product);
             return CreatedAtAction(nameof(GetAll), new { Id = product.Id }, product);
         }
+    }
 }
