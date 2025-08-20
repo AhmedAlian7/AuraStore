@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.Business.ViewModels;
+using E_Commerce.Business.ViewModels.Dtos;
 using E_Commerce.Business.ViewModels.Product;
 using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Entities;
@@ -408,5 +409,84 @@ namespace E_Commerce.Business.Services.Implementation
 
             return productsDto;
         }
+
+        public async Task<ProductPostDto> AddProductAsync(ProductPostDto dto)
+        {
+
+            var productEntity = new Product
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                DiscountPrice = dto.DiscountPrice,
+                StockCount = dto.StockCount,
+                CategoryId = dto.CategoryId,
+                MainImageUrl = dto.MainImageUrl ?? string.Empty,
+            };
+
+
+            if (dto.MainImageUrl != null)
+            {
+                try
+                {
+                    productEntity.MainImageUrl = await _uploadService.UploadAsync(dto.MainImageUrl, "products");
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Error uploading main image: " + ex.Message);
+                }
+
+            }
+            productEntity.ProductImages ??= [];
+
+            try
+            {
+                await _unitOfWork.Products.AddAsync(productEntity);
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Error saving product to database: " + ex.Message);
+            }
+
+            return dto;
+
+        }
+        public async Task<ProductDto> UpdateProductAsync(ProductUpdateDto dto)
+        {
+            var product = await _unitOfWork.Products.GetByIdAsync(dto.Id);
+            if (product == null) return null;
+
+            product.Name = dto.Name;
+            product.Description = dto.Description;
+            product.Price = dto.Price;
+            product.DiscountPrice = dto.DiscountPrice;
+            product.StockCount = dto.StockCount;
+            product.CategoryId = dto.CategoryId;
+            if (!string.IsNullOrEmpty(dto.MainImageUrl))
+            {
+                product.MainImageUrl = dto.MainImageUrl;
+            }
+
+            _unitOfWork.Products.Update(product);
+            await _unitOfWork.SaveAsync();
+
+            return new ProductDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.DiscountPrice ?? product.Price,
+                DiscountPrice = product.DiscountPrice,
+                StockCount = product.StockCount,
+                ImageUrl = product.MainImageUrl,
+                CategoryId = product.CategoryId,
+                CategoryName = product.Category?.Name ?? string.Empty,
+                Rating = product.Reviews != null && product.Reviews.Any() ? product.Reviews.Average(r => r.Rating) : 0,
+                CreatedAt = product.CreatedAt
+            };
+        }
+
+
     }
 }

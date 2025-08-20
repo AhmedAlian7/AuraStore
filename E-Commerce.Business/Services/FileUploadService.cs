@@ -117,5 +117,10 @@ namespace mvcFirstApp.Services
                 return null;
             }
         }
+
+        internal async Task<string> UploadAsync(string mainImageUrl, string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

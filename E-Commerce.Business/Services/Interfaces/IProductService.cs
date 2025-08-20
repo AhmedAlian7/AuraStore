@@ -1,4 +1,5 @@
 ﻿using E_Commerce.Business.Services.Implementation;
+using E_Commerce.Business.ViewModels.Dtos;
 using E_Commerce.Business.ViewModels.Product;
 using E_Commerce.DataAccess.Entities;
 
@@ -11,7 +12,8 @@ namespace E_Commerce.Business.Services.Interfaces
 
         Task AddProductAsync(ProductAddViewModel product);
 
-
+        Task<ProductPostDto> AddProductAsync(ProductPostDto dto);
+        Task<ProductUpdateDto> UpdateProductAsync(ProductUpdateDto dto);
         Task<IEnumerable<ProductViewModel>> GetBestSalesProductsAsync(int count = 8);
 
         Task<IEnumerable<ProductViewModel>> GetRecentProductsAsync(int count = 8);
