@@ -438,7 +438,7 @@ namespace E_Commerce.Business.Services.Implementation
 
             }
             productEntity.ProductImages ??= [];
-
+            //3mk
             try
             {
                 await _unitOfWork.Products.AddAsync(productEntity);
