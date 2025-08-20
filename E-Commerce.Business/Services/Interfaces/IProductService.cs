@@ -13,7 +13,7 @@ namespace E_Commerce.Business.Services.Interfaces
         Task AddProductAsync(ProductAddViewModel product);
 
         Task<ProductPostDto> AddProductAsync(ProductPostDto dto);
-        Task<ProductUpdateDto> UpdateProductAsync(ProductUpdateDto dto);
+        Task<ProductDto> UpdateProductAsync(ProductUpdateDto dto);
         Task<IEnumerable<ProductViewModel>> GetBestSalesProductsAsync(int count = 8);
 
         Task<IEnumerable<ProductViewModel>> GetRecentProductsAsync(int count = 8);
