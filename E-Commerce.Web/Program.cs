@@ -9,6 +9,7 @@ using E_Commerce.DataAccess.Seeding;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using mvcFirstApp.Services;
+using E_Commerce.Web.Filters;
 
 namespace E_Commerce.Web
 {
@@ -19,7 +20,10 @@ namespace E_Commerce.Web
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<CustomExceptionFilter>();
+            });
             builder.Services.AddSession();
 
             builder.Services.AddDbContext<AppDbContext>(op =>
