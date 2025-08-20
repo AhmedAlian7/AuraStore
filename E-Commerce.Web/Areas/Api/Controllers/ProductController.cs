@@ -1,6 +1,5 @@
 ﻿using E_Commerce.Business.ViewModels.Dtos;
 using E_Commerce.Business.Services.Interfaces;
-using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using E_Commerce.Business.Services.Implementation;
 using Microsoft.AspNetCore.Authorization;
@@ -14,11 +13,9 @@ namespace E_Commerce.Web.Areas.Api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IUnitOfWork _unitIfWork;
-        public ProductController(IProductService productService, IUnitOfWork unitOfWork)
+        public ProductController(IProductService productService)
         {
             _productService = productService;
-            _unitIfWork = unitOfWork;
         }
 
         [HttpGet("All")]
