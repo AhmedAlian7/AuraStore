@@ -1,6 +1,6 @@
 # E-Commerce
 
-## AURA Store TODO:
+## AURA Store TODO
 - Low Stoke notification for admin
 - notify customer when the product is available (if he asked)
 - Wishlist
@@ -10,7 +10,7 @@
 - Forget password
 - Admin can add a new role
 ---
-## Extra:
+## Extra
 - Order Cancellation / Return Request → basic request form for refunds or returns.
 - Recently Viewed Products → show a small section of last-browsed items.
 - Related Products → simple “You may also like” based on category.
@@ -18,5 +18,6 @@
 - Price Range Slider → filter products within a budget.
 - Product Tags
 - Compare Products → add 2 products side by side (just specs & price).
-
+---
+##  ERD
 ![ERD](E-commerce-erd.png)
