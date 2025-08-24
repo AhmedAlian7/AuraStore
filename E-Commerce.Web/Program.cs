@@ -1,15 +1,9 @@
-using E_Commerce.Business.Configuration;
-using E_Commerce.Business.Services.Implementation;
-using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.DataAccess.Data;
 using E_Commerce.DataAccess.Entities;
-using E_Commerce.DataAccess.Repositories.Implementation;
-using E_Commerce.DataAccess.Repositories.Interfaces;
 using E_Commerce.DataAccess.Seeding;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using mvcFirstApp.Services;
 using E_Commerce.Web.Filters;
+using E_Commerce.Web.Helpers;
+using Microsoft.AspNetCore.Identity;
 
 namespace E_Commerce.Web
 {
@@ -25,12 +19,6 @@ namespace E_Commerce.Web
                 options.Filters.Add<CustomExceptionFilter>();
             });
             builder.Services.AddSession();
-
-            builder.Services.AddDbContext<AppDbContext>(op =>
-                op.UseSqlServer(builder.Configuration.GetConnectionString("HostingConnection")));
-
-            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
-            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Smtp"));
 
 
             // Register External Login
@@ -53,20 +41,6 @@ namespace E_Commerce.Web
                     options.CallbackPath = "/signin-facebook"; // default
 
                 });
-
-            //Register UnitOfWork
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IProductService, ProductService>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService >();
-            builder.Services.AddScoped<FileUploadService>();
-            builder.Services.AddScoped<ICartService, CartService>();
-            builder.Services.AddScoped<IOrderService, OrderService>();
-            builder.Services.AddScoped<IOrderManagementService, OrderManagementService>();
-            builder.Services.AddScoped<IEmailService, EmailService>();
-            builder.Services.AddScoped<IOrderManagementService, OrderManagementService>();
-            //builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-            builder.Services.AddScoped<IReviewService, ReviewService>();
 
             // Register Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -99,14 +73,8 @@ namespace E_Commerce.Web
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
-            // Register AutoMapper
-            builder.Services.AddAutoMapper(typeof(Program));
-            //var config = new MapperConfiguration(cfg =>
-            //{
-            //    cfg.AddProfile<ProductMappingProfile>();
-            //});
-
-            //config.AssertConfigurationIsValid();
+            // Register custom services
+            builder.Services.AddApplicationServices(builder.Configuration);
 
             var app = builder.Build();
 
