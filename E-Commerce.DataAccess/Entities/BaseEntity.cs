@@ -11,5 +11,4 @@ namespace E_Commerce.DataAccess.Entities
         public bool IsDeleted { get; set; } = false;
     }
 
-
 }

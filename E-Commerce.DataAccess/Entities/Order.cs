@@ -25,5 +25,6 @@ namespace E_Commerce.DataAccess.Entities
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public string UserId { get; set; } = string.Empty;
         public ApplicationUser User { get; set; } = null!;
+
     }
 }

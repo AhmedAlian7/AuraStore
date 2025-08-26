@@ -2,9 +2,10 @@
 using E_Commerce.Business.ViewModels.Cart;
 using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Entities;
+using E_Commerce.DataAccess.Enums;
+using E_Commerce.DataAccess.Repositories.Implementation;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
 namespace E_Commerce.Business.Services.Implementation
@@ -12,13 +13,11 @@ namespace E_Commerce.Business.Services.Implementation
     public class CartService : ICartService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CartService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContext)
+        public CartService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContext)
         {
             _unitOfWork = unitOfWork;
-            _userManager = userManager;
             _httpContextAccessor = httpContext;
         }
 
@@ -132,13 +131,11 @@ namespace E_Commerce.Business.Services.Implementation
 
         public async Task<CartSummaryDto> GetCartSummaryAsync()
         {
-
             var userId = GetCurrentUserId();
+            var cart = await _unitOfWork.Carts
+                .GetByUserIdAsync(userId, includeProperties: "CartItems.Product,PromoCode");
 
-            var cartItems = await _unitOfWork.CartItems
-                .GetByUserIdWithProductAsync(userId);
-
-            if (!cartItems.Any())
+            if (cart == null || !cart.CartItems.Any())
             {
                 return new CartSummaryDto
                 {
@@ -150,19 +147,23 @@ namespace E_Commerce.Business.Services.Implementation
             }
 
             // Calculate totals using EffectivePrice (discounted price if available)
-            var totalItems = cartItems.Sum(c => c.Quantity);
-            var subtotal = cartItems.Sum(c => c.Quantity * c.Product.EffectivePrice);
+            var totalItems = cart.TotalItems;
+            var subtotal = cart.TotalAmount;
             var tax = subtotal * Numbers.TAX_RATE;
-            var total = subtotal + tax;
+            
+            // Apply promo code discount if exists
+            var total = cart.DiscountedTotal + tax;
 
             return new CartSummaryDto
             {
                 TotalItems = totalItems,
                 Subtotal = subtotal,
                 Tax = tax,
-                Total = total
+                Total = total,
+                DiscountAmount = cart.DiscountAmount ?? 0
             };
         }
+
         private string GetCurrentUserId()
         {
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -170,8 +171,101 @@ namespace E_Commerce.Business.Services.Implementation
 
         public async Task ClearCartAsync(string userId)
         {
-            await _unitOfWork.Carts.ClearCartAsync(userId);
+            var cart = await _unitOfWork.Carts.GetByUserIdAsync(userId, includeProperties: string.Empty);
+            if (cart != null)
+            {
+                // Clear promo code when clearing cart
+                cart.PromoCodeId = null;
+                cart.DiscountAmount = null;
+                await _unitOfWork.Carts.ClearCartAsync(userId);
+                await _unitOfWork.SaveAsync();
+            }
+        }
+
+        public async Task<PromoCodeResult> ApplyPromoCodeAsync(string promoCode)
+        {
+            var result = new PromoCodeResult
+            {
+                Success = false,
+            };
+
+            var userId = GetCurrentUserId();
+            var cart = await _unitOfWork.Carts
+                .GetByUserIdAsync(userId, includeProperties: "CartItems.Product");
+
+            if (cart == null)
+            {
+                result.Message = "Cart not found.";
+                return result;
+            }
+
+            var code = await _unitOfWork.PromoCodes.GetByCodeAsync(promoCode);
+            if (code == null || !code.IsActive)
+            {
+                result.Message = "Invalid or inactive promo code.";
+                return result;
+            }
+
+            var now = DateTime.UtcNow;
+            if (now < code.StartDate || now > code.EndDate)
+            {
+                result.Message = "Promo code is expired or not yet active.";
+                return result;
+            }
+
+            if (code.UsageLimit.HasValue && code.UsedCount >= code.UsageLimit.Value)
+            {
+                result.Message = "Promo code usage limit reached.";
+                return result;
+            }
+
+            decimal subtotal = cart.TotalAmount;
+            if (code.MinOrderAmount.HasValue && subtotal < code.MinOrderAmount.Value)
+            {
+                result.Message = $"Minimum order amount is {code.MinOrderAmount.Value:C}.";
+                return result;
+            }
+
+            decimal discountAmount = 0;
+            if (code.DiscountType == DiscountType.Percentage)
+            {
+                discountAmount = subtotal * (code.DiscountValue / 100);
+            }
+            else if (code.DiscountType == DiscountType.FixedAmount)
+            {
+                discountAmount = code.DiscountValue;
+            }
+
+            // Update cart with promo code
+            cart.PromoCodeId = code.Id;
+            cart.PromoCode = code;
+            cart.DiscountAmount = discountAmount;
+            _unitOfWork.Carts.Update(cart);
             await _unitOfWork.SaveAsync();
+
+            var cartSummary = await GetCartSummaryAsync();
+
+            result.Success = true;
+            result.Message = "Promo code applied successfully.";
+            result.CartSummary = cartSummary;
+            result.DiscountAmount = discountAmount;
+
+            return result;
+        }
+
+        public async Task IncrementPromoCodeUsageAsync(string userId)
+        {
+            var cart = await _unitOfWork.Carts.GetByUserIdAsync(userId, "");
+            if (cart?.PromoCodeId != null)
+            {
+                var promoCode = await _unitOfWork.PromoCodes.GetByIdAsync(cart.PromoCodeId.Value);
+                if (promoCode != null)
+                {
+                    promoCode.UsedCount++;
+                    _unitOfWork.PromoCodes.Update(promoCode);
+                    await _unitOfWork.SaveAsync();
+                }
+            }
         }
     }
 

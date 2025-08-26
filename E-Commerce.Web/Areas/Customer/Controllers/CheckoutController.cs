@@ -49,10 +49,10 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         public async Task<IActionResult> Recipt()
         {
             var model = await _cartService.GetCartSummaryAsync();
-            // Do not overwrite tax or subtotal, just pass delivery tax as ViewBag
             decimal deliveryTax = 12.00m; // Only for pay on delivery
             ViewBag.DeliveryTax = deliveryTax;
-            ViewBag.GrandTotal = model.Subtotal + model.Tax + deliveryTax;
+            ViewBag.DiscountAmount = model.DiscountAmount;
+            ViewBag.GrandTotal = (model.Subtotal - model.DiscountAmount) + model.Tax + deliveryTax;
             return View(model);
         }
 
@@ -94,14 +94,13 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
 
+            // Get cart summary for discount
+            var cartSummary = await _cartService.GetCartSummaryAsync();
+
             // Create order from cart
             var order = await _orderService.CreateOrderFromCartAsync(user.Id);
 
-            // Load products for order items
-            foreach (var item in order.OrderItems)
-            {
-                _ = item.Product ?? throw new InvalidOperationException("OrderItem.Product must be loaded.");
-            }
+            var discountRatio = (cartSummary.Subtotal - cartSummary.DiscountAmount) / cartSummary.Subtotal;
 
             var options = new SessionCreateOptions
             {
@@ -109,7 +108,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = (long)(item.UnitPrice * 100),
+                        UnitAmount = (long)(item.UnitPrice * discountRatio * 100),
                         Currency = "usd",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
@@ -123,6 +122,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                 SuccessUrl = $"{_domain}/Customer/Checkout/Success?orderId={order.Id}&session_id={{CHECKOUT_SESSION_ID}}",
                 CancelUrl = $"{_domain}/Customer/Checkout/Cancel",
             };
+            
 
             var client = new Stripe.StripeClient(_stripeSecretKey);
             var service = new SessionService(client);
@@ -145,31 +145,43 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                     await _cartService.ClearCartAsync(order.UserId);
                 }
             }
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+            // Increment promo code usage count if promo code was used
+            await _cartService.IncrementPromoCodeUsageAsync(user.Id);
             var orderDetails = order;
             if (orderDetails != null && orderDetails.User != null)
             {
                 string paymentStatusText;
                 string totalsSection;
+                string discountSection = string.Empty;
+
+                if (orderDetails.DiscountAmount > 0)
+                {
+                    discountSection = $"<p><strong>Discount Applied:</strong> -${orderDetails.DiscountAmount:F2}</p>";
+                }
 
                 if (isPaid)
                 {
                     paymentStatusText = "<strong>Status:</strong> Paid online via Credit Card.";
-                    totalsSection = $"<p><strong>Total Amount:</strong> ${orderDetails.TotalAmount:F2}</p>";
+                    var totalAfterDiscount = orderDetails.SubTotal - orderDetails.DiscountAmount + orderDetails.TaxAmount;
+                    totalsSection = $"<p><strong>Total Amount:</strong> ${totalAfterDiscount:F2}</p>";
                 }
                 else
                 {
                     paymentStatusText = "<strong>Status:</strong> Payment due upon delivery.";
+                    var totalAfterDiscount = orderDetails.SubTotal - orderDetails.DiscountAmount + deliveryFee;
                     totalsSection = $@"
                         <p><strong>Subtotal:</strong> ${orderDetails.SubTotal:F2}</p>
-                        <p><strong>Tax:</strong> ${orderDetails.TaxAmount:F2}</p>
+                        <p><strong>Discount:</strong> -${orderDetails.DiscountAmount:F2}</p>
                         <p><strong>Delivery Fee:</strong> ${deliveryFee:F2}</p>
-                        <p><strong>Total (incl. tax & delivery):</strong> ${(orderDetails.SubTotal + orderDetails.TaxAmount + deliveryFee):F2}</p>";
+                        <p><strong>Total (include delivery):</strong> ${totalAfterDiscount:F2}</p>";
                 }
 
                 var emailBody = $@"
                         <div style='font-family: Arial, sans-serif; color: #333;'>
                             <h2 style='color:#4CAF50;'>Order Confirmation</h2>
-                            <p>Dear {orderDetails.User.Email.Split('@')[0]},</p>
+                            <p>Dear {orderDetails.User.ToString()},</p>
                             <p>Thank you for shopping with us! We are pleased to confirm that we have received your order.</p>
         
                             <p><strong>Order ID:</strong> {orderDetails.Id}</p>
@@ -179,7 +191,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                                 {string.Join("", orderDetails.OrderItems.Select(item =>
                                                 $"<li>{item.Product.Name} &times; {item.Quantity} - ${item.UnitPrice * item.Quantity:F2}</li>"))}
                             </ul>
-
+                            {discountSection}
                             {totalsSection}
                             <p>{paymentStatusText}</p>
 

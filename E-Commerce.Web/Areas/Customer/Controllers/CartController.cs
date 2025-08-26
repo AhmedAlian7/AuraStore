@@ -24,7 +24,9 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
 
-            var cart = await _cartService.GetUserCartAsync(user.Id); // <==
+            var cart = await _cartService.GetUserCartAsync(user.Id);
+            var cartSummary = await _cartService.GetCartSummaryAsync();
+            ViewBag.DiscountAmount = cartSummary.DiscountAmount;
             return View(cart);
         }
 
@@ -88,14 +90,15 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         }
 
         [HttpPost]
-        public IActionResult ApplyPromoCode(string promoCode)
+        public async Task<IActionResult> ApplyPromoCode(string promoCode)
         {
             if(string.IsNullOrWhiteSpace(promoCode))
             {
                 return Json(new { success = false, message = "Promo code is required." });
             }
 
-            /*var result = await _cartService.ApplyPromoCodeAsync(promoCode);
+            var result = await _cartService.ApplyPromoCodeAsync(promoCode);
+
             if (result == null || !result.Success)
             {
                 return Json(new
@@ -109,6 +112,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             {
                 success = true,
                 message = "Promo code applied successfully!",
+                discountAmount = result.DiscountAmount,
                 cartSummary = new
                 {
                     totalItems = result.CartSummary.TotalItems,
@@ -116,13 +120,9 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                     tax = result.CartSummary.Tax,
                     total = result.CartSummary.Total
                 }
-            });*/
-
-            return Json(new
-            {
-                success = false,
-                message = "Invalid or expired promo code."
             });
+
+
         }
     }
 

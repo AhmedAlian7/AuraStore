@@ -10,5 +10,7 @@ namespace E_Commerce.Business.Services.Interfaces
         Task<UpdateQuantityResult> UpdateQuantityAsync(int cartItemId, int quantity);
         Task DeleteItemAsync(int cartItemId);
         Task ClearCartAsync(string userId); // Added for clearing all cart items for a user
+        Task<PromoCodeResult> ApplyPromoCodeAsync(string promoCode);
+        Task IncrementPromoCodeUsageAsync(string userId);
     }
 }

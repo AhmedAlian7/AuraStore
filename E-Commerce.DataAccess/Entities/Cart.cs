@@ -9,9 +9,17 @@ namespace E_Commerce.DataAccess.Entities
 
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
+        // Promo code related properties
+        public int? PromoCodeId { get; set; }
+        public PromoCode? PromoCode { get; set; }
+        public decimal? DiscountAmount { get; set; }
+
         // derived properties
         [NotMapped]
         public decimal TotalAmount => CartItems?.Sum(ci => ci.Quantity * ci.Product.EffectivePrice) ?? 0;
+
+        [NotMapped]
+        public decimal DiscountedTotal => Math.Max(TotalAmount - (DiscountAmount ?? 0), 0);
 
         [NotMapped]
         public int TotalItems => CartItems?.Sum(ci => ci.Quantity) ?? 0;

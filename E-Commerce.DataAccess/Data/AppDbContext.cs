@@ -23,7 +23,7 @@ namespace E_Commerce.DataAccess.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
-
+        public DbSet<PromoCode> PromoCodes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

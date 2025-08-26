@@ -2,10 +2,11 @@
 
 @{
     ViewData["Title"] = "Payment Upon Receipt";
-    decimal deliveryTax = 12.00m; // Only for pay on delivery
+    decimal deliveryTax = ViewBag.DeliveryTax != null ? (decimal)ViewBag.DeliveryTax : 12.00m;
+    decimal discount = ViewBag.DiscountAmount != null ? (decimal)ViewBag.DiscountAmount : (Model?.DiscountAmount ?? 0);
     decimal subtotal = Model?.Subtotal ?? 0;
     decimal tax = Model?.Tax ?? 0;
-    decimal total = subtotal + tax + deliveryTax;
+    decimal total = subtotal - discount + tax + deliveryTax;
 }
 
 <div class="container-fluid py-4">
@@ -45,6 +46,15 @@
                                     <span class="fw-bold">$@(subtotal.ToString("F2"))</span>
                                 </div>
                             </div>
+                            @if (discount > 0)
+                            {
+                                <div class="col-md-6">
+                                    <div class="d-flex justify-content-between align-items-center py-2">
+                                        <span class="text-muted text-success">Discount</span>
+                                        <span class="fw-bold text-success">- $@(discount.ToString("F2"))</span>
+                                    </div>
+                                </div>
+                            }
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-between align-items-center py-2">
                                     <span class="text-muted">Tax</span>

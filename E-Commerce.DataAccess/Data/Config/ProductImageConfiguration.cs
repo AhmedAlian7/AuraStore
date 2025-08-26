@@ -32,5 +32,4 @@ namespace E_Commerce.DataAccess.Data.Config
         }
     }
 
-
 }
