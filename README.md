@@ -4,11 +4,11 @@
 - Low Stoke notification for admin
 - notify customer when the product is available (if he asked)
 - Wishlist
-- Promocodes
 - Categories page + Manage Categories
 - Contact page
 - Forget password
 - Admin can add a new role
+- Promocodes [Done]✅
 ---
 ## Extra
 - Order Cancellation / Return Request → basic request form for refunds or returns.
