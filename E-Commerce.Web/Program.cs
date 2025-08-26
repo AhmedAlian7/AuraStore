@@ -1,3 +1,5 @@
+using E_Commerce.Business.Services.Implementation;
+using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.DataAccess.Data;
 using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Seeding;
@@ -12,7 +14,7 @@ namespace E_Commerce.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            
             // Add services to the container.
             builder.Services.AddControllersWithViews(options =>
             {

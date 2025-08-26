@@ -32,7 +32,7 @@ namespace E_Commerce.Web.Helpers
             services.AddScoped<IOrderManagementService, OrderManagementService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IReviewService, ReviewService>();
-
+            services.AddScoped<IPromoCodeService, PromoCodeService>();
             // AutoMapper
             services.AddAutoMapper(typeof(Program));
 

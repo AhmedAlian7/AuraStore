@@ -1,0 +1,117 @@
+﻿@using E_Commerce.Business.ViewModels.PromoCode
+@model PromoCodeViewModel
+@{
+    ViewData["Title"] = "Add Promo Code";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-plus"></i> Add New Promo Code</h2>
+    <a asp-action="Index" asp-controller="PromoCode" asp-area="Admin" class="btn btn-warning">
+        <i class="fas fa-list"></i> Back to List
+    </a>
+</div>
+
+<hr />
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<form asp-action="Add" asp-controller="PromoCode" asp-area="Admin" method="post">
+    <div class="row">
+        <!-- General Information -->
+        <div class="col-lg-8 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light fw-bold">
+                    <i class="fas fa-info-circle"></i> General Information
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Code" class="form-label">Promo Code *</label>
+                        <input asp-for="Code" class="form-control" placeholder="Enter promo code" />
+                        <span asp-validation-for="Code" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control" placeholder="Enter description (optional)"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Discount Settings -->
+        <div class="col-lg-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light fw-bold">
+                    <i class="fas fa-tags"></i> Discount Settings
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="DiscountType" class="form-label">Discount Type *</label>
+                        <select asp-for="DiscountType" class="form-select"
+                                asp-items="Html.GetEnumSelectList<DiscountType>()"></select>
+                        <span asp-validation-for="DiscountType" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label asp-for="DiscountValue" class="form-label">Discount Value *</label>
+                        <input asp-for="DiscountValue" class="form-control" type="number" step="0.01" placeholder="Enter discount value" />
+                        <span asp-validation-for="DiscountValue" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Date Range -->
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light fw-bold">
+                    <i class="fas fa-calendar-alt"></i> Validity Period
+                </div>
+                <div class="card-body row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="StartDate" class="form-label">Start Date</label>
+                        <input asp-for="StartDate" class="form-control" type="date" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EndDate" class="form-label">End Date</label>
+                        <input asp-for="EndDate" class="form-control" type="date" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Limit -->
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light fw-bold">
+                    <i class="fas fa-user-check"></i> Usage Settings
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="UsageLimit" class="form-label">Usage Limit</label>
+                        <input asp-for="UsageLimit" class="form-control" type="number" placeholder="Leave blank for unlimited" />
+                        <span asp-validation-for="UsageLimit" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="mt-3 text-end">
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Save Promo Code
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

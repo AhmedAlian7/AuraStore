@@ -25,7 +25,7 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Index(int page = 1, string search = null, int? category = null, string sortBy = null)
         {
             var products = await _productService.GetAllAsync(page, search, category, sortBy);
-            // Fetch all categories and map to SelectListItem for dropdown
+           
             var categories = _unitIfWork.Categories.GetAll()
                 .Select(x => new SelectListItem
                 {

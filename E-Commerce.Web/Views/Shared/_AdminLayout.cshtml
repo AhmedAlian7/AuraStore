@@ -58,6 +58,14 @@
                 </a>
             </li>
 
+            <!-- Promo Codes Menu -->
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Index" asp-controller="PromoCode" asp-area="Admin">
+                    <i class="fas fa-percent"></i>
+                    <span>Promo Codes</span>
+                </a>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link">
                     <i class="fas fa-cog"></i>
@@ -130,7 +138,7 @@
                         }
                     </ol>
                 </nav>
-                
+
 
                 <!-- Alert Messages -->
                 @if (TempData["SuccessMessage"] != null)
