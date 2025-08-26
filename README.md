@@ -18,6 +18,7 @@
 - Price Range Slider → filter products within a budget.
 - Product Tags
 - Compare Products → add 2 products side by side (just specs & price).
+- Cart items counter animation (on cart icon on the header) on the AddToCart event
 ---
 ##  ERD
 ![ERD](E-commerce-erd.png)
