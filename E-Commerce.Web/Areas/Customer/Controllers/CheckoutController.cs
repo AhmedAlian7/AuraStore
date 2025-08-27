@@ -76,10 +76,14 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
 
             // Create order from cart (with payment upon receipt)
             var order = await _orderService.CreateOrderFromCartAsync(user.Id);
-            // Set order status to Pending (for cash on delivery)
+
+            // Set order status to Pending (cash on delivery)
             await _orderService.UpdateOrderStatusAsync(order.Id.ToString(), OrderStatus.Pending);
 
-            // Clear cart after order creation (for pay upon receipt)
+            // Increment promo code usage
+            await _cartService.IncrementPromoCodeUsageAsync(user.Id);
+
+            // Clear cart after order creation
             await _cartService.ClearCartAsync(user.Id);
 
             // Redirect to success page
@@ -135,10 +139,16 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         {
             bool isPaid = !string.IsNullOrEmpty(session_id);
             var order = await _orderService.GetOrderAsync(orderId.ToString());
-            decimal deliveryFee = 12.00m; // Fixed delivery fee for pay upon delivery
+            decimal deliveryFee = 12.00m; // delivery fee for pay upon delivery
             if (isPaid)
             {
                 await _orderService.UpdateOrderStatusAsync(orderId.ToString(), OrderStatus.Paid);
+
+                // Increment promo code usage
+                if (order != null)
+                {
+                    await _cartService.IncrementPromoCodeUsageAsync(order.UserId);
+                }
                 // Clear cart after payment success
                 if (order != null)
                 {
@@ -147,8 +157,6 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             }
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
-            // Increment promo code usage count if promo code was used
-            await _cartService.IncrementPromoCodeUsageAsync(user.Id);
             var orderDetails = order;
             if (orderDetails != null && orderDetails.User != null)
             {
