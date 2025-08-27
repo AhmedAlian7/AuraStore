@@ -15,6 +15,7 @@ namespace E_Commerce.DataAccess.Entities
         public Cart Cart { get; set; } = null!;
         public ICollection<Order>? Orders { get; set; }
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
 
     }
 }

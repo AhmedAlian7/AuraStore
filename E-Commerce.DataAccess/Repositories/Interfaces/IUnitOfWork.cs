@@ -13,6 +13,7 @@ namespace E_Commerce.DataAccess.Repositories.Interfaces
         IReviewRepository Reviews { get; }
         IProductImageRepository ProductImages { get; }
         IPromoCodeRepository PromoCodes { get; }
+        IWishlistItemRepository WishlistItems { get; }
 
         Task<int> SaveAsync();
         //IRepository<TEntity> Repository<TEntity>() where TEntity : class;

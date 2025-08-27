@@ -143,7 +143,7 @@
                                     <li class="dropdown-header">
                                         <div class="user-details">
                                             <strong>@(User.Identity.Name ?? "User")</strong>
-                                            <small class="text-muted">@(User.Identity.Name ?? "user@example.com")</small>
+                                            <small class="text-muted">@(User.FindFirst(ClaimTypes.Email)?.Value ?? "user@example.com")</small>
                                         </div>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
