@@ -95,12 +95,19 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> GetWishlistCount()
         {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-                return Json(new { count = 0 });
+            try
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Json(new { success = false, count = 0 });
 
-            var count = await _wishlistService.GetWishlistCountAsync(userId);
-            return Json(new { count = count });
+                var count = await _wishlistService.GetWishlistCountAsync(userId);
+                return Json(new { success = true, count = count });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
     }
 }

@@ -84,14 +84,48 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized();
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
 
-            await _cartService.AddToCartAsync(user.Id, productId, quantity);
+                await _cartService.AddToCartAsync(user.Id, productId, quantity);
+                
+                TempData["SuccessMessage"] = "Product added to cart successfully!";
+                return RedirectToAction("Details", "Product", new { id = productId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Details", "Product", new { id = productId });
+            }
+        }
 
-            TempData["SuccessMessage"] = "Product added to cart successfully!";
-            return RedirectToAction("Details", "Product", new { id = productId });
+        [HttpPost]
+        public async Task<IActionResult> AddToCartAjax(int productId, int quantity = 1)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Json(new { success = false, message = "User not authenticated" });
+
+                await _cartService.AddToCartAsync(user.Id, productId, quantity);
+                
+                // Get updated cart count
+                var cartSummary = await _cartService.GetCartSummaryAsync();
+
+                return Json(new { 
+                    success = true, 
+                    message = "Product added to cart successfully!",
+                    cartCount = cartSummary.TotalItems
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         // Ajax call method

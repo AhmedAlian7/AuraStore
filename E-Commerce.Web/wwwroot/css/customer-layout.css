@@ -686,6 +686,94 @@ body {
     }
 }
 
+/* Badge Animation Styles */
+.badge-appear {
+    animation: badgeAppear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.badge-disappear {
+    animation: badgeDisappear 0.3s ease-out;
+}
+
+.badge-bounce {
+    animation: badgeBounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes badgeAppear {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(-90deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes badgeDisappear {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0) rotate(180deg);
+        opacity: 0;
+    }
+}
+
+@keyframes badgeBounce {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.3);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+    75% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Enhanced badge styles for better visibility */
+.modern-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
+    color: white;
+    border-radius: 12px;
+    min-width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+}
+
+.modern-badge.wishlist-badge {
+    background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
+}
+
+.modern-badge.cart-badge {
+    background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
+    box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+}
+
 /* Responsive */
 @media (max-width: 991.98px) {
     .navbar-nav {

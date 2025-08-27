@@ -81,6 +81,10 @@
                         $cartItem.find('.subtotal-amount').text(Number(response.itemSubtotal).toFixed(2));
                     }
                     updateOrderSummary(response.cartSummary);
+                    // Update cart badge in header
+                    if (typeof updateCartBadge === 'function') {
+                        updateCartBadge(response.cartSummary.totalItems || 0);
+                    }
                     showNotification('Quantity updated successfully!', 'success');
                 } else {
                     showNotification('Failed to update quantity', 'error');
@@ -111,6 +115,10 @@
                             location.reload();
                         } else {
                             updateOrderSummary(response.cartSummary);
+                            // Update cart badge in header
+                            if (typeof updateCartBadge === 'function') {
+                                updateCartBadge(response.cartSummary.totalItems || 0);
+                            }
                         }
                     });
 

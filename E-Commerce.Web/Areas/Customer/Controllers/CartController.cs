@@ -124,6 +124,21 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
 
 
         }
+        
+
+        [HttpGet]
+        public async Task<IActionResult> GetCartCount()
+        {
+            try
+            {
+                var cartSummary = await _cartService.GetCartSummaryAsync();
+                return Json(new { success = true, count = cartSummary.TotalItems });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 
 }

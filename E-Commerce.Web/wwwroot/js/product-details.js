@@ -41,9 +41,43 @@ function showTab(tabName) {
 }
 
 function addToCart(productId) {
-    // Implement add to cart functionality
-    console.log('Adding product to cart:', productId);
-    alert('Product added to cart!');
+    const quantity = parseInt(document.getElementById('quantity').value) || 1;
+    
+    $.ajax({
+        url: '/Customer/Product/AddToCartAjax',
+        type: 'POST',
+        data: { productId: productId, quantity: quantity },
+        success: function (response) {
+            if (response.success) {
+                // Update cart badge in header
+                if (typeof updateCartBadge === 'function') {
+                    updateCartBadge(response.cartCount);
+                }
+                
+                // Show success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Cart!',
+                    text: response.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.message,
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to add product to cart. Please try again.',
+            });
+        }
+    });
 }
 
 function addToWishlist(productId) {
@@ -74,6 +108,11 @@ function addToWishlistItem(productId, button) {
                     }
                     button.textContent = 'Wishlisted';
                     button.title = 'Remove from wishlist';
+                }
+                
+                // Update wishlist badge in header
+                if (typeof updateWishlistBadge === 'function') {
+                    updateWishlistBadge(response.count);
                 }
                 
                 // Show success message
@@ -131,6 +170,11 @@ function removeFromWishlist(productId, button) {
                             }
                             button.textContent = 'Wishlist';
                             button.title = 'Add to wishlist';
+                        }
+                        
+                        // Update wishlist badge in header
+                        if (typeof updateWishlistBadge === 'function') {
+                            updateWishlistBadge(response.count);
                         }
                         
                         // Show success message

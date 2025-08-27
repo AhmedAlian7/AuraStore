@@ -100,10 +100,7 @@
                             <div class="action-item">
                                 <button class="modern-icon-btn" onclick="location.href='@Url.Action("Index", "Cart")'" title="Shopping Cart">
                                     <i class="fas fa-shopping-bag"></i>
-                                    @if (ViewBag.CartCount > 0)
-                                    {
-                                        <span class="modern-badge">@ViewBag.CartCount</span>
-                                    }
+                                    <span class="modern-badge cart-badge" style="display: @(ViewBag.CartCount > 0 ? "flex" : "none");">@ViewBag.CartCount</span>
                                 </button>
                             </div>
 
@@ -111,10 +108,7 @@
                             <div class="action-item">
                                 <a class="modern-icon-btn" href="@Url.Action("Index", "Wishlist", new { area = "Customer" })" title="Wishlist">
                                     <i class="fas fa-heart"></i>
-                                    @if (ViewBag.WishlistCount > 0)
-                                    {
-                                        <span class="modern-badge wishlist-badge">@ViewBag.WishlistCount</span>
-                                    }
+                                    <span class="modern-badge wishlist-badge" style="display: @(ViewBag.WishlistCount > 0 ? "flex" : "none");">@ViewBag.WishlistCount</span>
                                 </a>
                             </div>
 
@@ -381,6 +375,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!-- Header Badge Management -->
+    <script src="~/js/header-badges.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

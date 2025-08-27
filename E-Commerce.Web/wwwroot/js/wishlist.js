@@ -52,7 +52,11 @@ $(document).ready(function () {
                     }
                     
                     // Update wishlist count in header
-                    updateWishlistCount(response.count);
+                    if (typeof updateWishlistBadge === 'function') {
+                        updateWishlistBadge(response.count);
+                    } else {
+                        updateWishlistCount(response.count);
+                    }
                     
                     // Show success message
                     Swal.fire({
@@ -119,7 +123,11 @@ $(document).ready(function () {
                             }
                             
                             // Update wishlist count in header
-                            updateWishlistCount(response.count);
+                            if (typeof updateWishlistBadge === 'function') {
+                                updateWishlistBadge(response.count);
+                            } else {
+                                updateWishlistCount(response.count);
+                            }
                             
                             // Show success message
                             Swal.fire({
@@ -168,10 +176,27 @@ $(document).ready(function () {
                     }
                     
                     // Update wishlist count in header
-                    updateWishlistCount(response.count);
+                    if (typeof updateWishlistBadge === 'function') {
+                        updateWishlistBadge(response.count);
+                    } else {
+                        updateWishlistCount(response.count);
+                    }
                     
                     // Update cart count in header (if cart count element exists)
-                    updateCartCount();
+                    if (typeof updateCartBadge === 'function') {
+                        // Get updated cart count from response or make an AJAX call
+                        $.ajax({
+                            url: '/Customer/Cart/GetCartCount',
+                            type: 'GET',
+                            success: function (cartResponse) {
+                                if (cartResponse.success) {
+                                    updateCartBadge(cartResponse.count);
+                                }
+                            }
+                        });
+                    } else {
+                        updateCartCount();
+                    }
                     
                     // Show success message
                     Swal.fire({
@@ -245,18 +270,6 @@ $(document).ready(function () {
         });
     }
 
-    // Initialize wishlist count on page load
-    function initializeWishlistCount() {
-        $.ajax({
-            url: '/Customer/Wishlist/GetWishlistCount',
-            type: 'GET',
-            success: function (response) {
-                updateWishlistCount(response.count);
-            }
-        });
-    }
-
     // Initialize on page load
     initializeWishlistButtons();
-    initializeWishlistCount();
 });
