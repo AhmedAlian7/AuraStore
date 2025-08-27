@@ -7,8 +7,8 @@
 - Contact page
 - Forget password
 - Admin can add a new role
-- ``Promocodes`` ✅
-- ``Wishlist`` ✅
+- ~~Promocodes~~ ✅
+- ~~Wishlist~~ ✅
 ---
 ## Extra
 - Order Cancellation / Return Request → basic request form for refunds or returns.
