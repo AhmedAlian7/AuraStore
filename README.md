@@ -21,4 +21,4 @@
 - Cart items counter animation (on cart icon on the header) on the AddToCart event
 ---
 ##  ERD
-![ERD](E-commerce-erd.png)
+![ERD](erd.png)
