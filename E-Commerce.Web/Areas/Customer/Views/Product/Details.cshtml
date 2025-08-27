@@ -120,7 +120,16 @@
                 {   
                     <button class="notify-btn" onclick="notifyWhenAvailable(@Model.Id)">Notify Me When Available</button>
                 }
-                <button class="wishlist-btn" onclick="addToWishlist(@Model.Id)">♡ Wishlist</button>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @await Html.PartialAsync("_WishlistButtonPartial", Model.Id)
+                }
+                else
+                {
+                    <a href="@Url.Action("Login", "Account", new { area = "Authentication" })" class="btn btn-outline-danger btn-sm">
+                        <i class="far fa-heart me-1"></i>Wishlist
+                    </a>
+                }
                 <button class="share-btn" onclick="shareProduct()">⤴ Share</button>
             </div>
         </div>
@@ -211,6 +220,7 @@
 @section Scripts {
     <link rel="stylesheet" href="~/css/product-details.css" />
     <script src="~/js/product-details.js"></script>
+    <script src="~/js/wishlist.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
     $(function () {

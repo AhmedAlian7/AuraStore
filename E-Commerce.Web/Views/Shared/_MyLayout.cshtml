@@ -109,13 +109,13 @@
 
                             <!-- Wishlist -->
                             <div class="action-item">
-                                <button class="modern-icon-btn" title="Wishlist">
+                                <a class="modern-icon-btn" href="@Url.Action("Index", "Wishlist", new { area = "Customer" })" title="Wishlist">
                                     <i class="fas fa-heart"></i>
                                     @if (ViewBag.WishlistCount > 0)
                                     {
-                                        <span class="modern-badge">@ViewBag.WishlistCount</span>
+                                        <span class="modern-badge wishlist-badge">@ViewBag.WishlistCount</span>
                                     }
-                                </button>
+                                </a>
                             </div>
 
                             <!-- Notifications -->
@@ -158,7 +158,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" asp-action="Index" asp-controller="Wishlist" asp-area="Customer">
                                             <i class="fas fa-heart me-2"></i>Wishlist
                                         </a>
                                     </li>

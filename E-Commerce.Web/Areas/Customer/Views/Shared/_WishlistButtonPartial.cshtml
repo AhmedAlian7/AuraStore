@@ -1,0 +1,13 @@
+@model int
+@{
+    var productId = Model;
+    var isInWishlist = ViewBag.IsInWishlist ?? false;
+}
+
+<button type="button" 
+        class="btn btn-outline-danger btn-sm wishlist-btn @(isInWishlist ? "active" : "")" 
+        data-product-id="@productId"
+        title="@(isInWishlist ? "Remove from wishlist" : "Add to wishlist")">
+    <i class="fa@(isInWishlist ? "s" : "r") fa-heart me-1"></i>
+    @(isInWishlist ? "Wishlisted" : "Wishlist")
+</button>

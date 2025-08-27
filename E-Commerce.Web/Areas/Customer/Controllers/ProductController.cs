@@ -14,14 +14,16 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         private readonly IProductService _productService;
         private readonly IUnitOfWork _unitIfWork;
         private readonly ICartService _cartService;
+        private readonly IWishlistService _wishlistService;
         private readonly UserManager<ApplicationUser> _userManager;
         public ProductController(IProductService productService, IUnitOfWork unitOfWork
-            , ICartService cartService
+            , ICartService cartService, IWishlistService wishlistService
             , UserManager<ApplicationUser> userManager)
         {
             _productService = productService;
             _unitIfWork = unitOfWork;
             _cartService = cartService;
+            _wishlistService = wishlistService;
             _userManager = userManager;
         }
 
@@ -38,6 +40,18 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                     Selected = category.HasValue && x.Id == category.Value
                 }).ToList();
             ViewBag.Categories = categories;
+
+            // Add wishlist count for authenticated users
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    var wishlistCount = await _wishlistService.GetWishlistCountAsync(userId);
+                    ViewBag.WishlistCount = wishlistCount;
+                }
+            }
+
             return View("Index", products);
         }
 
@@ -49,6 +63,21 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             {
                 return NotFound();
             }
+
+            // Add wishlist status and count for authenticated users
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var isInWishlist = await _wishlistService.IsInWishlistAsync(user.Id, id);
+                    ViewBag.IsInWishlist = isInWishlist;
+                    
+                    var wishlistCount = await _wishlistService.GetWishlistCountAsync(user.Id);
+                    ViewBag.WishlistCount = wishlistCount;
+                }
+            }
+
             return View("Details", productDetailsModel);
         }
 

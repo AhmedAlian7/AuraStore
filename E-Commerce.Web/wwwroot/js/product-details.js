@@ -47,9 +47,118 @@ function addToCart(productId) {
 }
 
 function addToWishlist(productId) {
-    // Implement wishlist functionality
-    console.log('Adding product to wishlist:', productId);
-    alert('Product added to wishlist!');
+    const button = document.querySelector(`[data-product-id="${productId}"].wishlist-btn`);
+    const isActive = button && button.classList.contains('active');
+    
+    if (isActive) {
+        removeFromWishlist(productId, button);
+    } else {
+        addToWishlistItem(productId, button);
+    }
+}
+
+function addToWishlistItem(productId, button) {
+    $.ajax({
+        url: '/Customer/Wishlist/AddToWishlist',
+        type: 'POST',
+        data: { productId: productId },
+        success: function (response) {
+            if (response.success) {
+                // Update button state
+                if (button) {
+                    button.classList.add('active');
+                    const icon = button.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                    }
+                    button.textContent = 'Wishlisted';
+                    button.title = 'Remove from wishlist';
+                }
+                
+                // Show success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Wishlist!',
+                    text: response.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Already in Wishlist',
+                    text: response.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to add product to wishlist. Please try again.',
+            });
+        }
+    });
+}
+
+function removeFromWishlist(productId, button) {
+    Swal.fire({
+        title: 'Remove from Wishlist?',
+        text: 'Are you sure you want to remove this item from your wishlist?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, remove it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/Customer/Wishlist/RemoveFromWishlist',
+                type: 'POST',
+                data: { productId: productId },
+                success: function (response) {
+                    if (response.success) {
+                        // Update button state
+                        if (button) {
+                            button.classList.remove('active');
+                            const icon = button.querySelector('i');
+                            if (icon) {
+                                icon.classList.remove('fas');
+                                icon.classList.add('far');
+                            }
+                            button.textContent = 'Wishlist';
+                            button.title = 'Add to wishlist';
+                        }
+                        
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Removed from Wishlist!',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to remove product from wishlist. Please try again.',
+                    });
+                }
+            });
+        }
+    });
 }
 
 function notifyWhenAvailable(productId) {
