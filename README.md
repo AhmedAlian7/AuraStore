@@ -3,12 +3,12 @@
 ## AURA Store TODO
 - Low Stoke notification for admin
 - notify customer when the product is available (if he asked)
-- Wishlist
 - Categories page + Manage Categories
 - Contact page
 - Forget password
 - Admin can add a new role
-- Promocodes [Done]✅
+- ~~Promocodes~~ ✅
+- ~~Wishlist~~ ✅
 ---
 ## Extra
 - Order Cancellation / Return Request → basic request form for refunds or returns.
