@@ -1,5 +1,4 @@
 using E_Commerce.Business.Services.Interfaces;
-using E_Commerce.Business.ViewModels.Wishlist;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
