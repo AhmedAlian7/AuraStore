@@ -5,8 +5,10 @@
 - notify customer when the product is available (if he asked)
 - Categories page + Manage Categories
 - Contact page
-- Forget password
 - Admin can add a new role
+- Enhance user profile (add new functionalities)
+- in/ out of stock filtering 
+- ~~Forget password~~ ✅
 - ~~Promocodes~~ ✅
 - ~~Wishlist~~ ✅
 ---
