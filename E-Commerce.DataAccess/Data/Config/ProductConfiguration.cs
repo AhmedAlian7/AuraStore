@@ -68,6 +68,11 @@ namespace E_Commerce.DataAccess.Data.Config
                     .HasForeignKey(pi => pi.ProductId)
                     .OnDelete(DeleteBehavior.Cascade);
 
+                builder.HasMany(p => p.ProductNotifications)
+                    .WithOne(pn => pn.Product)
+                    .HasForeignKey(pn => pn.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
             }
         }
     }

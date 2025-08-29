@@ -25,6 +25,7 @@ namespace E_Commerce.DataAccess.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<PromoCode> PromoCodes { get; set; }
         public DbSet<WishlistItem> WishlistItems { get; set; }
+        public DbSet<ProductNotification> ProductNotifications { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -31,6 +31,7 @@ namespace E_Commerce.DataAccess.Entities
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+        public ICollection<ProductNotification> ProductNotifications { get; set; } = new List<ProductNotification>();
 
     }
 }

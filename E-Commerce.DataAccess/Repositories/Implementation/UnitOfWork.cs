@@ -21,6 +21,7 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
             ProductImages = new ProductImageRepository(_context);
             PromoCodes = new PromoCodeRepository(_context);
             WishlistItems = new WishlistItemRepository(_context);
+            ProductNotifications = new ProductNotificationRepository(_context);
         }
 
         public ICartItemRepository CartItems { get; private set; }
@@ -33,6 +34,7 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
         public IProductImageRepository ProductImages { get; private set; }
         public IPromoCodeRepository PromoCodes { get; private set; }
         public IWishlistItemRepository WishlistItems { get; private set; }
+        public IProductNotificationRepository ProductNotifications { get; private set; }
 
 
         public async Task<int> SaveAsync()

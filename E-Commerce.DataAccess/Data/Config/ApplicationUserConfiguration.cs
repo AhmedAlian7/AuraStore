@@ -36,6 +36,10 @@ namespace E_Commerce.DataAccess.Data.Config
             builder.HasMany(u => u.Reviews)
                 .WithOne(r => r.User)
                 .HasForeignKey(r => r.UserId);
+            
+            builder.HasMany(u => u.ProductNotifications)
+                .WithOne(pn => pn.User)
+                .HasForeignKey(pn => pn.UserId);
         }
     }
     public class ReviewConfiguration : IEntityTypeConfiguration<Review>

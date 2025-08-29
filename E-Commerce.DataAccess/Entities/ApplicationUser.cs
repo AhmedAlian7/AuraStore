@@ -16,6 +16,7 @@ namespace E_Commerce.DataAccess.Entities
         public ICollection<Order>? Orders { get; set; }
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
+        public ICollection<ProductNotification> ProductNotifications { get; set; } = new List<ProductNotification>();
 
     }
 }
