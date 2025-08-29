@@ -34,6 +34,7 @@ namespace E_Commerce.Web.Helpers
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IPromoCodeService, PromoCodeService>();
             services.AddScoped<IWishlistService, WishlistService>();
+            services.AddScoped<IProductNotificationService, ProductNotificationService>();
             // AutoMapper
             services.AddAutoMapper(typeof(Program));
 

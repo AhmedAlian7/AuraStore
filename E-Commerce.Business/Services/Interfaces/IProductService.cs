@@ -29,6 +29,8 @@ namespace E_Commerce.Business.Services.Interfaces
 
         Task<IEnumerable<ProductDto>> GetAllProductsDtoAsync();
         Task<ProductDto> GetProductDto(int Id);
+        Task<bool> HasNotificationRequestAsync(int productId, string userId);
+        Task<bool> UpdateProductAsync(ProductUpdateViewModel model);
 
     }
 

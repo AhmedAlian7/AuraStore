@@ -122,27 +122,18 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
                 return View(model);
             }
 
-            var product = new Product
+            // Use the service method to update the product
+            var result = await _productService.UpdateProductAsync(model);
+            
+            if (result)
             {
-                Id = model.Id,
-                Name = model.Name,
-                Description = model.Description,
-                Price = model.Price,
-                DiscountPrice = model.DiscountPrice,
-                StockCount = model.StockCount,
-                CategoryId = model.CategoryId,
-                MainImageUrl = model.MainImageUrl
-            };
-
-            // Handle Main Image Updates
-            await _productService.HandleMainImageUpdate(product, model);
-
-            // Handle Additional Images Updates
-            await _productService.HandleAdditionalImagesUpdate(product, model);
-
-            _unitIfWork.Products.Update(product);
-            await _unitIfWork.SaveAsync();
-            TempData["SuccessMessage"] = "Product updated successfully.";
+                TempData["SuccessMessage"] = "Product updated successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to update product. Please try again.";
+            }
+            
             return RedirectToAction("Index");
         }
 

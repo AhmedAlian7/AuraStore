@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper;
 using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.Business.ViewModels;
 using E_Commerce.Business.ViewModels.Dtos;
@@ -7,6 +8,7 @@ using E_Commerce.DataAccess.Constants;
 using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using mvcFirstApp.Services;
+using Microsoft.AspNetCore.Identity;
 using System.Web.Mvc;
 
 namespace E_Commerce.Business.Services.Implementation
@@ -16,12 +18,18 @@ namespace E_Commerce.Business.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly FileUploadService _uploadService;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailService _emailService;
 
-        public ProductService(IUnitOfWork unitOfWork, IMapper mapper, FileUploadService uploadService)
+        public ProductService(IUnitOfWork unitOfWork, IMapper mapper
+        , FileUploadService uploadService, UserManager<ApplicationUser> userManager
+        , IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _uploadService = uploadService;
+            _userManager = userManager;
+            _emailService = emailService;
         }
 
         public async Task<IEnumerable<ProductViewModel>> GetAllAsync(int page = 1)
@@ -332,19 +340,20 @@ namespace E_Commerce.Business.Services.Implementation
                 return false;
             }
 
-            if (!string.IsNullOrEmpty(product.MainImageUrl))
-            {
-                _uploadService.DeleteFile(product.MainImageUrl);
-            }
-            if (product.ProductImages != null && product.ProductImages.Any())
-            {
-                foreach (var img in product.ProductImages)
-                {
-                    _uploadService.DeleteFile(img.ImageUrl);
-                }
-            }
+            //if (!string.IsNullOrEmpty(product.MainImageUrl))
+            //{
+            //    _uploadService.DeleteFile(product.MainImageUrl);
+            //}
+            //if (product.ProductImages != null && product.ProductImages.Any())
+            //{
+            //    foreach (var img in product.ProductImages)
+            //    {
+            //        _uploadService.DeleteFile(img.ImageUrl);
+            //    }
+            //}
+            product.IsDeleted = true;
 
-            await _unitOfWork.Products.DeleteAsync(id);
+            _unitOfWork.Products.Update(product);
 
             await _unitOfWork.SaveAsync();
             return true;
@@ -486,6 +495,129 @@ namespace E_Commerce.Business.Services.Implementation
                 Rating = product.Reviews != null && product.Reviews.Any() ? product.Reviews.Average(r => r.Rating) : 0,
                 CreatedAt = product.CreatedAt
             };
+        }
+
+        private async Task ProcessStockRestockNotificationsAsync(int productId)
+        {
+            try
+            {
+                // Get pending notifications for this product
+                var pendingNotifications = await _unitOfWork.ProductNotifications.GetByProductIdAsync(productId);
+                var filteredNotifications = pendingNotifications.Where(n => !n.IsNotified).ToList();
+                
+                if (filteredNotifications.Any())
+                {
+                    var notificationIds = new List<int>();
+                    
+                    foreach (var notification in filteredNotifications)
+                    {
+                        // Send email notification
+                        await SendStockRestockEmailAsync(notification);
+                        notificationIds.Add(notification.Id);
+                    }
+                    
+                    // Mark notifications as sent
+                    foreach (var id in notificationIds)
+                    {
+                        var notification = await _unitOfWork.ProductNotifications.GetByIdAsync(id);
+                        if (notification != null)
+                        {
+                            notification.IsNotified = true;
+                            _unitOfWork.ProductNotifications.Update(notification);
+                        }
+                    }
+                    await _unitOfWork.SaveAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private async Task SendStockRestockEmailAsync(ProductNotification notification)
+        {
+            try
+            {
+                var product = await _unitOfWork.Products.GetByIdAsync(notification.ProductId);
+                var user = await _userManager.FindByIdAsync(notification.UserId);
+                
+                if (product != null && user != null)
+                {
+                    var subject = "Product Back in Stock!";
+                    var body = $@"
+                        <h2>Great News! {product.Name} is Back in Stock</h2>
+                        <p>Hello {user.UserName},</p>
+                        <p>The product '{product.Name}' that you requested to be notified about is now back in stock!</p>
+                        <p><strong>Product Details:</strong></p>
+                        <ul>
+                            <li>Name: {product.Name}</li>
+                            <li>Price: ${product.EffectivePrice}</li>
+                            <li>Stock Available: {product.StockCount}</li>
+                        </ul>
+                        <p>Hurry up and place your order before it runs out again!</p>
+                        <p>Best regards,<br/>Your AURA STORE Team</p>";
+
+
+                    await _emailService.SendEmailAsync(user.Email, subject, body);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending stock restock email: {ex.Message}");
+            }
+        }
+
+        public async Task<bool> UpdateProductAsync(ProductUpdateViewModel model)
+        {
+            try
+            {
+                var existingProduct = await _unitOfWork.Products.GetByIdAsync(model.Id);
+                if (existingProduct == null)
+                    return false;
+
+                // Store old stock count to check if stock was added
+                var oldStockCount = existingProduct.StockCount;
+                var wasOutOfStock = oldStockCount <= 0;
+
+                // Update product properties
+                existingProduct.Name = model.Name;
+                existingProduct.Description = model.Description;
+                existingProduct.Price = model.Price;
+                existingProduct.DiscountPrice = model.DiscountPrice;
+                existingProduct.StockCount = model.StockCount;
+                existingProduct.CategoryId = model.CategoryId;
+
+                await HandleMainImageUpdate(existingProduct, model);
+
+                await HandleAdditionalImagesUpdate(existingProduct, model);
+
+                _unitOfWork.Products.Update(existingProduct);
+                await _unitOfWork.SaveAsync();
+
+                if (wasOutOfStock && model.StockCount > 0)
+                {
+                    await ProcessStockRestockNotificationsAsync(existingProduct.Id);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> HasNotificationRequestAsync(int productId, string userId)
+        {
+            try
+            {
+                var notification = await _unitOfWork.ProductNotifications.GetByProductAndUserAsync(productId, userId);
+                return notification != null;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
 

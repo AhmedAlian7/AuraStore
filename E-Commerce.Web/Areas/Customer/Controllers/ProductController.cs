@@ -16,15 +16,18 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         private readonly ICartService _cartService;
         private readonly IWishlistService _wishlistService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IProductNotificationService _productNotificationService;
+        
         public ProductController(IProductService productService, IUnitOfWork unitOfWork
             , ICartService cartService, IWishlistService wishlistService
-            , UserManager<ApplicationUser> userManager)
+            , UserManager<ApplicationUser> userManager, IProductNotificationService productNotificationService)
         {
             _productService = productService;
             _unitIfWork = unitOfWork;
             _cartService = cartService;
             _wishlistService = wishlistService;
             _userManager = userManager;
+            _productNotificationService = productNotificationService;
         }
 
         [HttpGet]
@@ -145,6 +148,53 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                 reviewsHtml = await ControllerExtensions.RenderViewAsync(this, "_ReviewsListPartial", productDetails.Reviews, true),
                 ratingHtml = await ControllerExtensions.RenderViewAsync(this, "_RatingSummaryPartial", productDetails, true)
             });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NotifyMe(int productId)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return Json(new { success = false, message = "User not authenticated" });
+
+                // Check if product exists and is out of stock
+                var product = await _unitIfWork.Products.GetByIdAsync(productId);
+                if (product == null)
+                    return Json(new { success = false, message = "Product not found" });
+
+                if (product.StockCount > 0)
+                    return Json(new { success = false, message = "Product is already in stock" });
+
+                // Add notification request
+                var result = await _productNotificationService.AddNotificationAsync(productId, user.Id, user.Email);
+                
+                if (result)
+                {
+                    return Json(new { 
+                        success = true, 
+                        message = "You will be notified when this product is back in stock!",
+                        showSwal = true
+                    });
+                }
+                else
+                {
+                    return Json(new { 
+                        success = false, 
+                        message = "You are already registered for notifications for this product.",
+                        showSwal = true
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { 
+                    success = false, 
+                    message = "An error occurred while processing your request.",
+                    showSwal = true
+                });
+            }
         }
 
     }
