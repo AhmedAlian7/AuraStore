@@ -6,6 +6,7 @@
 - Categories page + Manage Categories
 - Contact page
 - Admin can add a new role
+- in/ out of stock filtering 
 - ~~Forget password~~ ✅
 - ~~Promocodes~~ ✅
 - ~~Wishlist~~ ✅
