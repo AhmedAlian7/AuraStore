@@ -54,26 +54,3 @@ function notifyWhenAvailable(productId) {
         }
     });
 }
-
-// Function to check if user is authenticated and show appropriate button
-function initializeNotifyMeButton(productId, isOutOfStock, isAlreadyRegistered) {
-    const notifyButton = document.getElementById('notifyMeButton');
-    
-    if (notifyButton) {
-        if (!isOutOfStock) {
-            // Product is in stock, hide the button
-            notifyButton.style.display = 'none';
-        } else if (isAlreadyRegistered) {
-            // User already registered for notifications
-            notifyButton.innerHTML = '<i class="fas fa-bell"></i> Already Registered';
-            notifyButton.classList.remove('btn-primary');
-            notifyButton.classList.add('btn-secondary');
-            notifyButton.disabled = true;
-        } else {
-            // Show the button for registration
-            notifyButton.innerHTML = '<i class="fas fa-bell"></i> Notify Me When Available';
-            notifyButton.classList.add('btn-primary');
-            notifyButton.onclick = function() { notifyMeWhenAvailable(productId); };
-        }
-    }
-}
