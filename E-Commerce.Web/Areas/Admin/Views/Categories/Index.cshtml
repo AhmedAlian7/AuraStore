@@ -1,0 +1,185 @@
+﻿@model E_Commerce.Business.ViewModels.Category.CategoryListViewModel
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <h2 class="mb-0">Categories Management</h2>
+            <p class="text-muted">Manage and track all product categories</p>
+        </div>
+        <div class="col-md-12 text-end">
+            <a asp-action="Add" class="btn btn-dark">
+                <i class="bi bi-plus-circle text-warning"></i> Add New Category
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead style="background-color: #000; color: #ffc107;">
+                                <tr>
+                                    <th class="py-3 px-4">Name</th>
+                                    <th class="py-3 px-4">Description</th>
+                                    <th class="py-3 px-4">Products</th>
+                                    <th class="py-3 px-4">Created At</th>
+                                    <th class="py-3 px-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Categories.Any())
+                                {
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <tr class="@(Model.Categories.IndexOf(category) % 2 == 0 ? "table-light" : "")">
+                                            <td class="py-3 px-4 fw-bold">@category.Name</td>
+                                            <td class="py-3 px-4">
+                                                @(string.IsNullOrWhiteSpace(category.Description) ? "-" : category.Description)
+                                            </td>
+                                            <td class="py-3 px-4">
+                                                <span class="badge bg-light text-dark">@category.ProductCount items</span>
+                                            </td>
+                                            <td class="py-3 px-4 fw-bold">@category.CreatedAt.ToString("yyyy-MM-dd")</td>
+                                            <td class="py-3 px-4">
+                                                @if (category.IsActive)
+                                                {
+                                                    <span class="badge bg-success">Active</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Inactive</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5 text-muted">
+                                            <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                            <h5>No categories found</h5>
+                                            <p>There are currently no categories to display.</p>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Categories.Count > 0)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-muted">
+                        Showing page @Model.Categories.PageIndex of @Model.Categories.TotalPages
+                        (@Model.Categories.Count total categories)
+                    </div>
+                    <nav aria-label="Categories pagination">
+                        <ul class="pagination mb-0">
+                            @if (Model.Categories.HasPreviousPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = Model.Categories.PageIndex - 1 })">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </span>
+                                </li>
+                            }
+
+                            @{
+                                var startPage = Math.Max(1, Model.Categories.PageIndex - 2);
+                                var endPage = Math.Min(Model.Categories.TotalPages, Model.Categories.PageIndex + 2);
+                            }
+
+                            @for (int i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(i == Model.Categories.PageIndex ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                                </li>
+                            }
+
+                            @if (Model.Categories.HasNextPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = Model.Categories.PageIndex + 1 })">
+                                        Next <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        Next <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .table th {
+        border: none;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .table td {
+        border: none;
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .card {
+        border: none;
+        border-radius: 8px;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .pagination .page-link {
+        border-radius: 4px;
+        margin: 0 2px;
+        border: 1px solid #dee2e6;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #000;
+        border-color: #000;
+        color: #ffc107;
+    }
+
+    .fas {
+        font-size: 0.875rem;
+    }
+</style>

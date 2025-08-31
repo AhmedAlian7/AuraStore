@@ -46,7 +46,7 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
         {
             return await GetByIdAsync(id) != null;
         }
-
+      
         public async Task<IEnumerable<T>> GetAllAsync(string includes = "")
         {
             return await GetAllAsync(0, includes);
@@ -99,7 +99,7 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
 
             return entity;
         }
-
+      
         public void Update(T entity)
         {
             _dbSet.Update(entity);

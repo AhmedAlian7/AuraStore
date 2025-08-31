@@ -5,6 +5,7 @@ namespace E_Commerce.Business.Services.Interfaces
     public interface ICategoryService
     {
         Task<CategoryListViewModel> GetAllCategoriesAsync(int page = 1, string? searchTerm = null);
+        Task<bool> AddCategoryAsync(CategoryViewModel newCategory);
         Task<bool> CategoryExistsAsync(int categoryId);
     }
 }

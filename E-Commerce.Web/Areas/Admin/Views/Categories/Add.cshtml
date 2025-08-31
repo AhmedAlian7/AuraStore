@@ -1,0 +1,85 @@
+﻿@model E_Commerce.Business.ViewModels.Category.CategoryViewModel
+
+@{
+    ViewData["Title"] = "Add New Category";
+}
+
+<div class="page-header">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="page-title">
+                    <i class="fas fa-plus-circle me-2"></i>
+                    Add New Category
+                </h1>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <button type="submit" form="categoryForm" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Add Category
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+    <form id="categoryForm" asp-area="Admin" asp-controller="Categories" asp-action="Add" method="post">
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- General Information -->
+                <div class="form-card">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-info-circle"></i>
+                        General Information
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label">Category Name *</label>
+                                <input asp-for="Name" class="form-control" placeholder="Enter category name">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label">Description</label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter category description (optional)"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions (Mobile) -->
+        <div class="d-md-none">
+            <div class="form-card">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Add Category
+                    </button>
+                    <a href="@Url.Action("Index", "Categories", new { area = "Admin" })" class="btn btn-outline-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link href="~/css/add-product.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/js/add-product.js" asp-append-version="true"></script>
+}
