@@ -80,6 +80,7 @@ namespace E_Commerce.Business.Services.Implementation
             };
 
             int pageSize = Numbers.DefaultPageSize - 7;
+            var totalCount = productsQuery.Count();
             var products = productsQuery.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var productsVM = products.Select(p => new ProductViewModel
@@ -97,7 +98,7 @@ namespace E_Commerce.Business.Services.Implementation
                 CategoryName = p.Category?.Name ?? string.Empty
             });
 
-            return PaginatedList<ProductViewModel>.Create(productsVM, page, pageSize);
+            return new PaginatedList<ProductViewModel>(productsVM, totalCount, page, pageSize);
         }
 
         public async Task<IEnumerable<ProductViewModel>> GetRecentProductsAsync(int count = 8)
