@@ -2,11 +2,12 @@
 
 ## AURA Store TODO
 - Low Stoke notification for admin
-- Categories page + Manage Categories
+- Manage Categories for admin
 - Contact page
 - Admin can add a new role
 - Enhance user profile (add new functionalities)
 - in/ out of stock filtering 
+- ~~Categories page~~ ✅
 - ~~notify customer when the product is available~~ ✅
 - ~~Forget password~~ ✅
 - ~~Promocodes~~ ✅
