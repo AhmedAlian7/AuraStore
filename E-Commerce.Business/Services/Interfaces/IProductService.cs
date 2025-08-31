@@ -9,8 +9,6 @@ namespace E_Commerce.Business.Services.Interfaces
     {
         Task<IEnumerable<ProductViewModel>> GetAllAsync(int page = 1, string search = null, int? categoryId = null, string sortBy = null);
 
-        // New enhanced filtering method
-        Task<ProductFilterResultViewModel> GetFilteredProductsAsync(ProductFilterViewModel filter);
 
         Task AddProductAsync(ProductAddViewModel product);
 

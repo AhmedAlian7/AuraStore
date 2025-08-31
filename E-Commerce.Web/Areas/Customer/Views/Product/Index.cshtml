@@ -3,9 +3,6 @@
 @{
     ViewData["Title"] = "Products";
     var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
-    
-    // Get current filter values from query string
-    var currentInStock = Context.Request.Query["inStock"].ToString();
 }
 
 <div class="products-page">
@@ -18,9 +15,9 @@
     </div>
 
     <!-- Filter and Search Section -->
-    <div class="card shadow-sm mb-4 filter-form-section">
+    <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <form asp-action="Index" method="get" class="row g-3" id="filterForm">
+            <form asp-action="Index" method="get" class="row g-3">
                 <div class="col-md-4">
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
@@ -36,7 +33,7 @@
                         }
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <select class="form-select" name="sortBy">
                         <option value="">Sort by</option>
                         <option value="name" selected='@(Context.Request.Query["sortBy"] == "name" ? "selected" : "")'>Name</option>
@@ -47,21 +44,9 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <select class="form-select" name="inStock">
-                        <option value="">All Stock</option>
-                        <option value="true" selected='@(currentInStock == "true" ? "selected" : "")'>In Stock</option>
-                        <option value="false" selected='@(currentInStock == "false" ? "selected" : "")'>Out of Stock</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="fas fa-filter me-2"></i>Filter
                     </button>
-                </div>
-                <div class="col-md-1">
-                    <a href="@Url.Action("Index", "Product")" class="btn btn-outline-secondary w-100" title="Clear all filters">
-                        <i class="fas fa-times"></i>
-                    </a>
                 </div>
             </form>
         </div>
@@ -198,39 +183,24 @@
         <div class="d-flex justify-content-center py-4">
             <nav aria-label="Page navigation">
                 <ul class="pagination">
-                    @{
-                        var queryParams = new Dictionary<string, string>();
-                        if (!string.IsNullOrEmpty(Context.Request.Query["search"]))
-                            queryParams["search"] = Context.Request.Query["search"];
-                        if (!string.IsNullOrEmpty(Context.Request.Query["category"]))
-                            queryParams["category"] = Context.Request.Query["category"];
-                        if (!string.IsNullOrEmpty(Context.Request.Query["sortBy"]))
-                            queryParams["sortBy"] = Context.Request.Query["sortBy"];
-                        if (!string.IsNullOrEmpty(Context.Request.Query["inStock"]))
-                            queryParams["inStock"] = Context.Request.Query["inStock"];
-                    }
-                    
                     @if (Model.HasPreviousPage)
                     {
-                        queryParams["page"] = (Model.PageIndex - 1).ToString();
                         <li class="page-item">
-                            <a class="page-link" href="?@string.Join("&", queryParams.Select(kvp => $"{kvp.Key}={kvp.Value}"))">Previous</a>
+                            <a class="page-link" href="?page=@(Model.PageIndex - 1)">Previous</a>
                         </li>
                     }
 
                     @for (int i = 1; i <= Model.TotalPages; i++)
                     {
-                        queryParams["page"] = i.ToString();
                         <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                            <a class="page-link" href="?@string.Join("&", queryParams.Select(kvp => $"{kvp.Key}={kvp.Value}"))">@i</a>
+                            <a class="page-link" href="?page=@i">@i</a>
                         </li>
                     }
 
                     @if (Model.HasNextPage)
                     {
-                        queryParams["page"] = (Model.PageIndex + 1).ToString();
                         <li class="page-item">
-                            <a class="page-link" href="?@string.Join("&", queryParams.Select(kvp => $"{kvp.Key}={kvp.Value}"))">Next</a>
+                            <a class="page-link" href="?page=@(Model.PageIndex + 1)">Next</a>
                         </li>
                     }
                 </ul>
@@ -257,52 +227,3 @@
 @section Scripts {
     <script src="~/js/wishlist.js"></script>
 }
-@section Styles {
-<style>
-        .product-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-
-            .product-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-            }
-
-        .product-image-container {
-            overflow: hidden;
-        }
-
-        .product-image {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .product-card:hover .product-image {
-            transform: scale(1.05);
-        }
-
-        .filter-form-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border: 1px solid #dee2e6;
-            border-radius: 0.75rem;
-        }
-
-            .filter-form-section .form-control:focus,
-            .filter-form-section .form-select:focus {
-                border-color: #007bff;
-                box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
-            }
-
-        .stock-status-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-        }
-
-        @@media (max-width: 768px) {
-            .filter-form-section
-
-        {
-            padding: 0.75rem;
-        }
-
-        }
-</style>}
