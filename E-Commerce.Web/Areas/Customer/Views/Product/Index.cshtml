@@ -180,41 +180,32 @@
         </div>
 
         <!-- Pagination -->
-        <nav aria-label="Product pagination" class="mt-4">
-            <ul class="pagination justify-content-center">
-                @if (Model.HasPreviousPage)
-                {
-                    <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-all-route-data="@ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page").ToDictionary(q => q.Key, q => q.Value.ToString())" asp-route-page="@(Model.PageIndex - 1)">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-                }
+        <div class="d-flex justify-content-center py-4">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(Model.PageIndex - 1)">Previous</a>
+                        </li>
+                    }
 
-                @{
-                    var startPage = Math.Max(1, Model.PageIndex - 2);
-                    var endPage = Math.Min(Model.TotalPages, Model.PageIndex + 2);
-                }
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link" href="?page=@i">@i</a>
+                        </li>
+                    }
 
-                @for (int i = startPage; i <= endPage; i++)
-                {
-                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-all-route-data="@ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page").ToDictionary(q => q.Key, q => q.Value.ToString())" asp-route-page="@i">
-                            @i
-                        </a>
-                    </li>
-                }
-
-                @if (Model.HasNextPage)
-                {
-                    <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-all-route-data="@ViewContext.HttpContext.Request.Query.Where(q => q.Key != "page").ToDictionary(q => q.Key, q => q.Value.ToString())" asp-route-page="@(Model.PageIndex + 1)">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </nav>
+                    @if (Model.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(Model.PageIndex + 1)">Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
     }
     else
     {

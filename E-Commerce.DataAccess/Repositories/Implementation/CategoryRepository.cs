@@ -16,19 +16,14 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
             return await _context.Products.CountAsync(p => p.CategoryId == categoryId);
         }
 
-        public async Task<bool> IsUniqueAsync(string categoryName, int? excludeId = null)
-        {
-            var query = _dbSet.Where(c => c.Name == categoryName);
-            if (excludeId.HasValue)
-            {
-                query = query.Where(c => c.Id != excludeId.Value);
-            }
-            return !await query.AnyAsync();
-        }
-
         public IEnumerable<Category> GetAll()
         {
-            return _dbSet.AsNoTracking().ToList();
+            return _dbSet.AsNoTracking();
+        }
+
+        public IQueryable<Category> GetAllQueryable()
+        {
+            return _dbSet.AsQueryable();
         }
     }
 }

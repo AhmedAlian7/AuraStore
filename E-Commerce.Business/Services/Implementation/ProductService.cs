@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper;
 using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.Business.ViewModels;
 using E_Commerce.Business.ViewModels.Dtos;
@@ -9,7 +8,6 @@ using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using mvcFirstApp.Services;
 using Microsoft.AspNetCore.Identity;
-using System.Web.Mvc;
 
 namespace E_Commerce.Business.Services.Implementation
 {
@@ -81,7 +79,7 @@ namespace E_Commerce.Business.Services.Implementation
                 _ => productsQuery.OrderBy(p => p.Id)
             };
 
-            int pageSize = Numbers.DefaultPageSize;
+            int pageSize = Numbers.DefaultPageSize - 7;
             var products = productsQuery.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var productsVM = products.Select(p => new ProductViewModel

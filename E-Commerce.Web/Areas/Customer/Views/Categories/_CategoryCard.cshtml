@@ -1,0 +1,44 @@
+@model CategoryViewModel
+
+<div class="category-card-wrapper">
+    <div class="category-card card h-100 shadow-sm border-0">
+        <div class="category-card-body">
+            <!-- Category Icon -->
+            <div class="category-icon-container text-center mb-3">
+                <div class="category-icon">
+                    <i class="fas fa-folder fa-3x text-primary"></i>
+                </div>
+            </div>
+            
+            <!-- Category Content -->
+            <div class="category-content text-center">
+                <h5 class="category-title fw-bold text-dark mb-2">@Model.Name</h5>
+                
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <p class="category-description text-muted small mb-3">
+                        @(Model.Description.Length > 100 ? Model.Description.Substring(0, 100) + "..." : Model.Description)
+                    </p>
+                }
+                
+                <!-- Product Count Badge -->
+                <div class="product-count-badge mb-3">
+                    <span class="badge bg-primary fs-6 px-3 py-2">
+                        <i class="fas fa-box me-2"></i>@Model.ProductCount Products
+                    </span>
+                </div>
+                
+                <!-- Action Button -->
+                <div class="category-actions">
+                    <a asp-area="Customer" 
+                       asp-controller="Categories" 
+                       asp-action="Details" 
+                       asp-route-id="@Model.Id" 
+                       class="btn btn-outline-primary w-100">
+                        <i class="fas fa-arrow-right me-2"></i>Browse Products
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

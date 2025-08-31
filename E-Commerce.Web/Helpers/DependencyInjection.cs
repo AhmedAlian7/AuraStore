@@ -21,6 +21,9 @@ namespace E_Commerce.Web.Helpers
             services.Configure<StripeSettings>(config.GetSection("Stripe"));
             services.Configure<EmailSettings>(config.GetSection("Smtp"));
 
+            // Repositories
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+
             // Services
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProductService, ProductService>();
@@ -35,6 +38,7 @@ namespace E_Commerce.Web.Helpers
             services.AddScoped<IPromoCodeService, PromoCodeService>();
             services.AddScoped<IWishlistService, WishlistService>();
             services.AddScoped<IProductNotificationService, ProductNotificationService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             // AutoMapper
             services.AddAutoMapper(typeof(Program));
 

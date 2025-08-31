@@ -1,0 +1,244 @@
+@model CategoryListViewModel
+@{
+    ViewData["Title"] = "Categories";
+    ViewData["Description"] = "Browse our product categories and discover amazing products";
+}
+
+<div class="categories-page">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="fw-bold text-dark mb-2">Product Categories</h1>
+            <p class="text-muted mb-0">Explore our curated collection of product categories</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <div class="d-flex align-items-center justify-content-md-end">
+                <span class="badge bg-primary fs-6 me-2">@Model.TotalCategories Categories</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3" id="searchForm">
+                <div class="d-flex justify-content-center mt-4">
+                    <div class="input-group w-50 position-relative">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text"
+                               class="form-control border-start-0 ps-0"
+                               name="search"
+                               value="@Model.SearchTerm"
+                               placeholder="Search categories by name or description..."
+                               id="searchInput"
+                               autocomplete="off">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                        <!-- Add search suggestions dropdown -->
+                        <div id="searchSuggestions" class="position-absolute w-100 bg-white border rounded-bottom shadow-sm" style="top: 100%; z-index: 1000; display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="d-flex gap-2">
+                        @if (!string.IsNullOrEmpty(Model.SearchTerm))
+                        {
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Clear
+                            </a>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="categories-grid">
+        @if (Model.IsEmpty)
+        {
+            <!-- Empty State -->
+            <div class="text-center py-5">
+                <div class="empty-state">
+                    <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                    @if (Model.HasSearchResults)
+                    {
+                        <h4 class="text-muted">No categories found</h4>
+                        <p class="text-muted">No categories match your search term "@Model.SearchTerm"</p>
+                        <a asp-action="Index" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-2"></i>View All Categories
+                        </a>
+                    }
+                    else
+                    {
+                        <h4 class="text-muted">No categories available</h4>
+                        <p class="text-muted">We're working on adding categories. Please check back soon!</p>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Search Results Header -->
+            @if (Model.HasSearchResults)
+            {
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-info d-flex align-items-center" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <div>
+                                <strong>Search Results:</strong> Found @Model.Categories.Count categories matching "@Model.SearchTerm"
+                                <a asp-action="Index" class="alert-link ms-2">View all categories</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Categories Grid -->
+            <div class="row g-4">
+                @foreach (var category in Model.Categories)
+                {
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <partial name="_CategoryCard" model="category" />
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center py-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @if (Model.Categories.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="?page=@(Model.Categories.PageIndex - 1)">Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= Model.Categories.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.Categories.PageIndex ? "active" : "")">
+                                <a class="page-link" href="?page=@i">@i</a>
+                            </li>
+                        }
+
+                        @if (Model.Categories.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="?page=@(Model.Categories.PageIndex + 1)">Next</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+
+        }
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/css/categories.css" rel="stylesheet" />
+    <style>
+        #searchSuggestions {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        #searchSuggestions > div:hover {
+            background-color: #f8f9fa;
+        }
+        
+        #searchSuggestions > div:last-child {
+            border-bottom: none !important;
+        }
+        
+        .hover-bg-light:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Real-time search functionality
+        let searchTimeout;
+        const searchInput = document.getElementById('searchInput');
+        const searchSuggestions = document.getElementById('searchSuggestions');
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const searchTerm = this.value.trim();
+            
+            if (searchTerm.length >= 2) {
+                searchTimeout = setTimeout(() => {
+                    performQuickSearch(searchTerm);
+                }, 300);
+            } else {
+                searchSuggestions.style.display = 'none';
+            }
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                searchSuggestions.style.display = 'none';
+            }
+        });
+
+        function performQuickSearch(term) {
+            fetch(`/Customer/Categories/QuickSearch?term=${encodeURIComponent(term)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.results.length > 0) {
+                        displaySearchSuggestions(data.results);
+                    } else {
+                        searchSuggestions.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Quick search error:', error);
+                    searchSuggestions.style.display = 'none';
+                });
+        }
+
+        function displaySearchSuggestions(results) {
+            searchSuggestions.innerHTML = '';
+            
+            results.forEach(category => {
+                const div = document.createElement('div');
+                div.className = 'p-2 hover-bg-light cursor-pointer border-bottom';
+                div.style.cursor = 'pointer';
+                
+                div.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${category.name}</strong>
+                            <div class="small text-muted">${category.description || 'No description'}</div>
+                        </div>
+                        <span class="badge bg-secondary">${category.productCount} products</span>
+                    </div>
+                `;
+                
+                div.addEventListener('click', () => {
+                    window.location.href = `/Customer/Categories/Details/${category.id}`;
+                });
+                
+                searchSuggestions.appendChild(div);
+            });
+            
+            searchSuggestions.style.display = 'block';
+        }
+
+        // Auto-submit form after delay
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('searchForm').submit();
+            }
+        });
+    </script>
+}

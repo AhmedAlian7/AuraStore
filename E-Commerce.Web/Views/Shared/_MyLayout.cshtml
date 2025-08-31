@@ -64,7 +64,9 @@
                             <li><a class="dropdown-item" href="/Customer/Product/Index?category=fasion">Fashion</a></li>
                             <li><a class="dropdown-item" href="/Customer/Product/Index?category=home">Home & Garden</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/Customer/Product/Index">View All Categories</a></li>
+                            <li><a class="dropdown-item" asp-area="Customer" asp-controller="Categories" asp-action="Index">
+                                <i class="fas fa-th-large me-2"></i>Browse All Categories
+                            </a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
