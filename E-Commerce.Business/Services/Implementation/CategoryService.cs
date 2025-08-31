@@ -2,6 +2,7 @@ using E_Commerce.Business.Services.Interfaces;
 using E_Commerce.Business.ViewModels;
 using E_Commerce.Business.ViewModels.Category;
 using E_Commerce.DataAccess.Constants;
+using E_Commerce.DataAccess.Entities;
 using E_Commerce.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -63,6 +64,32 @@ namespace E_Commerce.Business.Services.Implementation
                 SearchTerm = searchTerm,
                 TotalCategories = totalCount
             };
+        }
+
+        public async Task<bool> AddCategoryAsync(CategoryViewModel newCategory)
+        {
+            var categories = _unitOfWork.Categories.GetAll();
+            
+            foreach (var x in categories) 
+            {
+               if (x.Name.ToLower() == newCategory.Name.ToLower())
+               {
+                    return false;
+               }
+            }
+            var category = new Category
+            {
+                Name = newCategory.Name,
+                Description = newCategory.Description,
+                CreatedAt = DateTime.Now,
+                IsDeleted = false
+            };
+
+            await _unitOfWork.Categories.AddAsync(category);
+            await _unitOfWork.SaveAsync();
+
+            return true;
+
         }
 
         public async Task<bool> CategoryExistsAsync(int categoryId)
