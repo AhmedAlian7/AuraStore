@@ -1,0 +1,99 @@
+@model ProductViewModel
+@{
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+}
+
+<div class="product-card" onclick="window.location.href='/Customer/Product/Details/@Model.Id'" style="cursor: pointer;">
+    <div class="product-image">
+        <img src="@(!string.IsNullOrEmpty(Model.MainImageUrl) ? Model.MainImageUrl : "/images/product-default.png")" alt="@Model.Name" class="img-fluid">
+        
+        @if (Model.DiscountPrice.HasValue && Model.DiscountPrice < Model.Price)
+        {
+            var discountPercentage = Math.Round(((Model.Price - Model.DiscountPrice.Value) / Model.Price) * 100);
+            <div class="discount-badge position-absolute top-0 start-0 m-2">
+                <span class="badge bg-danger">-@discountPercentage%</span>
+            </div>
+        }
+
+        @if (!Model.InStock)
+        {
+            <div class="out-of-stock-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                <span class="badge bg-secondary fs-6">Out of Stock</span>
+            </div>
+        }
+
+        <div class="product-actions">
+            @if (isAuthenticated && Model.InStock)
+            {
+                <a asp-action="AddToCart" asp-controller="Product" asp-area="Customer" asp-route-id="@Model.Id" class="action-btn" title="Add to Cart" onclick="event.stopPropagation();">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
+            }
+            @if (isAuthenticated)
+            {
+                <button class="action-btn wishlist-btn @(Model.IsWishlisted ? "wishlisted" : "")" title="@(Model.IsWishlisted ? "Remove from Wishlist" : "Add to Wishlist")" data-product-id="@Model.Id" onclick="event.stopPropagation();">
+                    <i class="@(Model.IsWishlisted ? "fas" : "far") fa-heart"></i>
+                </button>
+            }
+        </div>
+    </div>
+    <div class="product-info">
+        <div class="mb-1">
+            <small class="text-muted">@Model.CategoryName</small>
+        </div>
+        <h5 class="product-title">@Model.Name</h5>
+        
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <p class="product-description text-muted small">
+                @(Model.Description.Length > 60 ? Model.Description.Substring(0, 60) + "..." : Model.Description)
+            </p>
+        }
+
+        <!-- Rating -->
+        @if (Model.ReviewCount > 0)
+        {
+            <div class="product-rating mb-2">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= Math.Floor(Model.AverageRating))
+                    {
+                        <i class="fas fa-star"></i>
+                    }
+                    else if (i == Math.Ceiling(Model.AverageRating) && Model.AverageRating % 1 != 0)
+                    {
+                        <i class="fas fa-star-half-alt"></i>
+                    }
+                    else
+                    {
+                        <i class="far fa-star"></i>
+                    }
+                }
+                <span>(@Model.AverageRating.ToString("F1"))</span>
+            </div>
+        }
+
+        <!-- Price -->
+        <div class="product-price">
+            @if (Model.DiscountPrice.HasValue && Model.DiscountPrice < Model.Price)
+            {
+                <span class="text-danger">$@Model.DiscountPrice.Value.ToString("F2")</span>
+                <small class="text-muted text-decoration-line-through ms-2">$@Model.Price.ToString("F2")</small>
+            }
+            else
+            {
+                <span>$@Model.Price.ToString("F2")</span>
+            }
+        </div>
+
+        <!-- Actions for non-authenticated users -->
+        @if (!isAuthenticated)
+        {
+            <div class="mt-2">
+                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary btn-sm w-100" onclick="event.stopPropagation();">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login to Purchase
+                </a>
+            </div>
+        }
+    </div>
+</div>

@@ -147,10 +147,9 @@
                                     <div class="d-grid gap-2">
                                         @if (product.InStock)
                                         {
-                                            <a asp-action="Details" asp-controller="Product" asp-asp-area="Customer" asp-route-id="@product.Id" class="btn btn-primary add-to-cart-btn">
-                                                <i class="fas fa-eye me-2"></i> View Details
-                                            </a>
-
+                                            <button type="button" class="btn btn-primary add-to-cart-btn" data-product-id="@product.Id">
+                                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                                            </button>
                                         }
                                         else
                                         {
@@ -164,7 +163,7 @@
                                         </button>
                                     </div>
                                 }
-                                else if (!isAuthenticated)
+                                else
                                 {
                                     <div class="d-grid">
                                         <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary">
@@ -226,4 +225,6 @@
 
 @section Scripts {
     <script src="~/js/wishlist.js"></script>
+    <script src="~/js/cart.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 }

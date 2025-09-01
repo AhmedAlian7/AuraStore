@@ -18,5 +18,6 @@ namespace E_Commerce.Business.ViewModels.Product
 
         public string MainImageUrl { get; set; } = string.Empty;
         public string CategoryName { get; set; } = string.Empty;
+        public bool IsWishlisted { get; set; }
     }
 }

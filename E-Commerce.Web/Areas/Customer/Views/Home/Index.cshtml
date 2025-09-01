@@ -142,30 +142,7 @@
                 @foreach (var product in Model.TrendingProducts)
                 {
                     <div class="col-lg-3 col-md-6">
-                        <div class="product-card" onclick="window.location.href='/Customer/Product/Details/@product.Id'" style="cursor: pointer;">
-                            <div class="product-image">
-                                <img src="@product.MainImageUrl" alt="@product.Name" class="img-fluid">
-                                <div class="product-actions">
-                                    <button class="action-btn" title="Add to Cart">
-                                        <i class="fas fa-shopping-cart"></i>
-                                    </button>
-                                    <button class="action-btn" title="Add to Wishlist">
-                                        <i class="fas fa-heart"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <h5 class="product-title">@product.Name</h5>
-                                <div class="product-price">$@product.EffectivePrice.ToString("F2")</div>
-                                <div class="product-rating">
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        <i class="fas @(i <= product.AverageRating ? "fa-star" : "fa-star-half-alt")"></i>
-                                    }
-                                    <span>(@product.AverageRating.ToString("F1"))</span>
-                                </div>
-                            </div>
-                        </div>
+                        @await Html.PartialAsync("_ProductCard", product)
                     </div>
                 }
 
@@ -210,4 +187,6 @@
 </section>
 
 @section Scripts {
-	<link href="~/css/home.css" rel="stylesheet" />}
+	<link href="~/css/home.css" rel="stylesheet" />
+	<link href="~/css/product-card.css" rel="stylesheet" />
+}
