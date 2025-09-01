@@ -6,6 +6,7 @@ namespace E_Commerce.Business.Services.Interfaces
     {
         Task<CategoryListViewModel> GetAllCategoriesAsync(int page = 1, string? searchTerm = null);
         Task<bool> AddCategoryAsync(CategoryViewModel newCategory);
+        Task<bool> ChangeCategoryStatusAsync(int id, bool isActive);
         Task<bool> CategoryExistsAsync(int categoryId);
     }
 }

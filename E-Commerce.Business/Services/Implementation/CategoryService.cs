@@ -92,6 +92,16 @@ namespace E_Commerce.Business.Services.Implementation
 
         }
 
+        public async Task<bool> ChangeCategoryStatusAsync(int id,bool isActive)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+            category.IsDeleted = !isActive;
+
+            _unitOfWork.Categories.Update(category);
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
+
         public async Task<bool> CategoryExistsAsync(int categoryId)
         {
             return await _unitOfWork.Categories.ExistsAsync(categoryId);

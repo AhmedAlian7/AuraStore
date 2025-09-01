@@ -58,5 +58,13 @@ namespace E_Commerce.Web.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangeStatus(int id ,bool isActive)
+        {
+            await _categoryService.ChangeCategoryStatusAsync(id, isActive);
+            return RedirectToAction("Index");
+        }
     }
 }
