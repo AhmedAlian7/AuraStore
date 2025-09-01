@@ -137,12 +137,11 @@
                 </div>
             </div>
 
-
             <!-- Action Buttons -->
             <div class="bg-light rounded-3 p-4">
                 <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
-                    <a asp-controller="Order"
-                       asp-action="MyOrders"
+                    <a asp-controller="Orders"
+                       asp-action="Index"
                        class="btn btn-outline-dark btn-lg d-flex align-items-center">
                         <i class="bi bi-arrow-left me-2"></i> Back to My Orders
                     </a>
@@ -151,6 +150,27 @@
                         <button type="button" class="btn btn-primary btn-lg d-flex align-items-center" onclick="window.print()">
                             <i class="bi bi-printer me-2"></i> Print Receipt
                         </button>
+
+                        @if (Model.OrderStatus == OrderStatus.Pending)
+                        {
+                            <form asp-controller="Orders"
+                                  asp-action="CancelOrder"
+                                  method="post"
+                                  class="d-inline">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <input type="hidden" name="orderStatus" value="@Model.OrderStatus" />
+                                <button type="button" class="btn btn-danger btn-lg d-flex align-items-center btn-cancel">
+                                    <i class="bi bi-x-circle me-2"></i> Cancel Order
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-secondary btn-lg d-flex align-items-center" disabled>
+                                <i class="bi bi-x-circle me-2"></i> Cancel Order
+                            </button>
+                        }
+
                         @if (Model.OrderStatus == OrderStatus.Delivered)
                         {
                             <a asp-controller="Review"
@@ -162,10 +182,65 @@
                         }
                     </div>
                 </div>
+
+                <!-- Note Section -->
+                @if (Model.OrderStatus != OrderStatus.Pending)
+                {
+                    <div class="alert alert-info mt-4 mb-0 d-flex align-items-center">
+                        <i class="bi bi-info-circle me-2 fs-5"></i>
+                        @if (Model.OrderStatus == OrderStatus.Cancelled)
+                        {
+                            <span>This order has already been <strong>cancelled</strong>. If you need further assistance, please contact our support team.</span>
+                        }
+                        else
+                        {
+                            <span>Please contact our <strong>customer service</strong> if you need help canceling this order.</span>
+                            <a asp-area="Customer"
+                               asp-controller="Home"
+                               asp-action="Contact"
+                               class="btn btn-outline-primary btn-sm ms-auto d-flex align-items-center">
+                                <i class="bi bi-headset me-1"></i> Contact Support
+                            </a>
+                        }
+
+                       
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".btn-cancel").forEach(function (btn) {
+                btn.addEventListener("click", async function () {
+                    const form = this.closest("form");
+                    const result = await Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'Are you sure you want to cancel this order?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, cancel it!',
+                        cancelButtonText: 'No, keep it',
+                        customClass: {
+                            confirmButton: 'btn btn-danger mx-2',
+                            cancelButton: 'btn btn-secondary mx-2'
+                        },
+                        buttonsStyling: false,
+                        reverseButtons: true
+                    });
+
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+}
 
 @functions {
     private string GetStatusBadgeClass(OrderStatus status)
