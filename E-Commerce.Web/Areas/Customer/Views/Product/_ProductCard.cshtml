@@ -1,0 +1,121 @@
+@model ProductViewModel
+
+<div class="product-card">
+    <div class="product-image-wrapper">
+        <!-- Product Image -->
+        <div class="product-image-container">
+            <img src="@Model.MainImageUrl"
+                 class="product-image"
+                 alt="@Model.Name"
+                 loading="lazy">
+
+            <!-- Quick Actions Overlay -->
+            <div class="quick-actions-overlay">
+                <button type="button" 
+                        class="quick-action-btn wishlist-btn @(Model.IsWishlisted ? "active" : "")" 
+                        data-product-id="@Model.Id" 
+                        title="@(Model.IsWishlisted ? "Remove from wishlist" : "Add to wishlist")">
+                    <i class="@(Model.IsWishlisted ? "fas" : "far") fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Badges -->
+            <div class="product-badges">
+                @if (Model.DiscountPrice.HasValue && Model.DiscountPrice < Model.Price)
+                {
+                    var discountPercentage = Math.Round(((Model.Price - Model.DiscountPrice.Value) / Model.Price) * 100);
+                    <span class="product-badge discount-badge">-@discountPercentage%</span>
+                }
+
+                @if (!Model.InStock)
+                {
+                    <span class="product-badge out-of-stock-badge">Out of Stock</span>
+                }
+                else
+                {
+                    <span class="product-badge new-badge">In Stock</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="product-info">
+        <!-- Category -->
+        <div class="product-category">
+            @Model.CategoryName
+        </div>
+
+        <!-- Product Name -->
+        <h3 class="product-title">
+            <a asp-action="Details" asp-route-id="@Model.Id" class="product-link">
+                @Model.Name
+            </a>
+        </h3>
+
+        <!-- Rating -->
+        @if (Model.ReviewCount > 0)
+        {
+            <div class="product-rating">
+                <div class="rating-stars">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Math.Floor(Model.AverageRating))
+                        {
+                            <i class="fas fa-star"></i>
+                        }
+                        else if (i == Math.Ceiling(Model.AverageRating) && Model.AverageRating % 1 != 0)
+                        {
+                            <i class="fas fa-star-half-alt"></i>
+                        }
+                        else
+                        {
+                            <i class="far fa-star"></i>
+                        }
+                    }
+                </div>
+                <span class="rating-count">(@Model.ReviewCount)</span>
+            </div>
+        }
+
+        <!-- Price -->
+        <div class="product-price">
+            @if (Model.DiscountPrice.HasValue && Model.DiscountPrice < Model.Price)
+            {
+                <span class="price-current">$@Model.DiscountPrice.Value.ToString("F2")</span>
+                <span class="price-original">$@Model.Price.ToString("F2")</span>
+            }
+            else
+            {
+                <span class="price-current">$@Model.Price.ToString("F2")</span>
+            }
+        </div>
+
+        <!-- Actions Button -->
+        <div class="product-actions">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                if (Model.InStock)
+                {
+                    <button type="button" class="btn-add-to-cart" data-product-id="@Model.Id">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-secondary" disabled>
+                        <i class="fas fa-times me-2"></i>Out of Stock
+                    </button>
+                }
+            }
+            else
+            {
+                <a asp-area="Identity" asp-page="/Account/Login" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login to Purchase</span>
+                </a>
+            }
+        </div>
+    </div>
+</div>

@@ -30,31 +30,6 @@ namespace E_Commerce.Business.Services.Implementation
             _emailService = emailService;
         }
 
-        public async Task<IEnumerable<ProductViewModel>> GetAllAsync(int page = 1)
-        {
-            var products = await _unitOfWork.Products.GetAllAsync(page, "Category");
-
-            var productsVM = products.Select(p => new ProductViewModel
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-
-                Price = p.Price,
-                DiscountPrice = p.DiscountPrice,
-                EffectivePrice = p.DiscountPrice ?? p.Price,
-
-                InStock = p.StockCount > 0,
-                AverageRating = (p.Reviews != null && p.Reviews.Any()) ? p.Reviews.Average(r => r.Rating) : 0,
-                ReviewCount = p.Reviews?.Count ?? 0,
-
-                MainImageUrl = p.MainImageUrl,
-                CategoryName = p.Category?.Name ?? string.Empty
-            });
-
-            return PaginatedList<ProductViewModel>.Create(productsVM, page, Numbers.DefaultPageSize);
-        }
-
         public async Task<IEnumerable<ProductViewModel>> GetAllAsync(int page = 1, string search = null, int? categoryId = null, string sortBy = null)
         {
             // Get all products with includes
@@ -79,7 +54,7 @@ namespace E_Commerce.Business.Services.Implementation
                 _ => productsQuery.OrderBy(p => p.Id)
             };
 
-            int pageSize = Numbers.DefaultPageSize - 7;
+            int pageSize = Numbers.DefaultPageSize - 4;
             var totalCount = productsQuery.Count();
             var products = productsQuery.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 

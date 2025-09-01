@@ -47,7 +47,6 @@ $(document).ready(function () {
                     if (button) {
                         button.addClass('active');
                         button.find('i').removeClass('far').addClass('fas');
-                        button.text('Wishlisted');
                         button.attr('title', 'Remove from wishlist');
                     }
                     
@@ -107,7 +106,6 @@ $(document).ready(function () {
                             if (button) {
                                 button.removeClass('active');
                                 button.find('i').removeClass('fas').addClass('far');
-                                button.text('Wishlist');
                                 button.attr('title', 'Add to wishlist');
                             }
                             
@@ -240,7 +238,6 @@ $(document).ready(function () {
         // Update cart count in header (if cart count element exists)
         const cartBadge = $('.cart-badge, .modern-badge');
         if (cartBadge.length > 0) {
-            // You might want to make an AJAX call to get the current cart count
             // For now, we'll just increment the existing count
             const currentCount = parseInt(cartBadge.text()) || 0;
             cartBadge.text(currentCount + 1);
@@ -262,7 +259,6 @@ $(document).ready(function () {
                     if (response.inWishlist) {
                         button.addClass('active');
                         button.find('i').removeClass('far').addClass('fas');
-                        button.text('Wishlisted');
                         button.attr('title', 'Remove from wishlist');
                     }
                 }

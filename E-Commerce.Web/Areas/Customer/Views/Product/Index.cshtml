@@ -55,125 +55,11 @@
     <!-- Products Grid -->
     @if (Model.Any())
     {
-        <div class="row g-4 mb-4">
+        <div class="products-grid">
             @foreach (var product in Model)
             {
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card product-card h-100 shadow-sm border-0">
-                        <!-- Product Image -->
-                        <div class="product-image-container position-relative">
-                            <img src="@(!string.IsNullOrEmpty(product.MainImageUrl) ? product.MainImageUrl : "/images/product-default.png")"
-                                 class="card-img-top product-image"
-                                 alt="@product.Name"
-                                 loading="lazy">
-
-                            @if (product.DiscountPrice.HasValue && product.DiscountPrice < product.Price)
-                            {
-                                var discountPercentage = Math.Round(((product.Price - product.DiscountPrice.Value) / product.Price) * 100);
-                                <div class="discount-badge position-absolute top-0 start-0 m-2">
-                                    <span class="badge bg-danger">-@discountPercentage%</span>
-                                </div>
-                            }
-
-                            @if (!product.InStock)
-                            {
-                                <div class="out-of-stock-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
-                                    <span class="badge bg-secondary fs-6">Out of Stock</span>
-                                </div>
-                            }
-                        </div>
-
-                        <!-- Product Details -->
-                        <div class="card-body d-flex flex-column">
-                            <div class="mb-2">
-                                <small class="text-muted">@product.CategoryName</small>
-                            </div>
-
-                            <h5 class="card-title text-truncate mb-2" title="@product.Name">
-                                <a asp-action="Details" asp-route-id="@product.Id" class="text-decoration-none text-dark">
-                                    @product.Name
-                                </a>
-                            </h5>
-
-                            @if (!string.IsNullOrEmpty(product.Description))
-                            {
-                                <p class="card-text text-muted small description-text">
-                                    @(product.Description.Length > 80 ? product.Description.Substring(0, 80) + "..." : product.Description)
-                                </p>
-                            }
-
-                            <!-- Rating -->
-                            @if (product.ReviewCount > 0)
-                            {
-                                <div class="rating mb-2">
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        if (i <= Math.Floor(product.AverageRating))
-                                        {
-                                            <i class="fas fa-star text-warning"></i>
-                                        }
-                                        else if (i == Math.Ceiling(product.AverageRating) && product.AverageRating % 1 != 0)
-                                        {
-                                            <i class="fas fa-star-half-alt text-warning"></i>
-                                        }
-                                        else
-                                        {
-                                            <i class="far fa-star text-warning"></i>
-                                        }
-                                    }
-                                    <small class="text-muted ms-1">(@product.ReviewCount)</small>
-                                </div>
-                            }
-
-                            <!-- Price -->
-                            <div class="price-section mb-3">
-                                @if (product.DiscountPrice.HasValue && product.DiscountPrice < product.Price)
-                                {
-                                    <div class="d-flex align-items-center">
-                                        <span class="h5 text-danger mb-0 me-2">$@product.DiscountPrice.Value.ToString("F2")</span>
-                                        <small class="text-muted text-decoration-line-through">$@product.Price.ToString("F2")</small>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <span class="h5 text-primary mb-0">$@product.Price.ToString("F2")</span>
-                                }
-                            </div>
-
-                            <!-- Actions -->
-                            <div class="mt-auto">
-                                @if (isAuthenticated)
-                                {
-                                    <div class="d-grid gap-2">
-                                        @if (product.InStock)
-                                        {
-                                            <button type="button" class="btn btn-primary add-to-cart-btn" data-product-id="@product.Id">
-                                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                                            </button>
-                                        }
-                                        else
-                                        {
-                                            <button type="button" class="btn btn-secondary" disabled>
-                                                <i class="fas fa-times me-2"></i>Out of Stock
-                                            </button>
-                                        }
-
-                                        <button type="button" class="btn btn-outline-danger btn-sm wishlist-btn" data-product-id="@product.Id">
-                                            <i class="far fa-heart me-1"></i>Wishlist
-                                        </button>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="d-grid">
-                                        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary">
-                                            <i class="fas fa-sign-in-alt me-2"></i>Login to Purchase
-                                        </a>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
+                <div class="product-grid-item">
+                    @await Html.PartialAsync("_ProductCard", product)
                 </div>
             }
         </div>
@@ -227,4 +113,7 @@
     <script src="~/js/wishlist.js"></script>
     <script src="~/js/cart.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}
+@section Styles {
+    <link href="~/css/products.css" rel="stylesheet" />
 }

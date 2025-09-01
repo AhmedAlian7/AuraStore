@@ -4,7 +4,7 @@ $(document).ready(function () {
 });
 
 function initializeAddToCartButtons() {
-    $('.add-to-cart-btn').on('click', function () {
+    $('.btn-add-to-cart').on('click', function () {
         const button = $(this);
         const productId = button.data('product-id');
         
