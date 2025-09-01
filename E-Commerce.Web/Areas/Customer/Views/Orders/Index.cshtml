@@ -49,18 +49,6 @@
                                         <i class="bi bi-eye"></i> View
                                     </a>
 
-                                    @if (order.OrderStatus.ToString() != "Cancelled")
-                                    {
-                                        <form asp-controller="Orders" asp-action="CancelOrder" asp-route-id="@order.Id" method="post" class="d-inline cancel-form">
-                                            <button type="button" class="btn btn-sm btn-danger btn-cancel" data-order-id="@order.Id">
-                                                <i class="bi bi-x-circle"></i> Cancel
-                                            </button>
-                                        </form>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted small">Already Cancelled</span>
-                                    }
                                 </div>
                             </td>
                         </tr>

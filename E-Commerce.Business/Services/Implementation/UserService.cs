@@ -31,7 +31,10 @@ namespace E_Commerce.Business.Services.Implementation
 
         public async Task<PaginatedList<CustomerViewModel>> GetAllAsync(int page)
         {
-            var users = _userManager.Users.Where(o => !o.IsDeleted)
+            var users = _userManager
+                .Users
+                .Where(o => !o.IsDeleted)
+                .Include(o => o.Orders)
                 .ToList();
             var models = new List<CustomerViewModel>();
 
@@ -39,13 +42,14 @@ namespace E_Commerce.Business.Services.Implementation
             {
                 var role = (await _userManager.GetRolesAsync(x)).FirstOrDefault();
 
-                
+
                 models.Add(new CustomerViewModel
                 {
                     Id = x.Id,
                     Email = x.Email,
                     IsActive = x.IsActive,
                     CreateAt = x.CreatedAt,
+                    OrdersCount = x.Orders.Count(),
                     Role = role
                 });
             }

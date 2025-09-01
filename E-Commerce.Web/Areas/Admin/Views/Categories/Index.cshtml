@@ -1,7 +1,6 @@
 ﻿@model E_Commerce.Business.ViewModels.Category.CategoryListViewModel
-
-@{
-    ViewData["Title"] = "Categories";
+﻿@{
+ViewData["Title"] = "Categories";
 }
 
 <div class="container-fluid">
@@ -35,9 +34,10 @@
                             <tbody>
                                 @if (Model != null && Model.Categories.Any())
                                 {
-                                    @foreach (var category in Model.Categories)
+                                    var index = 0;
+                                    foreach (var category in Model.Categories)
                                     {
-                                        <tr class="@(Model.Categories.IndexOf(category) % 2 == 0 ? "table-light" : "")">
+                                        <tr class="@(index % 2 == 0 ? "table-light" : "")">
                                             <td class="py-3 px-4 fw-bold">@category.Name</td>
                                             <td class="py-3 px-4">
                                                 @(string.IsNullOrWhiteSpace(category.Description) ? "-" : category.Description)
@@ -47,16 +47,20 @@
                                             </td>
                                             <td class="py-3 px-4 fw-bold">@category.CreatedAt.ToString("yyyy-MM-dd")</td>
                                             <td class="py-3 px-4">
-                                                @if (category.IsActive)
-                                                {
-                                                    <span class="badge bg-success">Active</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-danger">Inactive</span>
-                                                }
+                                                <form asp-action="ChangeStatus" method="post" class="status-form d-inline-block">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@category.Id" />
+                                                    <select name="isActive" class="form-select form-select-sm status-select"
+                                                            data-category-id="@category.Id"
+                                                            data-current-status="@category.IsActive.ToString().ToLower()"
+                                                            style="width: auto; min-width: 100px;">
+                                                        <option value="true" selected="@(category.IsActive ? "selected" : null)">Active</option>
+                                                        <option value="false" selected="@(!category.IsActive ? "selected" : null)">Inactive</option>
+                                                    </select>
+                                                </form>
                                             </td>
                                         </tr>
+                                        index++;
                                     }
                                 }
                                 else
@@ -141,6 +145,13 @@
     }
 </div>
 
+<!-- Loading overlay for status changes -->
+<div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div class="spinner-border text-warning" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
 <style>
     .table th {
         border: none;
@@ -182,4 +193,90 @@
     .fas {
         font-size: 0.875rem;
     }
+
+    .status-select {
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        padding: 4px 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .status-select:focus {
+            border-color: #000;
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
+        }
+
+        .status-select option[value="true"] {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-select option[value="false"] {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .status-form {
+        margin: 0;
+    }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle status change
+        document.querySelectorAll('.status-select').forEach(function(select) {
+            select.addEventListener('change', function() {
+                const form = this.closest('.status-form');
+                const categoryId = this.dataset.categoryId;
+                const newStatus = this.value;
+                const currentStatus = this.dataset.currentStatus;
+
+                // Check if status actually changed
+                if (newStatus !== currentStatus) {
+                    // Show confirmation dialog
+                    const statusText = newStatus === 'true' ? 'Active' : 'Inactive';
+                    const confirmMessage = `Are you sure you want to change the status to ${statusText}?`;
+
+                    if (confirm(confirmMessage)) {
+                        // Show loading overlay
+                        document.getElementById('loading-overlay').style.display = 'flex';
+
+                        // Submit the form
+                        form.submit();
+                    } else {
+                        // Revert the selection
+                        this.value = currentStatus;
+                    }
+                }
+            });
+        });
+
+        // Add visual feedback when hovering over select
+        document.querySelectorAll('.status-select').forEach(function(select) {
+            select.addEventListener('mouseenter', function() {
+                this.style.borderColor = '#000';
+            });
+
+            select.addEventListener('mouseleave', function() {
+                if (this !== document.activeElement) {
+                    this.style.borderColor = '#dee2e6';
+                }
+            });
+        });
+    });
+</script>

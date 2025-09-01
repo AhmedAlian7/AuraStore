@@ -41,11 +41,13 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CancelOrder(string id)  
+        public async Task<IActionResult> CancelOrder(string id ,OrderStatus orderStatus)  
         {
-            await _orderService.UpdateOrderStatusAsync(id ,OrderStatus.Cancelled);
-
-            return RedirectToAction("Index");
+            if (orderStatus == OrderStatus.Pending)
+            {
+                await _orderService.UpdateOrderStatusAsync(id, OrderStatus.Cancelled);
+            }
+                return RedirectToAction("Index");
         }
     }
 }
