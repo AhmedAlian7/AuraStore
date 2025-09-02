@@ -19,10 +19,9 @@ function initializeAddToCartButtons() {
             data: { productId: productId, quantity: 1 },
             success: function (response) {
                 if (response.success) {
-                    // Update cart badge if it exists
-                    const cartBadge = $('.cart-badge');
-                    if (cartBadge.length > 0) {
-                        cartBadge.text(response.cartCount).show();
+                    // Update cart badge using badge manager
+                    if (typeof updateCartBadge === 'function') {
+                        updateCartBadge(response.cartCount);
                     }
                     
                     // Show success message

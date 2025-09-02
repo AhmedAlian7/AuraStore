@@ -112,7 +112,7 @@ function addToWishlistItem(productId, button) {
                 
                 // Update wishlist badge in header
                 if (typeof updateWishlistBadge === 'function') {
-                    updateWishlistBadge(response.count);
+                    updateWishlistBadge(response.wishlistCount);
                 }
                 
                 // Show success message
@@ -174,7 +174,7 @@ function removeFromWishlist(productId, button) {
                         
                         // Update wishlist badge in header
                         if (typeof updateWishlistBadge === 'function') {
-                            updateWishlistBadge(response.count);
+                            updateWishlistBadge(response.wishlistCount);
                         }
                         
                         // Show success message

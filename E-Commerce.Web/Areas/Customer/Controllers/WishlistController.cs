@@ -38,7 +38,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             if (result)
             {
                 var count = await _wishlistService.GetWishlistCountAsync(userId);
-                return Json(new { success = true, message = "Product added to wishlist", count = count });
+                return Json(new { success = true, message = "Product added to wishlist", wishlistCount = count });
             }
             
             return Json(new { success = false, message = "Product is already in wishlist" });
@@ -56,7 +56,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             if (result)
             {
                 var count = await _wishlistService.GetWishlistCountAsync(userId);
-                return Json(new { success = true, message = "Product removed from wishlist", count = count });
+                return Json(new { success = true, message = "Product removed from wishlist", wishlistCount = count });
             }
             
             return Json(new { success = false, message = "Failed to remove product from wishlist" });
@@ -74,7 +74,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             if (result)
             {
                 var count = await _wishlistService.GetWishlistCountAsync(userId);
-                return Json(new { success = true, message = "Product moved to cart", count = count });
+                return Json(new { success = true, message = "Product moved to cart", wishlistCount = count });
             }
             
             return Json(new { success = false, message = "Failed to move product to cart" });

@@ -39,6 +39,7 @@ namespace E_Commerce.Web.Helpers
             services.AddScoped<IWishlistService, WishlistService>();
             services.AddScoped<IProductNotificationService, ProductNotificationService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<E_Commerce.Business.Services.Interfaces.IBadgeCountService, E_Commerce.Business.Services.Implementation.BadgeCountService>();
             // AutoMapper
             services.AddAutoMapper(typeof(Program));
 

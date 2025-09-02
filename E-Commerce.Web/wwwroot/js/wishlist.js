@@ -52,9 +52,9 @@ $(document).ready(function () {
                     
                     // Update wishlist count in header
                     if (typeof updateWishlistBadge === 'function') {
-                        updateWishlistBadge(response.count);
+                        updateWishlistBadge(response.wishlistCount);
                     } else {
-                        updateWishlistCount(response.count);
+                        updateWishlistCount(response.wishlistCount);
                     }
                     
                     // Show success message
@@ -108,25 +108,32 @@ $(document).ready(function () {
                                 button.find('i').removeClass('fas').addClass('far');
                                 button.attr('title', 'Add to wishlist');
                             }
-                            
-                            // Remove card from wishlist page
+                            // Remove card from wishlist page if present
                             if (card) {
                                 card.fadeOut(300, function () {
                                     $(this).remove();
-                                    // Check if wishlist is empty
                                     if ($('.wishlist-item-card').length === 0) {
-                                        location.reload(); // Reload to show empty state
+                                        location.reload();
                                     }
                                 });
+                            } else if (button) {
+                                // Try to find and remove the card from the button context
+                                var cardFromButton = button.closest('.wishlist-item-card');
+                                if (cardFromButton.length) {
+                                    cardFromButton.fadeOut(300, function () {
+                                        $(this).remove();
+                                        if ($('.wishlist-item-card').length === 0) {
+                                            location.reload();
+                                        }
+                                    });
+                                }
                             }
-                            
                             // Update wishlist count in header
                             if (typeof updateWishlistBadge === 'function') {
-                                updateWishlistBadge(response.count);
+                                updateWishlistBadge(response.wishlistCount);
                             } else {
-                                updateWishlistCount(response.count);
+                                updateWishlistCount(response.wishlistCount);
                             }
-                            
                             // Show success message
                             Swal.fire({
                                 icon: 'success',
@@ -175,9 +182,9 @@ $(document).ready(function () {
                     
                     // Update wishlist count in header
                     if (typeof updateWishlistBadge === 'function') {
-                        updateWishlistBadge(response.count);
+                        updateWishlistBadge(response.wishlistCount);
                     } else {
-                        updateWishlistCount(response.count);
+                        updateWishlistCount(response.wishlistCount);
                     }
                     
                     // Update cart count in header (if cart count element exists)

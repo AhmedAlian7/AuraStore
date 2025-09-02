@@ -1,0 +1,59 @@
+@{
+    // This partial view will be replaced by JavaScript with actual counts
+    // It provides the initial structure for the badges
+}
+
+<script>
+// Initialize badge counts on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Only fetch counts if user is authenticated
+    if (document.body.classList.contains('authenticated') || 
+        document.querySelector('[data-user-id]')) {
+        updateBadgeCounts();
+    }
+});
+
+function updateBadgeCounts() {
+    // Fetch cart count
+    fetch('/Customer/Cart/GetCartCount')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateCartBadge(data.count);
+            }
+        })
+        .catch(error => console.error('Error fetching cart count:', error));
+
+    // Fetch wishlist count
+    fetch('/Customer/Wishlist/GetWishlistCount')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateWishlistBadge(data.count);
+            }
+        })
+        .catch(error => console.error('Error fetching wishlist count:', error));
+}
+
+function updateCartBadge(count) {
+    const cartBadge = document.getElementById('cart-badge');
+    if (cartBadge) {
+        cartBadge.textContent = count;
+        cartBadge.title = `Items in cart: ${count}`;
+        cartBadge.style.display = count > 0 ? 'flex' : 'none';
+    }
+}
+
+function updateWishlistBadge(count) {
+    const wishlistBadge = document.getElementById('wishlist-badge');
+    if (wishlistBadge) {
+        wishlistBadge.textContent = count;
+        wishlistBadge.title = `Items in wishlist: ${count}`;
+        wishlistBadge.style.display = count > 0 ? 'flex' : 'none';
+    }
+}
+
+// Make functions globally available
+window.updateCartBadge = updateCartBadge;
+window.updateWishlistBadge = updateWishlistBadge;
+</script>

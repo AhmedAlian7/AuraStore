@@ -54,6 +54,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                     success = true,
                     itemSubtotal = updateResult.Subtotal,
                     message = "Quantity updated successfully",
+                    cartCount = cartSummary.TotalItems,
                     cartSummary = new
                     {
                         totalItems = cartSummary.TotalItems,
@@ -86,6 +87,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                     {
                         success = true,
                         message = "Item successfully removed from cart",
+                        cartCount = 0,
                         cartSummary = new
                         {
                             totalItems = 0,
@@ -100,6 +102,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                 {
                     success = true,
                     message = "Item successfully removed from cart",
+                    cartCount = cartSummary.TotalItems,
                     cartSummary = new
                     {
                         totalItems = cartSummary.TotalItems,
@@ -139,6 +142,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                 success = true,
                 message = "Promo code applied successfully!",
                 discountAmount = result.DiscountAmount,
+                cartCount = result.CartSummary.TotalItems,
                 cartSummary = new
                 {
                     totalItems = result.CartSummary.TotalItems,

@@ -44,16 +44,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                 }).ToList();
             ViewBag.Categories = categories;
 
-            // Add wishlist count for authenticated users
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-                if (!string.IsNullOrEmpty(userId))
-                {
-                    var wishlistCount = await _wishlistService.GetWishlistCountAsync(userId);
-                    ViewBag.WishlistCount = wishlistCount;
-                }
-            }
+
 
             return View("Index", products);
         }
@@ -76,8 +67,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                     var isInWishlist = await _wishlistService.IsInWishlistAsync(user.Id, id);
                     ViewBag.IsInWishlist = isInWishlist;
                     
-                    var wishlistCount = await _wishlistService.GetWishlistCountAsync(user.Id);
-                    ViewBag.WishlistCount = wishlistCount;
+
                 }
             }
 
