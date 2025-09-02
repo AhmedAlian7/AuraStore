@@ -30,21 +30,30 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
             return View(cart);
         }
 
-        // for AJAX calls
         [HttpPost]
         public async Task<IActionResult> UpdateQuantity(int cartItemId, int quantity)
         {
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
                 var updateResult = await _cartService.UpdateQuantityAsync(cartItemId, quantity);
+                
+                // If result is null or has 0/negative subtotal, assume it's due to stock issues
+                if (updateResult == null || updateResult.Subtotal <= 0)
+                {
+                    return Json(new { 
+                        success = false, 
+                        message = "Not enough stock available" 
+                    });
+                }
+
                 var cartSummary = await _cartService.GetCartSummaryAsync();
 
                 return Json(new
                 {
                     success = true,
                     itemSubtotal = updateResult.Subtotal,
+                    message = "Quantity updated successfully",
                     cartSummary = new
                     {
                         totalItems = cartSummary.TotalItems,
@@ -65,15 +74,32 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         {
             try
             {
-
                 await _cartService.DeleteItemAsync(cartItemId);
 
                 // Get the updated cart summary after item deletion
                 var cartSummary = await _cartService.GetCartSummaryAsync();
 
+                if (cartSummary == null)
+                {
+                    // Cart is empty, return zeros
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Item successfully removed from cart",
+                        cartSummary = new
+                        {
+                            totalItems = 0,
+                            subtotal = 0,
+                            tax = 0,
+                            total = 0
+                        }
+                    });
+                }
+
                 return Json(new
                 {
                     success = true,
+                    message = "Item successfully removed from cart",
                     cartSummary = new
                     {
                         totalItems = cartSummary.TotalItems,
@@ -121,10 +147,7 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
                     total = result.CartSummary.Total
                 }
             });
-
-
         }
-        
 
         [HttpGet]
         public async Task<IActionResult> GetCartCount()

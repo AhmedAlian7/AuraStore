@@ -16,7 +16,7 @@ namespace E_Commerce.DataAccess.Entities
 
         // derived properties
         [NotMapped]
-        public decimal TotalAmount => CartItems?.Sum(ci => ci.Quantity * ci.Product.EffectivePrice) ?? 0;
+        public decimal TotalAmount => CartItems?.Where(ci => ci.Product != null).Sum(ci => ci.Quantity * ci.Product.EffectivePrice) ?? 0;
 
         [NotMapped]
         public decimal DiscountedTotal => Math.Max(TotalAmount - (DiscountAmount ?? 0), 0);

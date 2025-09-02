@@ -85,9 +85,14 @@
                     if (typeof updateCartBadge === 'function') {
                         updateCartBadge(response.cartSummary.totalItems || 0);
                     }
-                    showNotification('Quantity updated successfully!', 'success');
+                    showNotification(response.message || 'Quantity updated successfully!', 'success');
                 } else {
-                    showNotification('Failed to update quantity', 'error');
+                    // Reset the quantity input to its previous value
+                    var input = $cartItem.find('.qty-input');
+                    var prevValue = parseInt(input.attr('data-prev-value')) || 1;
+                    input.val(prevValue);
+                    
+                    showNotification(response.message || 'Not enough stock available', 'error');
                 }
             },
             error: function (xhr, status, error) {
@@ -124,19 +129,23 @@
 
                     swal.fire({
                         title: "Deleted!",
-                        text: "Cart item has been deleted.",
+                        text: response.message || "Cart item has been deleted.",
                         icon: "success"
                     });
                 } else {
                     swal.fire({
                         title: "Error!",
-                        text: "There was an error deleting the cart item.",
+                        text: response.message || "There was an error deleting the cart item.",
                         icon: "error"
                     });
                 }
             },
             error: function (xhr, status, error) {
-                showNotification('An error occurred while removing item', 'error');
+                swal.fire({
+                    title: "Error!",
+                    text: "There was an error deleting the cart item.",
+                    icon: "error"
+                });
                 console.error('Remove item error:', error);
             },
             complete: function () {
@@ -197,5 +206,10 @@
             title: message
         });
     }
+
+    // Store previous value when focusing on quantity input
+    $('.qty-input').on('focus', function() {
+        $(this).attr('data-prev-value', $(this).val());
+    });
 
 });
