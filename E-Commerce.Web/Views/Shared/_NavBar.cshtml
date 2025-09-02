@@ -1,6 +1,6 @@
 <!-- Header -->
 <nav class="navbar navbar-expand-lg navbar-custom sticky-top shadow-sm">
-    <div class="container">
+    <div class="container-fluid">
      
         <a class="navbar-brand d-flex align-items-center" asp-action="Index" asp-controller="Home">
             <div class="logo-container">
@@ -105,12 +105,37 @@
                         </div>
 
                         <!-- Notifications -->
-                        <div class="action-item">
+                        @* <div class="action-item">
                             <button class="modern-icon-btn" title="Notifications">
                                 <i class="fas fa-bell"></i>
                                 <span class="modern-badge pulse">3</span>
                             </button>
+                        </div> *@
+                        <!-- Notifications Dropdown -->
+                        <div class="dropdown action-item">
+                            <button class="modern-icon-btn dropdown-toggle" type="button" id="notificationsDropdown"
+                                    data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                                <i class="fas fa-bell"></i>
+                                <span class="modern-badge pulse">3</span>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end notifications-dropdown" aria-labelledby="notificationsDropdown">
+                                <li class="dropdown-header">
+                                    <strong>Notifications</strong>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="text-center px-3 py-2">
+                                    <i class="fas fa-info-circle text-primary mb-2"></i>
+                                    <p class="mb-1 small text-muted">
+                                        Notifications are not implemented yet.
+                                    </p>
+                                    <p class="mb-0 small">
+                                        Please check your <strong>email</strong> for updates.
+                                    </p>
+                                </li>
+                            </ul>
                         </div>
+
 
                         <!-- User Profile Dropdown -->
                         <div class="dropdown user-dropdown">

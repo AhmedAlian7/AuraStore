@@ -142,8 +142,10 @@ body {
 /* Search Container */
 .search-container {
     position: relative;
-    width: 300px;
+    width: 100%;
+    max-width: 250px; 
 }
+
 
 .search-form {
     position: relative;
@@ -212,6 +214,7 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     cursor: pointer;
+    text-decoration: none;
 }
 
     .modern-icon-btn:hover {
@@ -540,6 +543,15 @@ body {
         width: 100%;
     }
 }
+
+.notifications-dropdown {
+    min-width: 300px;
+}
+
+    .notifications-dropdown p {
+        line-height: 1.4;
+    }
+
 
 /* Hero Section Placeholder */
 .hero-section {

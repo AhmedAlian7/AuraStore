@@ -86,14 +86,5 @@
             }
         </div>
 
-        <!-- Actions for non-authenticated users -->
-        @if (!isAuthenticated)
-        {
-            <div class="mt-2">
-                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary btn-sm w-100" onclick="event.stopPropagation();">
-                    <i class="fas fa-sign-in-alt me-2"></i>Login to Purchase
-                </a>
-            </div>
-        }
     </div>
 </div>
