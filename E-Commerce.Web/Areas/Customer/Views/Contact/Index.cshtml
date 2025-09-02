@@ -1,0 +1,90 @@
+﻿@model ContactFormViewModel
+@{
+    ViewData["Title"] = "Contact Us";
+    ViewData["Description"] = "Get in touch with our customer support team. We're here to help with orders, returns, technical issues, and general inquiries.";
+}
+
+<div class="contact-container">
+    <div class="contact-header">
+        <h1>Contact Us</h1>
+        <p>We'd love to hear from you! Send us a message and we'll respond as soon as possible.</p>
+    </div>
+
+    <form asp-action="Index" method="post" class="contact-form needs-validation" novalidate id="contactForm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label required"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter your full name" autocomplete="name" aria-describedby="nameHelp" />
+                    <span asp-validation-for="Name" class="text-danger" role="alert"></span>
+                    <div class="form-help" id="nameHelp">This helps us personalize our response</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label required"></label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="your@email.com" autocomplete="email" aria-describedby="emailHelp" />
+                    <span asp-validation-for="Email" class="text-danger" role="alert"></span>
+                    <div class="form-help" id="emailHelp">We'll use this to send our reply</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="InquiryType" class="form-label required"></label>
+                    <select asp-for="InquiryType" asp-items="ContactFormViewModel.InquiryTypeOptions" class="form-control" aria-describedby="inquiryHelp">
+                    </select>
+                    <span asp-validation-for="InquiryType" class="text-danger" role="alert"></span>
+                    <div class="form-help" id="inquiryHelp">Help us route your message to the right team</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="OrderNumber" class="form-label"></label>
+                    <input asp-for="OrderNumber" class="form-control" placeholder="e.g., ORD-12345" autocomplete="off" aria-describedby="orderHelp" />
+                    <span asp-validation-for="OrderNumber" class="text-danger" role="alert"></span>
+                    <div class="form-help" id="orderHelp">Include if this is about a specific order</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Subject" class="form-label required"></label>
+            <input asp-for="Subject" class="form-control" placeholder="Brief description of your inquiry" maxlength="200" aria-describedby="subjectHelp" />
+            <span asp-validation-for="Subject" class="text-danger" role="alert"></span>
+            <div class="form-help" id="subjectHelp">Keep it brief but descriptive</div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Message" class="form-label required"></label>
+            <textarea asp-for="Message" class="form-control" rows="6" placeholder="Please provide as much detail as possible about your inquiry..." maxlength="2000" aria-describedby="messageHelp"></textarea>
+            <span asp-validation-for="Message" class="text-danger" role="alert"></span>
+            <div class="form-help" id="messageHelp">
+                <span id="charCount">0</span>/2000 characters
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                <span class="btn-text">Send Message</span>
+                <span class="btn-loading" style="display: none;">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Sending...
+                </span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
+
+@section Scripts {
+	<link href="~/css/contact.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="~/js/contact.js"></script>
+	<partial name="_ValidationScriptsPartial" />
+}

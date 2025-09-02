@@ -25,7 +25,7 @@
         <div class="product-actions">
             @if (isAuthenticated && Model.InStock)
             {
-                <a asp-action="AddToCart" asp-controller="Product" asp-area="Customer" asp-route-id="@Model.Id" class="action-btn" title="Add to Cart" onclick="event.stopPropagation();">
+                <a class="action-btn" title="Add to Cart" onclick="event.stopPropagation();">
                     <i class="fas fa-shopping-cart"></i>
                 </a>
             }
