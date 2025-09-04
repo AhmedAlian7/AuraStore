@@ -65,7 +65,7 @@ namespace E_Commerce.Web
             {
                 options.LoginPath = "/Authentication/Account/Login";
                 options.AccessDeniedPath = "/Authentication/Account/AccessDenied";
-                options.Cookie.SameSite = SameSiteMode.Lax; // App auth cookie
+                options.Cookie.SameSite = SameSiteMode.None; // App auth cookie
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
             });

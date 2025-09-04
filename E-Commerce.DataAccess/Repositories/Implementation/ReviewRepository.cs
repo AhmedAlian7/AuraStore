@@ -37,7 +37,7 @@ namespace E_Commerce.DataAccess.Repositories.Implementation
         {
             return await _context.Reviews
                     .Include(r => r.User)
-                    .Where(r => r.IsVerifiedPurchase && r.Rating >= 4)
+                    .Where(r =>  r.Rating >= 4 && !r.IsDeleted)
                     .OrderByDescending(r => r.CreatedAt)
                     .Take(count)
                     .ToListAsync();

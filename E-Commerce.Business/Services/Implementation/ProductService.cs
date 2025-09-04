@@ -54,7 +54,7 @@ namespace E_Commerce.Business.Services.Implementation
                 _ => productsQuery.OrderBy(p => p.Id)
             };
 
-            int pageSize = Numbers.DefaultPageSize - 4;
+            int pageSize = Numbers.DefaultPageSize;
             var totalCount = productsQuery.Count();
             var products = productsQuery.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 

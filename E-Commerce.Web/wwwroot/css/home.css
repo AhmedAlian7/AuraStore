@@ -28,7 +28,7 @@
 .hero-bg {
     position: absolute;
     inset: 0;
-    background: url('/images/about-background.jpg') center;
+    background-size: cover;
     opacity: 0.1;
 }
 
