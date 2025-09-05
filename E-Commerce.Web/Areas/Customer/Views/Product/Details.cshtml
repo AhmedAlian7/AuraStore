@@ -1,6 +1,7 @@
 ﻿@model ProductDetailsViewModel
 @{
     ViewData["Title"] = Model.Name;
+    var isInWishlist = ViewBag.IsInWishlist ?? false;
 }
 
 
@@ -27,6 +28,20 @@
             color: #ffb400; /* brighter gold */
         }
 
+    #starRating .star-select {
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+        #starRating .star-select.hovered {
+            color: #ffc107 !important;
+            opacity: 0.7;
+        }
+
+        #starRating .star-select.selected,
+        #starRating .star-select.text-warning {
+            color: #ffc107 !important;
+        }
 </style>
 
 <div class="product-details-container">
@@ -120,11 +135,17 @@
                 }
                 @if (User.Identity.IsAuthenticated)
                 {
-                    @await Html.PartialAsync("_WishlistButtonPartial", Model.Id)
+                    <a class="wishlist-btn @(isInWishlist ? "active" : "")"
+                       data-product-id="@Model.Id"
+                       title="@(isInWishlist ? "Remove from wishlist" : "Add to wishlist")">
+                        <i class="fa@(isInWishlist ? "s" : "r") fa-heart me-1"></i>
+                        @(isInWishlist ? "Wishlisted" : "Wishlist")
+                    </a>
                 }
                 else
                 {
-                    <a href="@Url.Action("Login", "Account", new { area = "Authentication" })" class="btn btn-outline-danger btn-sm">
+                    <a href="@Url.Action("Login", "Account", new { area = "Authentication" })"
+                       class="wishlist-btn">
                         <i class="far fa-heart me-1"></i>Wishlist
                     </a>
                 }
@@ -226,76 +247,73 @@
     <script src="~/js/cart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
-    $(function () {
-        // Star rating selection
-        $('#starRating .star-select').on('click', function () {
-            var val = $(this).data('value');
-            $('#ratingInput').val(val);
-            $('#starRating .star-select').removeClass('text-warning');
-            $('#starRating .star-select').each(function () {
-                if ($(this).data('value') <= val) $(this).addClass('text-warning');
-            });
-        });
-        // Submit review via AJAX
-        $('#addReviewForm').on('submit', function (e) {
-            e.preventDefault();
-            var form = $(this);
-            $.post('/Customer/Product/AddReview', form.serialize(), function (data) {
-                $('#reviewsList').html(data.reviewsHtml);
-                $('#ratingSummary').html(data.ratingHtml);
-                form[0].reset();
-                $('#ratingInput').val(5);
-                $('#starRating .star-select').removeClass('text-warning').slice(0, 5).addClass('text-warning');
-            });
-        });
-    });
-
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const stars = document.querySelectorAll("#starRating .star-select");
-        const ratingInput = document.getElementById("ratingInput");
-
-        let currentRating = parseInt(ratingInput.value) || 0;
-
-        function updateStars(value) {
-            stars.forEach(s => {
-                s.classList.toggle("selected", s.getAttribute("data-value") <= value);
-            });
-        }
-
-        // Initial render
-        updateStars(currentRating);
-
-        stars.forEach(star => {
-            // Hover preview
-            star.addEventListener("mouseenter", () => {
-                const value = star.getAttribute("data-value");
-                stars.forEach(s => {
-                    s.classList.toggle("hovered", s.getAttribute("data-value") <= value);
+        $(function () {
+            // Star rating selection
+            $('#starRating .star-select').on('click', function () {
+                var val = $(this).data('value');
+                $('#ratingInput').val(val);
+                $('#starRating .star-select').removeClass('text-warning');
+                $('#starRating .star-select').each(function () {
+                    if ($(this).data('value') <= val) $(this).addClass('text-warning');
                 });
             });
-
-            star.addEventListener("mouseleave", () => {
-                stars.forEach(s => s.classList.remove("hovered"));
-            });
-
-            star.addEventListener("click", () => {
-                const value = parseInt(star.getAttribute("data-value"));
-
-                if (currentRating === value) {
-                    currentRating = 0;
-                    ratingInput.value = 0;
-                } else {
-                    currentRating = value;
-                    ratingInput.value = value;
-                }
-
-                updateStars(currentRating);
+            // Submit review via AJAX
+            $('#addReviewForm').on('submit', function (e) {
+                e.preventDefault();
+                var form = $(this);
+                $.post('/Customer/Product/AddReview', form.serialize(), function (data) {
+                    $('#reviewsList').html(data.reviewsHtml);
+                    $('#ratingSummary').html(data.ratingHtml);
+                    form[0].reset();
+                    $('#ratingInput').val(5);
+                    $('#starRating .star-select').removeClass('text-warning').slice(0, 5).addClass('text-warning');
+                });
             });
         });
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const stars = document.querySelectorAll("#starRating .star-select");
+            const ratingInput = document.getElementById("ratingInput");
+
+            let currentRating = parseInt(ratingInput.value) || 0;
+
+            function updateStars(value) {
+                stars.forEach(s => {
+                    s.classList.toggle("selected", s.getAttribute("data-value") <= value);
+                });
+            }
+
+            // Initial render
+            updateStars(currentRating);
+
+            stars.forEach(star => {
+                // Hover preview
+                star.addEventListener("mouseenter", () => {
+                    const value = star.getAttribute("data-value");
+                    stars.forEach(s => {
+                        s.classList.toggle("hovered", s.getAttribute("data-value") <= value);
+                    });
+                });
+
+                star.addEventListener("mouseleave", () => {
+                    stars.forEach(s => s.classList.remove("hovered"));
+                });
+
+                star.addEventListener("click", () => {
+                    const value = parseInt(star.getAttribute("data-value"));
+
+                    if (currentRating === value) {
+                        currentRating = 0;
+                        ratingInput.value = 0;
+                    } else {
+                        currentRating = value;
+                        ratingInput.value = value;
+                    }
+
+                    updateStars(currentRating);
+                });
+            });
         });
-
-
-
     </script>
 }

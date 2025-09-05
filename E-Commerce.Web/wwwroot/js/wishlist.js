@@ -42,6 +42,12 @@ $(document).ready(function () {
             type: 'POST',
             data: { productId: productId },
             success: function (response) {
+                // Handle login redirect
+                if (response.redirectTo) {
+                    window.location.href = response.redirectTo;
+                    return;
+                }
+
                 if (response.success) {
                     // Update button state
                     if (button) {
@@ -49,14 +55,14 @@ $(document).ready(function () {
                         button.find('i').removeClass('far').addClass('fas');
                         button.attr('title', 'Remove from wishlist');
                     }
-                    
+
                     // Update wishlist count in header
                     if (typeof updateWishlistBadge === 'function') {
                         updateWishlistBadge(response.wishlistCount);
-                    } else {
+                    } else if (typeof updateWishlistCount === 'function') {
                         updateWishlistCount(response.wishlistCount);
                     }
-                    
+
                     // Show success message
                     Swal.fire({
                         icon: 'success',
@@ -84,6 +90,7 @@ $(document).ready(function () {
             }
         });
     }
+
 
     function removeFromWishlist(productId, button, card) {
         Swal.fire({

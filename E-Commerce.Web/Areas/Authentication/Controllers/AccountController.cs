@@ -70,7 +70,7 @@ namespace E_Commerce.Web.Areas.Authentication.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, register.Role);
                     TempData["SuccessMessage"] = "Account Created successfully!";
-                    return RedirectToAction("Index", "Product", new { area = "Admin" });
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
                 }
 
                 await _userManager.AddToRoleAsync(user, AppRoles.Customer);

@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Api\Data\" />
+    <Folder Include="Areas\Customer\Views\Shared\" />
   </ItemGroup>
 
 </Project>

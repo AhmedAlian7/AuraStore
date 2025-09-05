@@ -31,8 +31,10 @@ namespace E_Commerce.Web.Areas.Customer.Controllers
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
-                return Json(new { success = false, message = "User not authenticated" });
-
+            {
+                var returnUrl = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                return Json(new { success = false, redirectTo = Url.Action("Login", "Account", new { ReturnUrl = returnUrl }) });
+            }
             var result = await _wishlistService.AddToWishlistAsync(userId, productId);
             
             if (result)
