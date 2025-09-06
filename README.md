@@ -29,7 +29,6 @@ A comprehensive, modern e-commerce platform built with ASP.NET Core MVC, featuri
 - [Performance Optimizations](#-performance-optimizations)
 - [Contributing](#-contributing)
 - [Future Enhancements](#-future-enhancements)
-- [License](#-license)
 
 ## 🚀 Project Overview
 
@@ -160,10 +159,6 @@ We welcome contributions! Please follow these guidelines:
 - **Real-time Notifications**: WebSocket-based real-time updates
 - **Advanced Search**: Elasticsearch integration for better search
 - **Recommendation Engine**: AI-powered product recommendations
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
