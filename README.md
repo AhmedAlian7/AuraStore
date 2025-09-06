@@ -4,7 +4,7 @@ A comprehensive, modern e-commerce platform built with ASP.NET Core MVC, featuri
 
 ## 🚀 Project Overview
 
-AURA Store is a full-featured e-commerce solution that provides a seamless shopping experience with modern UI/UX design, secure payment processing, and comprehensive admin management capabilities. The platform supports multiple user roles, advanced product management, and integrated third-party services.
+AURA Store is a full-featured e-commerce solution that provides a seamless shopping experience with modern design, secure payment processing, and comprehensive admin management capabilities. The platform supports multiple user roles, advanced product management, and integrated third-party services.
 
 ## ✨ Key Features
 
@@ -43,8 +43,7 @@ The project follows a clean, layered architecture pattern:
 E-Commerce-03/
 ├── E-Commerce.Web/           # Presentation Layer (MVC)
 ├── E-Commerce.Business/      # Business Logic Layer
-├── E-Commerce.DataAccess/    # Data Access Layer
-└── E-Commerce.sln           # Solution File
+└── E-Commerce.DataAccess/    # Data Access Layer
 ```
 
 ### Layer Responsibilities
@@ -81,7 +80,6 @@ E-Commerce-03/
 - **Stripe** - Payment processing
 - **Cloudinary** - Image storage and optimization
 - **Gmail SMTP** - Email notifications
-- **SQL Server Database** - Data persistence
 
 ## 📊 Database Schema
 
@@ -114,7 +112,6 @@ The application uses a comprehensive database schema with the following main ent
 - **Order Processing**: View orders, update status, send notifications
 - **User Management**: Customer accounts, role management
 - **Promo Code System**: Create discount codes with various conditions
-- **Inventory Management**: Stock tracking, product availability
 
 ## 🔒 Security Features
 
