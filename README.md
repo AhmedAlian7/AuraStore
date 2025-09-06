@@ -28,7 +28,6 @@ A comprehensive, modern e-commerce platform built with ASP.NET Core MVC, featuri
 - [Security Features](#-security-features)
 - [Performance Optimizations](#-performance-optimizations)
 - [Contributing](#-contributing)
-- [Future Enhancements](#-future-enhancements)
 
 ## 🚀 Project Overview
 
